@@ -18,6 +18,7 @@
  */
 package org.lucane.applications.calendarprefs;
 
+import java.awt.Color;
 import java.awt.event.*;
 import java.io.IOException;
 
@@ -48,11 +49,33 @@ public class CalendarPrefs
   public void start()
   {
   		prefs = new LocalConfig("org.lucane.applications.calendar");
-  		ui = new UIFactory();
+  		
+		Color unworkedColor = getColor("unworked", new Color(160, 155, 150));
+		Color workedColor = getColor("worked", new Color(255, 255, 222));
+		int workStart = prefs.getInt("workStart", 8);
+		int workEnd = prefs.getInt("workEnd", 18);
+		
+  		ui = new UIFactory();  		
+		ui.setUnworkedColor(unworkedColor);
+		ui.setWorkedColor(workedColor);
+		ui.setWorkStart(workStart);
+		ui.setWorkEnd(workEnd);
+		
   		frame = ui.createMainFrame(this);
   		frame.show();
   }
 
+  public Color getColor(String name, Color defaultColor)
+  {
+	  String r = prefs.get(name + ".r");
+	  String g = prefs.get(name + ".g");
+	  String b = prefs.get(name + ".b");
+		
+	  if(r != null && g != null && b != null)
+		  return new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
+		
+	  return defaultColor;	
+  }
 
   public void actionPerformed(ActionEvent ae) 
   {  	
@@ -76,7 +99,23 @@ public class CalendarPrefs
 				DialogBox.error(tr("err.savePrefs"));
 				ioe.printStackTrace();
 			}
+			
+			frame.dispose();
 	  	}
-	  	frame.dispose();
+	  	else if(button.getName().equals("cancel"))
+	  		frame.dispose();
+	  		
+	  	else if(button.getName().equals("worked"))
+	  	{
+	  		Color color = ui.getWorkedColor();
+	  		color = JColorChooser.showDialog(frame, tr("selectWorkedColor"), color);
+	  		ui.setWorkedColor(color);
+	  	}
+		else if(button.getName().equals("unworked"))
+		{
+			Color color = ui.getUnworkedColor();
+			color = JColorChooser.showDialog(frame, tr("selectUnworkedColor"), color);
+			ui.setUnworkedColor(color);
+		}
   }
 }

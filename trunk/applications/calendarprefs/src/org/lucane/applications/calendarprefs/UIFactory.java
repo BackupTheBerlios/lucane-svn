@@ -26,49 +26,59 @@ import org.lucane.client.Client;
 
 public class UIFactory
 {
-	private JColorChooser workedColor; 
-	private JColorChooser unworkedColor; 
+	private Color workedColor; 
+	private Color unworkedColor; 
+	private int initialWorkStart;
+	private int initialWorkEnd;
+		
+	private JButton worked;
+	private JButton unworked;
 	private JSlider workStart;
 	private JSlider workEnd;
 	
 	
-	public  JFrame createMainFrame(CalendarPrefs plugin)
+	public JFrame createMainFrame(CalendarPrefs plugin)
 	{
 		JFrame frame = new JFrame(plugin.getTitle());
 		frame.setIconImage(plugin.getImageIcon().getImage());			
 		frame.getContentPane().setLayout(new BorderLayout());
+
+		JPanel content = new JPanel(new GridLayout(4, 2));
 		
 		// hours
-		workStart = new JSlider(0, 24);
+		workStart = new JSlider(0, 24, initialWorkStart);
 		workStart.setPaintLabels(true);
 		workStart.setPaintTicks(true);
 		workStart.setMajorTickSpacing(8);
 		workStart.setMinorTickSpacing(1);
 		workStart.setSnapToTicks(true);
-		workEnd = new JSlider(0, 24);
+		workEnd = new JSlider(0, 24, initialWorkEnd);
 		workEnd.setPaintLabels(true);
 		workEnd.setPaintTicks(true);
 		workEnd.setMajorTickSpacing(8);
 		workEnd.setMinorTickSpacing(1);
 		workEnd.setSnapToTicks(true);
 		
-		JPanel hours = new JPanel(new GridLayout(2, 2));
-		hours.add(new JLabel(plugin.tr("lbl.workStart")));
-		hours.add(workStart);
-		hours.add(new JLabel(plugin.tr("lbl.workEnd")));
-		hours.add(workEnd);
-		JPanel hourContainer = new JPanel(new BorderLayout());
-		hourContainer.add(hours, BorderLayout.WEST);
+		content.add(new JLabel(plugin.tr("lbl.workStart")));
+		content.add(workStart);
+		content.add(new JLabel(plugin.tr("lbl.workEnd")));
+		content.add(workEnd);
 		
 		
 		// colors
-		workedColor = new JColorChooser();
-		unworkedColor = new JColorChooser();
-		workedColor.setBorder(BorderFactory.createTitledBorder(plugin.tr("lbl.workedColor")));
-		unworkedColor.setBorder(BorderFactory.createTitledBorder(plugin.tr("lbl.unworkedColor")));
-		JPanel colors = new JPanel(new GridLayout(1, 2));
-		colors.add(workedColor);
-		colors.add(unworkedColor);
+		worked = new JButton("");
+		worked.setBackground(workedColor);
+		worked.setName("worked");
+		worked.addActionListener(plugin);
+		unworked = new JButton("");
+		unworked.setBackground(unworkedColor);
+		unworked.setName("unworked");
+		unworked.addActionListener(plugin);
+				
+		content.add(new JLabel(plugin.tr("lbl.workedColor")));
+		content.add(worked);
+		content.add(new JLabel(plugin.tr("lbl.unworkedColor")));
+		content.add(unworked);			
 		
 		// buttons
 		JButton ok = new JButton(plugin.tr("btn.ok"), Client.getIcon("ok.png"));
@@ -83,24 +93,54 @@ public class UIFactory
 		buttons.add(ok);
 		buttons.add(cancel);
 		buttonContainer.add(buttons, BorderLayout.EAST);
+		buttonContainer.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 		
 		// frame
-		frame.getContentPane().add(hourContainer, BorderLayout.NORTH);
-		frame.getContentPane().add(colors, BorderLayout.CENTER);
+		frame.getContentPane().add(content, BorderLayout.CENTER);
 		frame.getContentPane().add(buttonContainer, BorderLayout.SOUTH);
 		frame.pack();
 		
 		return frame;
 	}
 	
+	public void setWorkedColor(Color color)
+	{
+		if(color == null)
+			return;
+			
+		workedColor = color;
+		if(worked != null)
+			worked.setBackground(color);
+	}
+	
+	public void setUnworkedColor(Color color)
+	{
+		if(color == null)
+			return;
+			
+		unworkedColor = color;
+		if(unworked != null)
+			unworked.setBackground(color);
+	}
+	
 	public Color getWorkedColor()
 	{
-		return workedColor.getColor();
+		return workedColor;
 	}
 	
 	public Color getUnworkedColor()
 	{
-		return unworkedColor.getColor();
+		return unworkedColor;
+	}
+	
+	public void setWorkStart(int i)
+	{
+		this.initialWorkStart = i;
+	}
+	
+	public void setWorkEnd(int i)
+	{
+		this.initialWorkEnd = i;
 	}
 	
 	public int getWorkStart()
