@@ -270,6 +270,13 @@ public class Store
 		getPluginStore().storePlugin(jmailaccountPlugin);
 		getServiceStore().storeService(jmailaccountService);
 
+		//jmail admin
+		PluginConcept jmailadminPlugin = new PluginConcept("org.lucane.applications.jmailadmin", "0.6.3");
+		ServiceConcept jmailadminService = new ServiceConcept("org.lucane.applications.jmailadmin", false);
+		admins.addPlugin(jmailadminPlugin);
+		admins.addService(jmailadminService);
+		getPluginStore().storePlugin(jmailadminPlugin);
+		getServiceStore().storeService(jmailadminService);
 		
         getGroupStore().storeGroup(allUsers);
         getGroupStore().storeGroup(grantedUsers);

@@ -4,7 +4,7 @@
 
   <property name="dist.app.dir" value="../../../dist/server/applications/" />
 
-  <goal name="deploy">
+  <goal name="mkdist">
     <copy todir="${dist.app.dir}">
       <fileset dir="target">
         <include name="*.jar" />

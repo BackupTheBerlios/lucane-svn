@@ -6,7 +6,7 @@
   <property name="dist.lib.dir" value="${dist.dir}/lib" />
   <property name="dist.etc.dir" value="${dist.dir}/etc" />
 
-  <goal name="mkdist" prereqs="jar:install">
+  <goal name="mkdist">
     <deploy:copy-deps todir="${dist.lib.dir}" />
     <copy todir="${dist.lib.dir}">
       <fileset dir="target">

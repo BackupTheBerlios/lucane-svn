@@ -2,7 +2,7 @@
 <project
   xmlns:deploy="deploy">
 
-  <goal name="mkdist" prereqs="jar:install">
+  <goal name="mkdist">
   </goal>
   
 </project>

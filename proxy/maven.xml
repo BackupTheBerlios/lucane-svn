@@ -5,7 +5,7 @@
   <property name="dist.dir" value="../../dist/proxy" />
   <property name="dist.lib.dir" value="${dist.dir}/lib" />
 
-  <goal name="mkdist" prereqs="jar:install">
+  <goal name="mkdist">
     <deploy:copy-deps todir="${dist.lib.dir}" />
     <copy todir="${dist.lib.dir}">
       <fileset dir="target">

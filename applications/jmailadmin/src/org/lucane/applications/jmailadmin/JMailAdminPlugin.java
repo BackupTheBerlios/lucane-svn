@@ -20,6 +20,7 @@ package org.lucane.applications.jmailadmin;
 
 import java.util.ArrayList;
 
+import org.lucane.applications.jmailadmin.gui.MainFrame;
 import org.lucane.client.*;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.ConnectInfo;
@@ -44,6 +45,9 @@ public class JMailAdminPlugin
 	public void start() 
 	{
 		this.service = Communicator.getInstance().getConnectInfo("org.lucane.applications.jmailadmin");
+		MainFrame mf = new MainFrame(this);
+		mf.addWindowListener(this);
+		mf.show();
 	}
 	
 	public boolean storeAccount(Account a)

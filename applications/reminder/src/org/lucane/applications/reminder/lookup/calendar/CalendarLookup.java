@@ -117,7 +117,7 @@ public class CalendarLookup implements Lookup
 		Statement s = c.createStatement();
 		
 		String query = "SELECT * FROM CalEvents WHERE "
-			+ "start >= " + start + " AND start <= " + end;		
+			+ "startTime >= " + start + " AND startTime <= " + end;		
 		addEventsFromQuery(c, s, query, events);
 				
 		s.close();
