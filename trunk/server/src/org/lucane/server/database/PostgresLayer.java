@@ -18,31 +18,41 @@
  */
 package org.lucane.server.database;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 class PostgresLayer extends DatabaseAbstractionLayer
 {
-  public PostgresLayer(String url, String login, String passwd) 
-  {
-    this.url = url;
-    this.login = login;
-    this.passwd = passwd;
-  }
-
-
-  public String resolveType(String type)
-  {
-    if(type.equalsIgnoreCase("SMALLTEXT"))
-      return "VARCHAR(250)";
-    else if(type.equalsIgnoreCase("TEXT"))
-      return "TEXT";
-    else if(type.equalsIgnoreCase("SMALLINT"))
-      return "int2";
-    else if(type.equalsIgnoreCase("INT"))
-      return "int4";
-    else if(type.equalsIgnoreCase("BIGINT"))
-      return "int4";
-    else if(type.equalsIgnoreCase("REAL"))
-      return "float8";
-    else
-      return type;
-  }
+	private DataSource dataSource;
+	
+	public PostgresLayer(DataSource dataSource) 
+	{
+		this.dataSource = dataSource;
+	}
+	
+	public Connection openConnection()
+	throws SQLException
+	{
+		return dataSource.getConnection();
+	}
+	
+	public String resolveType(String type)
+	{
+		if(type.equalsIgnoreCase("SMALLTEXT"))
+			return "VARCHAR(250)";
+		else if(type.equalsIgnoreCase("TEXT"))
+			return "TEXT";
+		else if(type.equalsIgnoreCase("SMALLINT"))
+			return "int2";
+		else if(type.equalsIgnoreCase("INT"))
+			return "int4";
+		else if(type.equalsIgnoreCase("BIGINT"))
+			return "int4";
+		else if(type.equalsIgnoreCase("REAL"))
+			return "float8";
+		else
+			return type;
+	}
 }

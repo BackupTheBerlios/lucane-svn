@@ -20,21 +20,29 @@ package org.lucane.server.database;
 
 import java.sql.*;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
 import org.lucane.common.Logging;
 import org.lucane.server.Server;
 
 class HSQLDBLayer extends DatabaseAbstractionLayer
 {
-  private Connection connection;
+  private DataSource dataSource;
   
-  public HSQLDBLayer(String url, String login, String passwd) 
+  public HSQLDBLayer(DataSource dataSource) 
   {
-    this.url = getAbsoluteUrl(url);
-    this.login = login;
-    this.passwd = passwd;
-    this.connection = null;
+	this.dataSource = dataSource;
+	BasicDataSource bds = (BasicDataSource)dataSource;
+	bds.setUrl(getAbsoluteUrl(bds.getUrl()));
   }
   
+  public Connection openConnection()
+  throws SQLException
+  {
+	return dataSource.getConnection();
+  }
+
   private String getAbsoluteUrl(String url)
   {
   	String standardStart = "jdbc:hsqldb:";
@@ -52,15 +60,6 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   	return url;
   }
   
-  public Connection openConnection()
-  throws SQLException
-  {
-  	if(this.connection == null)
-  		this.connection = new UnclosableConnection(DriverManager.getConnection(url, login, passwd));
-  	
-  	return this.connection;
-  }
-
   public String resolveType(String type)
   {
     if(type.equalsIgnoreCase("SMALLTEXT"))

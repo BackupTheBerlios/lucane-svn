@@ -18,32 +18,42 @@
  */
 package org.lucane.server.database;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 
 class MySQLLayer extends DatabaseAbstractionLayer
 {
-  public MySQLLayer(String url, String login, String passwd) 
-  {
-    this.url = url;
-    this.login = login;
-    this.passwd = passwd;
-  }
-
-
-  public String resolveType(String type)
-  {
-    if(type.equalsIgnoreCase("SMALLTEXT"))
-      return "VARCHAR(250)";
-    else if(type.equalsIgnoreCase("TEXT"))
-      return "MEDIUMTEXT";
-    else if(type.equalsIgnoreCase("SMALLINT"))
-      return "SMALLINT";
-    else if(type.equalsIgnoreCase("INT"))
-      return "INT";
-    else if(type.equalsIgnoreCase("BIGINT"))
-      return "BIGINT";
-    else if(type.equalsIgnoreCase("REAL"))
-      return "DOUBLE";
-    else
-      return type;
-  }
+	private DataSource dataSource;
+	
+	public MySQLLayer(DataSource dataSource) 
+	{
+		this.dataSource = dataSource;
+	}
+	
+	public Connection openConnection()
+	throws SQLException
+	{
+		return dataSource.getConnection();
+	}
+	
+	public String resolveType(String type)
+	{
+		if(type.equalsIgnoreCase("SMALLTEXT"))
+			return "VARCHAR(250)";
+		else if(type.equalsIgnoreCase("TEXT"))
+			return "MEDIUMTEXT";
+		else if(type.equalsIgnoreCase("SMALLINT"))
+			return "SMALLINT";
+		else if(type.equalsIgnoreCase("INT"))
+			return "INT";
+		else if(type.equalsIgnoreCase("BIGINT"))
+			return "BIGINT";
+		else if(type.equalsIgnoreCase("REAL"))
+			return "DOUBLE";
+		else
+			return type;
+	}
 }

@@ -4,16 +4,26 @@
  */
 package org.lucane.server.database;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 class SQLServerLayer extends DatabaseAbstractionLayer
 {
-	public SQLServerLayer(String url, String login, String passwd)
+	private DataSource dataSource;
+	
+	public SQLServerLayer(DataSource dataSource) 
 	{
-		this.url = url;
-		this.login = login;
-		this.passwd = passwd;
+		this.dataSource = dataSource;
 	}
-
-
+	
+	public Connection openConnection()
+	throws SQLException
+	{
+		return dataSource.getConnection();
+	}
+	
 	public String resolveType(String type)
 	{
 		if(type.equalsIgnoreCase("SMALLTEXT"))
