@@ -39,7 +39,7 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   {
   	String standardStart = "jdbc:hsqldb:";
 
-  	if(url.toLowerCase().startsWith(standardStart))
+  	if(Server.getInstance() != null && url.toLowerCase().startsWith(standardStart))
   	{
   		String miniurl = url.substring(standardStart.length()).replace('\\','/');
   		
