@@ -347,6 +347,14 @@ Function ValidateLanguage
     goto end
     no3:
 
+  #----- Polish -----
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 5" "state"
+
+  StrCmp ${TEMP1} 0 no4
+    !insertmacro setLanguage "pl"
+    goto end
+    no4:
+
   end:
 
 FunctionEnd
