@@ -182,11 +182,13 @@ public class Store
         //maininterface application
         PluginConcept maininterfacePlugin = new PluginConcept("org.lucane.applications.maininterface", "0.6.3");
         allUsers.addPlugin(maininterfacePlugin);
+		admins.addPlugin(maininterfacePlugin);
         getPluginStore().storePlugin(maininterfacePlugin);
 
 		//quicklaunch application
 		PluginConcept quicklaunchPlugin = new PluginConcept("org.lucane.applications.quicklaunch", "0.6.3");
 		allUsers.addPlugin(quicklaunchPlugin);
+		admins.addPlugin(quicklaunchPlugin);		
 		getPluginStore().storePlugin(quicklaunchPlugin);
         
         //notes application
@@ -201,8 +203,8 @@ public class Store
         PluginConcept passwdchangerPlugin = new PluginConcept("org.lucane.applications.passwdchanger", "0.6.3");
         ServiceConcept passwdchangerService = new ServiceConcept("org.lucane.applications.passwdchanger", false);
         grantedUsers.addPlugin(passwdchangerPlugin);
+		grantedUsers.addService(passwdchangerService);
         admins.addPlugin(passwdchangerPlugin);
-        grantedUsers.addService(passwdchangerService);
         admins.addService(passwdchangerService);
         getPluginStore().storePlugin(passwdchangerPlugin);
         getServiceStore().storeService(passwdchangerService);
@@ -214,7 +216,8 @@ public class Store
        
         //quickmessage application
         PluginConcept quickmessagePlugin = new PluginConcept("org.lucane.applications.quickmessage", "0.6.3");
-        allUsers.addPlugin(quickmessagePlugin);
+		allUsers.addPlugin(quickmessagePlugin);
+		admins.addPlugin(quickmessagePlugin);
         getPluginStore().storePlugin(quickmessagePlugin);
               
         //reunion application
