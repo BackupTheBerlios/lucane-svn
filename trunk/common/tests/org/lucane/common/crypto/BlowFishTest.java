@@ -62,7 +62,7 @@ public class BlowFishTest extends TestCase
 		Assert.assertEquals(passwd, deciphered);
 	}
 	
-	public static Test suite() 
+	public static TestSuite suite() 
 	{
 		TestSuite suite = new TestSuite();
 		suite.addTest(new BlowFishTest("testCipherDecipher"));

@@ -96,6 +96,12 @@ public class PasswdChanger
    */
   public void actionPerformed(ActionEvent ae)
   {
+  	if(txtnew1.getText().length() == 0)
+  	{
+  		DialogBox.info(tr("nullpasswd"));
+		return;
+  	}
+  	
     if(! txtnew1.getText().equals(txtnew2.getText()))
     {
       DialogBox.error(tr("typo"));
