@@ -51,7 +51,7 @@ public class SqlGroupStore extends GroupStore
 					+ "/lib/lucane-server-0.6.3.jar!/"
 					+ "db-sqlstore.xml";
 
-        	layer.createFromXml(dbDescription);
+        	layer.getTableCreator().createFromXml(dbDescription);
         }
     }
     
