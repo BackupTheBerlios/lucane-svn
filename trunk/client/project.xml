@@ -37,6 +37,12 @@
       <artifactId>trayicon</artifactId>
       <version>1.7.9b</version>
     </dependency>
+    <dependency>
+      <groupId>trayicon</groupId>
+      <artifactId>dll</artifactId>
+      <version>1.7.9b</version>
+      <jar>TrayIcon12.dll</jar>
+    </dependency>
     
   </dependencies>
 

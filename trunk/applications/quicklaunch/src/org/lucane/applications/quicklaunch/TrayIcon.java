@@ -1,5 +1,8 @@
 package org.lucane.applications.quicklaunch;
 import javax.swing.*;
+
+import org.lucane.client.widgets.DialogBox;
+
 import com.jeans.trayicon.*;
 
 public class TrayIcon
@@ -38,26 +41,35 @@ public class TrayIcon
 	}
 
 	private void showBalloon(String message, String title, int timeout, int flags)
-	throws Exception
+	throws TrayIconException
 	{
 		this.icon.showBalloon(message, title, timeout, flags);
 	}
 	
 	public void showInfo(String message, String title)
-	throws Exception
 	{
-		showBalloon(message, title, 5000, WindowsTrayIcon.BALLOON_INFO);
+		try {
+			showBalloon(message, title, 5000, WindowsTrayIcon.BALLOON_INFO);
+		} catch (TrayIconException e) {
+			DialogBox.info(message);
+		}
 	}
 	
 	public void showWarning(String message, String title)
-	throws Exception
 	{
-		showBalloon(message, title, 5000, WindowsTrayIcon.BALLOON_WARNING);
+		try {
+			showBalloon(message, title, 5000, WindowsTrayIcon.BALLOON_WARNING);
+		} catch (TrayIconException e) {
+			DialogBox.error(message);
+		}
 	}
 	
 	public void showError(String message, String title)
-	throws Exception
 	{
-		showBalloon(message, title, 10000, WindowsTrayIcon.BALLOON_ERROR);
+		try {
+			showBalloon(message, title, 10000, WindowsTrayIcon.BALLOON_ERROR);
+		} catch (TrayIconException e) {
+			DialogBox.error(message);
+		}
 	}
 }

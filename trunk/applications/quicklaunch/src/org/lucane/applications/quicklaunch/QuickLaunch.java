@@ -124,7 +124,8 @@ public class QuickLaunch
 	menu.addActionListener(this);
 	this.trayIcon.add(menu);
 	
-	this.trayIcon.setVisible(true);;
+	this.trayIcon.setVisible(true);
+	this.trayIcon.showInfo(tr("lucane.is.ready"), "Lucane Groupware");
   }
 
   public void actionPerformed(ActionEvent ae)
