@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Database Connection Pooling</title>
+<link type='text/css' rel='stylesheet' href='../common/style.css' />
+</head>
+<body>
+
+<h1>Setting up database connection pooling</h1>
+
+<h2>What is Connection Pooling ?</h2>
+<p>Opening a connection is a very costly operation. It takes a lot of time, and
+we need to use it often. The idea is to share connections between the different components,
+and let them open, so that we don't wait for a connection to open more than needed.</p>
+<p>Lucane is using <a href="http://jakarta.apache.org/commons/dbcp/">Jakarta-commons' dbcp</a>
+to manage the connection pool.</p>
+
+<h2>How to set up connection pooling ?</h2>
+<p>Connection pooling is always activated, you don't need to add it explicitely.</p>
+<p>The different options are available in etc/server-config.xml, inside the 
+'database' section</p>
+<pre>
+  &lt;pool initialSize="0" maxActive="8" maxIdle="8" minIdle="0" maxWait="-1" /&gt;
+</pre>
+
+<h2>What are the different options ?</h2>
+<p>You can set the pool up to match your needs and resources. The differents attributes 
+for the 'pool' tag are :</p>
+<dl>
+  <dt><b>initialSize</b> (default: 0)</dt>
+  <dd>The initial number of connections that are created when the pool is started.</dd>
+
+  <dt><b>maxActive</b> (default: 8)</dt>
+  <dd>The maximum number of active connections that can be allocated from this pool at 
+  the same time, or zero for no limit.</dd>
+
+  <dt><b>maxIdle</b> (default: 8)</dt>
+  <dd>The maximum number of active connections that can remain idle in the pool, 
+  without extra ones being released, or zero for no limit.</dd>
+
+  <dt><b>minIdle</b> (default: 0)</dt>
+  <dd>The minimum number of active connections that can remain idle in the pool, 
+  without extra ones being created, or zero to create none.</dd>
+  
+  <dt><b>maxWait</b> (default: -1)</dt>
+  <dd>The maximum number of milliseconds that the pool will wait (when there are 
+  no available connections) for a connection to be returned before throwing an 
+  exception, or -1 to wait indefinitely.</dd>
+  
+</dl>
+
+</body>
+</html>
