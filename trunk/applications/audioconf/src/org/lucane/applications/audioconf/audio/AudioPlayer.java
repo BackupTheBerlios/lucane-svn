@@ -21,6 +21,7 @@ package org.lucane.applications.audioconf.audio;
 import java.io.*;
 import javax.sound.sampled.*;
 
+import org.lucane.applications.audioconf.AudioConf;
 import org.xiph.speex.SpeexDecoder;
 
 /**
@@ -35,14 +36,17 @@ public class AudioPlayer implements Runnable
 	private AudioConfig audioConfig;
 	private InputStream source;
 
+	private AudioConf plugin;
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param config the stream configuration
 	 * @param source any input stream containing speex data
 	 */
-	public AudioPlayer(AudioConfig config, InputStream source)
+	public AudioPlayer(AudioConf plugin, AudioConfig config, InputStream source)
 	{
+		this.plugin = plugin;
 		this.audioConfig = config;
 		this.source = source;
 		this.targetFormat = config.createAudioFormat(AudioFormat.Encoding.PCM_SIGNED);
@@ -87,7 +91,7 @@ public class AudioPlayer implements Runnable
 		byte[] pcm = new byte[audioConfig.getPcmBufferSize()];
 		SpeexDecoder decoder = audioConfig.createDecoder();
 		
-		while (read != -1)
+		while (read != -1 && dataLine.isOpen())
 		{
 			try	{
 				read = source.read(speex, 0, speex.length);
@@ -100,23 +104,10 @@ public class AudioPlayer implements Runnable
 					dataLine.write(pcm, 0, length);
 								
 			} catch (Exception e) {
-				//TODO differentiate STOP from other errors
-				e.printStackTrace();
+				plugin.reportPlayerError(e);
 				break;
 			}
 			
 		}
-	}
-
-	/**
-	 * Simple test method
-	 */
-	public static void main(String[] args) throws Exception
-	{
-		File src = new File("test.spx");
-		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND, 3);
-		AudioPlayer ap = new AudioPlayer(config, new FileInputStream(src));
-		new Thread(ap).start();
-		System.out.println("playing...");
 	}
 }

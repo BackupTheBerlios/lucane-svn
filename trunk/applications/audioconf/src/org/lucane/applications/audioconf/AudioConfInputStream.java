@@ -84,13 +84,15 @@ public class AudioConfInputStream extends InputStream
 	
 	
 	private synchronized void readNextBuffer()
+	throws IOException
 	{
 		this.index = 0;
 		try	{
 			this.buffer = (byte[])connection.read();
-		} catch (Exception e)	{
+		} catch (ClassNotFoundException e) {
+			//byte[] should always exist...
 			this.buffer = new byte[0];
-			plugin.reportPlayerError(e);
+			e.printStackTrace();
 		}
 	}
 }

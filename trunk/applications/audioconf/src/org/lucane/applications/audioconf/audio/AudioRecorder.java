@@ -99,6 +99,7 @@ public class AudioRecorder implements Runnable
 			dataLine.start();
 		} catch(LineUnavailableException lue) {
 			lue.printStackTrace();
+			return;
 		}
 		
 		//notify listeners

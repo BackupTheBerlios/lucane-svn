@@ -18,11 +18,13 @@
  */
 package org.lucane.applications.audioconf.gui;
 
+import java.awt.BorderLayout;
 import java.awt.event.*;
 
 import javax.swing.*;
 
 import org.lucane.applications.audioconf.AudioConf;
+import org.lucane.client.Client;
 
 public class Controller
 implements ActionListener, WindowListener
@@ -37,13 +39,25 @@ implements ActionListener, WindowListener
 	
 	public void showController()
 	{
-		controller = new JFrame(plugin.getTitle() + " >> "
-			+ plugin.getFriendName());
+		controller = new JFrame(plugin.getTitle());
 			
-		JButton stop = new JButton("stop");
+		JButton stop = new JButton(plugin.tr("btn.stop"));
 		stop.addActionListener(this);
+		String msg = plugin.tr("msg.nowStreamingWith");
+		msg = msg.replaceAll("%1", plugin.getFriendName());		
+		JLabel label = new JLabel(msg);
+
+		try {
+			label.setIcon(plugin.getImageIcon());
+			stop.setIcon(Client.getIcon("cancel.png"));
+		} catch(Exception e) {
+			//no icons			
+		}
+						
+		controller.getContentPane().setLayout(new BorderLayout());
+		controller.getContentPane().add(label, BorderLayout.CENTER);
+		controller.getContentPane().add(stop, BorderLayout.EAST);
 		
-		controller.getContentPane().add(stop);
 		controller.addWindowListener(this);
 		controller.pack();
 		

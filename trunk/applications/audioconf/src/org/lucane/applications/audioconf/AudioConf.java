@@ -34,6 +34,8 @@ public class AudioConf extends Plugin
 	
 	private Controller controller;
 	
+	private boolean stopped = false;
+	
 	public AudioConf()
 	{
 		//empty constructor for pluginloader
@@ -76,7 +78,10 @@ public class AudioConf extends Plugin
 		try {
 			AudioConfig config = (AudioConfig)this.connection.read();
 			
-			boolean accept = DialogBox.question(getTitle(), "accept from " + friend.getName() + " ?");
+			String msg = tr("msg.acceptFrom");
+			msg = msg.replaceAll("%1", getFriendName());
+			
+			boolean accept = DialogBox.question(getTitle(), msg);
 			this.connection.write(Boolean.valueOf(accept));
 			
 			if(accept)
@@ -95,9 +100,13 @@ public class AudioConf extends Plugin
 			if(accepted.booleanValue())
 				startAll(config);
 			else
-				DialogBox.info("rejected : good bye !");
+			{
+				String msg = tr("msg.rejectedBy");
+				msg = msg.replaceAll("%1", getFriendName());				
+				DialogBox.info(msg);
+			}
 		} catch (Exception e) {
-			DialogBox.info("error in accept : " + e);
+			DialogBox.info(tr("err.accept"));
 			e.printStackTrace();
 		}		
 	}
@@ -112,7 +121,7 @@ public class AudioConf extends Plugin
 	
 	public void startPlayer(AudioConfig config)
 	{
-		player = new AudioPlayer(config, new AudioConfInputStream(this, connection));
+		player = new AudioPlayer(this, config, new AudioConfInputStream(this, connection));
 		Thread thread = new Thread(player);
 		thread.start();
 	}
@@ -146,6 +155,13 @@ public class AudioConf extends Plugin
 	
 	public void stopAndExit()
 	{
+		//avoid infinite loop
+		if(this.stopped)
+			return;		
+		this.stopped = true;
+			
+		Logging.getLogger().info("Stopping AudioConf");
+		
 		recorder.stop();
 		player.stop();
 		controller.hideController();

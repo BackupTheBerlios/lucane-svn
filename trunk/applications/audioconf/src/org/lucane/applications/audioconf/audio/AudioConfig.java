@@ -64,7 +64,14 @@ public class AudioConfig implements Serializable
 	 */
 	public int getFrameRate()
 	{
-		return this.mode * 8000;
+		if(this.mode == NARROWBAND)
+			return 8000;
+		if(this.mode == WIDEBAND)
+			return 16000;
+		if(this.mode == ULTRA_WIDEBAND)
+			return 32000;
+		
+		throw new IllegalStateException("unknown mode: " + this.mode);
 	}	
 	
 	/**
@@ -76,7 +83,7 @@ public class AudioConfig implements Serializable
 	{
 		return this.channels;
 	}
-	
+		
 	public int getQuality()
 	{
 		return this.quality;
@@ -89,7 +96,14 @@ public class AudioConfig implements Serializable
 		
 	public int getPcmBufferSize()
 	{
-		return this.mode * 640;
+		if(this.mode == NARROWBAND)
+			return 640;
+		if(this.mode == WIDEBAND)
+			return 1280;
+		if(this.mode == ULTRA_WIDEBAND)
+			return 2560;
+		
+		throw new IllegalStateException("unknown mode: " + this.mode);
 	}
 	
 	public int getSpeexBufferSize()
