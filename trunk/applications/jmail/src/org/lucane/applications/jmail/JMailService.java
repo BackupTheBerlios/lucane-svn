@@ -80,8 +80,13 @@ extends Service
   	Account a = null;
   	
   	Connection connex = layer.openConnection();  	
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM JMailAccounts WHERE userName='" + user + "'");
+	PreparedStatement select = connex.prepareStatement(
+			"SELECT * FROM JMailAccounts WHERE userName=?");
+	select.setString(1, user);
+	
+	ResultSet rs = select.executeQuery();
+	
+	
 	if(rs.next())
 	{
 		String address = rs.getString(2);
@@ -97,11 +102,9 @@ extends Service
 	}
 	
 	rs.close();
-	stmt.close();
+	select.close();
 	connex.close();
 	
 	return a;
   }
-  
-  
 }

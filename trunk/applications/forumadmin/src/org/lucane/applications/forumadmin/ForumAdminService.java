@@ -29,8 +29,6 @@ public class ForumAdminService
 {
 
   private Connection conn = null;
-  private Statement st = null;
-  private ResultSet res = null;
 
   public ForumAdminService()
   {
@@ -76,7 +74,6 @@ public class ForumAdminService
     try
     {
       conn = parent.getDBLayer().openConnection();
-      st = conn.createStatement();
     }
     catch(Exception e)
     {
@@ -89,12 +86,14 @@ public class ForumAdminService
     try
     {
     	Vector v = new Vector();
-      res = st.executeQuery("SELECT name FROM forum");
+    	PreparedStatement select = conn.prepareStatement("SELECT name FROM forum");
+      ResultSet res = select.executeQuery();
 
       while(res.next())
         v.addElement(res.getString(1));
 
       res.close();
+      select.close();
       sc.write(v);
     }
     catch(Exception e)
@@ -105,10 +104,13 @@ public class ForumAdminService
 
   private void delete(String forum, ObjectConnection sc)
   {
-    try
+  	try
     {
-      st.execute("DELETE FROM forum WHERE name='" + forum + "'");
+  		PreparedStatement delete = conn.prepareStatement("DELETE FROM forum WHERE name= ?");
+  		delete.setString(1, forum);
+  		delete.execute();
       sc.write("OK");
+      delete.close();
     }
     catch(Exception e)
     {
@@ -124,7 +126,11 @@ public class ForumAdminService
 
     try
     {
-      st.execute("INSERT INTO forum VALUES('" + forum + "')");
+    	PreparedStatement insert = conn.prepareStatement(
+    			"INSERT INTO forum VALUES(?)");
+    	insert.setString(1, forum);
+      insert.execute();
+      insert.close();
       sc.write("OK");
     }
     catch(Exception e)
