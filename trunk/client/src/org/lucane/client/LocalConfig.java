@@ -47,7 +47,7 @@ public class LocalConfig
 	 * 
 	 * @param app the application name
 	 */
-	protected LocalConfig(String app)
+	public LocalConfig(String app)
 	{
 		this.app = app;
 		this.path = System.getProperty("user.dir") + '/' + CONFIG_DIRECTORY +
@@ -141,7 +141,7 @@ public class LocalConfig
 	/**
 	 * Save the localconfig to a file
 	 */
-	protected void save()	
+	public void save()	
 	throws IOException
 	{
 		this.properties.store(new FileOutputStream(this.path), this.app);

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-calendarpref</id>
+  <name>Lucane Groupware - Calendar Preferences</name>
+  <package>org.lucane.applications.calendarpref</package>
+
+  <shortDescription>Lucane Calendar Preferences</shortDescription>
+
+</project>

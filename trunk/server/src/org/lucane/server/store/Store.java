@@ -261,6 +261,11 @@ public class Store
 		getPluginStore().storePlugin(calendarPlugin);
 		getServiceStore().storeService(calendarService);
 		
+		//calendarprefs application
+		PluginConcept calendarprefsPlugin = new PluginConcept("org.lucane.applications.calendarprefs", "0.7");
+		allUsers.addPlugin(calendarprefsPlugin);
+		getPluginStore().storePlugin(calendarprefsPlugin);
+
 		//reminder application
 		PluginConcept reminderPlugin = new PluginConcept("org.lucane.applications.reminder", "0.7");
 		ServiceConcept reminderService = new ServiceConcept("org.lucane.applications.reminder", false);
