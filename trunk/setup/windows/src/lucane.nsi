@@ -64,8 +64,8 @@ SetCompressor lzma
 
 # MUI Settings
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Header\orange-NSIS.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Header\orange-uninstall-NSIS.bmp"
+!define MUI_HEADERIMAGE_BITMAP "trunk\setup\windows\resources\install-small.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "trunk\setup\windows\resources\uninstall-small.bmp"
 !define MUI_WELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\install-big.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\uninstall-big.bmp"
 !define MUI_ABORTWARNING
