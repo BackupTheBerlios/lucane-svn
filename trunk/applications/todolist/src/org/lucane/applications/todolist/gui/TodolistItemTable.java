@@ -19,6 +19,8 @@
 
 package org.lucane.applications.todolist.gui;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,6 +32,7 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.lucane.applications.todolist.TodolistItem;
@@ -39,6 +42,8 @@ public class TodolistItemTable extends JTable {
 	
 	public TodolistItemTable() {
 		super();
+
+		setDefaultRenderer(String.class, new ColoredCellRenderer());
 		
 		setModel(new TodolistItemTableModel());
 		setSelectionModel(new DefaultListSelectionModel());
@@ -217,5 +222,35 @@ class TodolistItemsSorter implements Comparator {
 				return direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
 		}
 		return 0;
+	}
+}
+
+class ColoredCellRenderer extends DefaultTableCellRenderer {
+	
+	public Component getTableCellRendererComponent(JTable table, Object value,
+			boolean isSelected, boolean hasFocus, int row, int column) {
+		Component cmp = super.getTableCellRendererComponent(table, value, isSelected,
+				hasFocus, row, column);
+		TodolistItem tli = (TodolistItem) ((TodolistItemTableModel)table.getModel()).getValueAt(row);
+		if (!tli.isCompleted()) {
+			switch (tli.getPriority()) {
+				case TodolistItem.PRIORITY_LOW :
+					cmp.setBackground(new Color(223, 255, 223));
+					break;
+				case TodolistItem.PRIORITY_MEDIUM :
+					cmp.setBackground(new Color(255, 255, 223));
+					break;
+				case TodolistItem.PRIORITY_HIGH :
+					cmp.setBackground(new Color(255, 223, 223));
+					break;
+				default :
+					cmp.setBackground(Color.white);
+					break;
+			}
+		} else {
+			cmp.setBackground(new Color(223, 223, 223));
+		}
+		return cmp;
+		
 	}
 }
