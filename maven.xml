@@ -1,16 +1,17 @@
 <project
-  default="deploy-all"
+  default="mkdist-lucane"
   xmlns:j="jelly:core"
   xmlns:maven="jelly:maven">
 
 
   <goal
-    name="clean-all"
-    description="Clean all">
+    name="clean-lucane"
+    description="Clean lucane">
                                                                                           
     <maven:reactor
       basedir="${basedir}"
       includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
       goals="clean"
       banner="Cleaning"
       ignoreFailures="false"
@@ -18,12 +19,13 @@
   </goal>
 
   <goal 
-    name="build-all"
+    name="build-lucane"
     description="Build lucane and applications">
 
     <maven:reactor
       basedir="${basedir}"
       includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
       goals="jar:install"
       banner="Building"
       ignoreFailures="false"
@@ -31,15 +33,15 @@
   </goal>
 
   <goal
-    name="deploy-all"
-    description="Deploy lucane and applications">
+    name="mkdist-lucane"
+    description="Create a distribution">
     
     <maven:reactor
       basedir="${basedir}"
       includes="**/project.xml"
-      excludes="project.xml"
-      goals="deploy"
-      banner="Deploying"
+      excludes="project.xml,applications/project.xml"
+      goals="mkdist"
+      banner="Making dist: "
       ignoreFailures="false"
     />
   </goal>
