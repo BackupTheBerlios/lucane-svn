@@ -23,14 +23,19 @@ import java.io.Serializable;
 public class Account implements Serializable
 {
 	public String user;
-	public String address;
-	public String type;
-	public String inHost;
-	public int inPort;
-	public String outHost;
-	public int outPort;
-	public String login;
-	public String password;
+	public String address = "";
+	public String type = "imap";
+	public String inHost = "";
+	public int inPort = 143;
+	public String outHost = "";
+	public int outPort = 25;
+	public String login = "";
+	public String password = "";
+	
+	public Account(String user)
+	{
+		this.user = user;
+	}
 	
 	public Account(String user, String address, String type, String inHost, int inPort, String outHost, int outPort,
 			String login, String password)

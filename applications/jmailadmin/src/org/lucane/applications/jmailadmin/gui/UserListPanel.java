@@ -28,10 +28,11 @@ public class UserListPanel extends JPanel
 {
 	private JList list;
 	
-	public UserListPanel(JMailAdminPlugin plugin)
+	public UserListPanel(JMailAdminPlugin plugin, MainFrame listener)
 	{
 		super(new BorderLayout());
 		list = new JList(plugin.getUsers().toArray());
+		list.addListSelectionListener(listener);
 		
 		add(new JScrollPane(list), BorderLayout.CENTER);
 	}

@@ -19,19 +19,50 @@
 package org.lucane.applications.jmailadmin.gui;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
 import org.lucane.applications.jmailadmin.*;
+import org.lucane.common.concepts.UserConcept;
 
 public class MainFrame extends JFrame
+implements ActionListener, ListSelectionListener
 {
+	private JMailAdminPlugin plugin;
+	private AccountPanel account;
+	
 	public MainFrame(JMailAdminPlugin plugin)
-	{
+	{		
 		super(plugin.getTitle());
+	
+		this.plugin = plugin;	
+		this.account = new AccountPanel(plugin);
 		
 		getContentPane().setLayout(new BorderLayout());
-		getContentPane().add(new UserListPanel(plugin), BorderLayout.WEST);
-		getContentPane().add(new AccountPanel(plugin), BorderLayout.CENTER);
+		getContentPane().add(new UserListPanel(plugin, this), BorderLayout.WEST);
+		getContentPane().add(this.account, BorderLayout.CENTER);
+		getContentPane().add(new ButtonPanel(plugin, this), BorderLayout.SOUTH);
 		setSize(500, 250);
+	}
+
+	public void actionPerformed(ActionEvent ae)
+	{
+		JButton src = (JButton)ae.getSource();
+		if(src.getText().equals(plugin.tr("btn.save")))
+			plugin.storeAccount(this.account.getAccount());
+		else if(src.getText().equals(plugin.tr("btn.close")))
+		{
+			plugin.exit();
+			this.dispose();
+		}		
+	}
+
+	public void valueChanged(ListSelectionEvent lse)
+	{
+		JList src = (JList)lse.getSource();		
+		UserConcept user = (UserConcept)src.getSelectedValue();
+		if(user != null)
+			this.account.setAccount(plugin.getAccount(user.getName()));
 	}	
 }

@@ -60,8 +60,7 @@ public class AccountPanel extends JPanel
 		this.login = new JTextField();
 		this.password = new JPasswordField();
 		
-		JPanel labels = new JPanel(new GridLayout(9, 1));
-		labels.add(new JLabel(tr("user")));
+		JPanel labels = new JPanel(new GridLayout(8, 1));
 		labels.add(new JLabel(tr("address")));
 		labels.add(new JLabel(tr("type")));
 		labels.add(new JLabel(tr("inHost")));

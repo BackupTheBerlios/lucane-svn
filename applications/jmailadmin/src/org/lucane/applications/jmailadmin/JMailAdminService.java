@@ -86,7 +86,7 @@ extends Service
 
   	Connection connex = layer.openConnection();  	
 	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM JMailAccounts WHERE user='" + user + "'");
+	ResultSet rs = stmt.executeQuery("SELECT * FROM JMailAccounts WHERE userName='" + user + "'");
 	if(rs.next())
 	{
 		user = rs.getString(1);
@@ -106,6 +106,9 @@ extends Service
 	stmt.close();
 	connex.close();
 	
+	if(a == null)
+		a = new Account(user);
+	
 	return a;
   }
   
@@ -116,7 +119,7 @@ extends Service
   	Statement stmt = connex.createStatement();
   	
   	try {
-  		stmt.execute("DELETE FROM JMailAccounts WHERE user = "+ "'" + a.user + "'");
+  		stmt.execute("DELETE FROM JMailAccounts WHERE userName = "+ "'" + a.user + "'");
   	} catch(Exception e) {
   		//no such account yet
   	}
