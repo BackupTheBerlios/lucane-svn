@@ -1,4 +1,6 @@
 package org.lucane.applications.quicklaunch;
+import java.awt.event.*;
+
 import javax.swing.*;
 
 import org.lucane.client.widgets.DialogBox;
@@ -20,9 +22,14 @@ public class TrayIcon
 		
 		this.icon = new WindowsTrayIcon(icon.getImage(), height, width);
 		this.icon.setToolTipText(tooltip);
-		
+				
 		popup = new SwingTrayPopup();
 		popup.setTrayIcon(this.icon);	
+	}
+	
+	public void addMouseListener(MouseListener ml)
+	{
+		this.icon.addMouseListener(ml);
 	}
 	
 	public void add(JMenuItem item)

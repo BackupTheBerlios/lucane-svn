@@ -32,7 +32,7 @@ import javax.swing.*;
 
 public class QuickLaunch
   extends StandalonePlugin
-  implements ActionListener
+  implements ActionListener, MouseListener
 {
 	private static final String MAIN_INTERFACE = "org.lucane.applications.maininterface";
 	
@@ -64,7 +64,8 @@ public class QuickLaunch
   public void start()
   { 	
   	try {  		
-	  	this.trayIcon = new TrayIcon(this.getImageIcon(), this.getTitle());
+	  	this.trayIcon = new TrayIcon(this.getImageIcon(), 
+	  			Client.getInstance().getMyInfos().getName() + " - Lucane Groupware");
 	} catch(Throwable t) {
 		//no user message if we aren't on windows
 		if(System.getProperty("os.name").startsWith("Win"))
@@ -79,22 +80,39 @@ public class QuickLaunch
 	
 	addMenuToTray();
 	
+	this.trayIcon.addMouseListener(this);	
 	this.trayIcon.setVisible(true);
 	this.trayIcon.showInfo(tr("lucane.is.ready"), "Lucane Groupware");
   }
 
   public void actionPerformed(ActionEvent ae)
   {
-  	JMenuItem src = (JMenuItem)ae.getSource();
-  	
-  	if(src.getName().equals("exit"))
+  	if(ae.getSource() instanceof JMenuItem)
   	{
-  		cleanExit();
-  		return;
-  	}
+  		JMenuItem src = (JMenuItem)ae.getSource();
   	
-  	runPlugin(src.getName());
+  		if(src.getName().equals("exit"))
+  		{
+  			cleanExit();
+  			return;
+  		}
+  	
+  		runPlugin(src.getName());
+  	}
+  	else
+  		runPlugin(MAIN_INTERFACE);
   }
+  
+  public void mouseClicked(MouseEvent e) {}
+  public void mouseEntered(MouseEvent e) {}
+  public void mouseExited(MouseEvent e) {}
+  public void mouseReleased(MouseEvent e) {}
+  public void mousePressed(MouseEvent e) 
+  {
+  	if(e.getClickCount() == 2)
+  		runPlugin(MAIN_INTERFACE);
+  }
+  
   
   private void addMenuToTray()
   {
@@ -153,7 +171,7 @@ public class QuickLaunch
 
   private void runPlugin(String pluginName)
   {
-  	ConnectInfo[] friends;  	
+  	ConnectInfo[] friends = null;  	
   	Plugin plugin = PluginLoader.getInstance().getPlugin(pluginName);
   	
   	// get users
@@ -163,13 +181,17 @@ public class QuickLaunch
   	{	
   		ListBox userList = new ListBox(null, plugin.getTitle(), tr("msg.selectUsers"), Client.getInstance().getUserList());
   		Object[] users = userList.selectItems();
-  		friends = new ConnectInfo[users.length];
-  		for(int i=0;i<friends.length;i++)
-  			friends[i] = Communicator.getInstance().getConnectInfo((String)users[i]);
+  		if(users != null)
+  		{	
+  			friends = new ConnectInfo[users.length];
+  			for(int i=0;i<friends.length;i++)
+  				friends[i] = Communicator.getInstance().getConnectInfo((String)users[i]);
+  		}
   	}
   	
-  	// run the plugin
-  	PluginLoader.getInstance().run(pluginName, friends);  	
+  	// run the plugin if the user didn't click on cancel
+  	if(friends != null)
+  		PluginLoader.getInstance().run(pluginName, friends);  	
   }
   
   private void cleanExit()
@@ -180,4 +202,5 @@ public class QuickLaunch
     while(true)
       exit();      
   }
+
 }

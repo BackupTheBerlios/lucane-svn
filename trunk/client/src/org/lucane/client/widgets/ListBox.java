@@ -67,7 +67,6 @@ public class ListBox  extends JDialog
     
     btOK.addActionListener(this);
     btCancel.addActionListener(this);
-    lstSelection.getSelectionModel().setSelectionMode(0);
     lstSelection.addMouseListener(this);
     
     this.setSize(400, 200);
@@ -87,6 +86,7 @@ public class ListBox  extends JDialog
     if(list.size() == 0)
       return -1;
 
+    lstSelection.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);    
     this.show();
 
     if(accept)
@@ -105,12 +105,13 @@ public class ListBox  extends JDialog
   	if(list.size() == 0)
   		return new Object[0];
 
+  	lstSelection.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
   	this.show();
 
   	if(accept)
   		return lstSelection.getSelectedValues();
   	else
-  		return new Object[0];  	
+  		return null;  	
   }
 
   /**
