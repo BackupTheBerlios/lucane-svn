@@ -34,7 +34,7 @@ import org.lucane.common.Logging;
  */
 public class LocalConfig
 {
-	protected static final String CONFIG_DIRECTORY = "etc/localconfig/"; 
+	static final String CONFIG_DIRECTORY = "etc/localconfig/"; 
 
 	//-- attributes
 	private String app;
@@ -78,6 +78,17 @@ public class LocalConfig
 	}
 	
 	/**
+	 * Set a value in the localconfig
+	 * 
+	 * @param key the key
+	 * @param value the value
+	 */
+	public void set(String key, int value)
+	{
+		set(key, String.valueOf(value));	
+	}	
+	
+	/**
 	 * Get a value from the localconfig
 	 * 
 	 * @param key the key
@@ -86,6 +97,17 @@ public class LocalConfig
 	public String get(String key)
 	{
 		return this.properties.getProperty(key);
+	}
+	
+	/**
+	 * Get a value from the localconfig
+	 * 
+	 * @param key the key
+	 * @return the value
+	 */
+	public int getInt(String key)
+	{
+		return Integer.parseInt(get(key));
 	}
 	
 	/**
