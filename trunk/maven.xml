@@ -44,6 +44,10 @@
       banner="Making dist: "
       ignoreFailures="false"
     />
+
+    <copy todir="../dist/doc">
+      <fileset dir="doc" />
+    </copy>
   </goal>
 
   <goal
