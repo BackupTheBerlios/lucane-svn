@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-forum</id>
+  <name>Lucane Groupware - Forum</name>
+  <package>org.lucane.applications.forum</package>
+
+  <shortDescription>Lucane Forum</shortDescription>
+
+</project>

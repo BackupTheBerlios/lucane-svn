@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.calendar.CalendarPlugin
+Service-Class: org.lucane.applications.calendar.CalendarService

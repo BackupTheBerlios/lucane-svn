@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-kick</id>
+  <name>Lucane Groupware - Kick</name>
+  <package>org.lucane.applications.kick</package>
+
+  <shortDescription>Lucane Kick</shortDescription>
+
+</project>

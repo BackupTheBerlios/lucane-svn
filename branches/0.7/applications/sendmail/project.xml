@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-sendmail</id>
+  <name>Lucane Groupware - SendMail</name>
+  <package>org.lucane.applications.sendmail</package>
+
+  <shortDescription>Lucane SendMail</shortDescription>
+  
+  <dependencies>
+    <dependency>
+      <groupId>sun</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>sun</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+  </dependencies>
+
+</project>

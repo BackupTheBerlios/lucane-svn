@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<help>
+
+<section name="utilisation">
+
+Cette application est l'interface par défaut du client eQuinoxe.
+C'est à partir d'elle que vous allez lancer les différentes applications.
+
+Sur la gauche vous avez la liste des personnes connectés. Cette liste permet la sélection multiple. 
+
+<section name="lancement d'applications">
+Il existe plusieurs types d'applications. Certaines fonctionnent simplement en <info text="Il n'y a alors qu'un seul client : vous">mode client-serveur</info>, d'autres mettent en jeu <info text="parfois 2, parfois plus, selon le cas">plusieurs clients</info>. 
+Dans ce dernier cas, il faut sélectionner les utilisateurs concernés avant de lancer l'application. Ne vous en faites pas, les applications vous préviendront si vous oubliez de le faire.
+
+Vous pouvez lancer les applications de deux manières : 
+<section name="a partir des boutons">
+A gauche de l'interface se trouvent un certains nombres de boutons. Ils correspondent aux applications que vous avez utilisé le plus souvent. C'est une sorte de raccourci bien pratique pour lancer vos applications préférées.
+</section>
+<section name="a partir du menu">
+Toutes les applications lançables sont rangées dans le menu <i>Applications</i>. Il contient une liste de catégories dans laquelle sont rangées vos applications.
+</section>
+
+</section>
+</section>
+
+</help>

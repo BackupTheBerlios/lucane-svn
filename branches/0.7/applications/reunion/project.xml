@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-reunion</id>
+  <name>Lucane Groupware - Reunion</name>
+  <package>org.lucane.applications.reunion</package>
+
+  <shortDescription>Lucane Reunion</shortDescription>
+
+</project>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>lucane-server</id>
+  <name>Lucane Groupware - Server</name>
+  <package>org.lucane.server</package>
+
+  <shortDescription>Lucane server</shortDescription>
+
+  <dependencies>
+    <dependency>
+      <groupId>lucane</groupId>
+      <artifactId>lucane-common</artifactId>
+      <version>0.7</version>
+    </dependency>
+
+    <!-- javamail for sendmail service -->
+    <dependency>
+      <groupId>sun</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>sun</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
+    <!-- jdbc -->
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.7.2-rc1</version>
+    </dependency>
+    <dependency>
+      <groupId>mm-mysql</groupId>
+      <artifactId>mm-mysql</artifactId>
+      <version>2.0.13-bin</version>
+    </dependency>
+    <dependency>
+      <groupId>postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>7.4.1-jdbc3</version>
+    </dependency>
+                              
+  </dependencies>
+                                
+
+</project>

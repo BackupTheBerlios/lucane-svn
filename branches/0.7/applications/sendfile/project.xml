@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-sendfile</id>
+  <name>Lucane Groupware - SendFile</name>
+  <package>org.lucane.applications.sendfile</package>
+
+  <shortDescription>Lucane SendFile</shortDescription>
+
+</project>

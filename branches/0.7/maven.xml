@@ -1,0 +1,110 @@
+<project
+  default="mkdist-lucane"
+  xmlns:j="jelly:core"
+  xmlns:maven="jelly:maven">
+
+  <goal
+    name="clean-lucane"
+    description="Clean lucane">
+                                                                                          
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
+      goals="clean"
+      banner="Cleaning"
+      ignoreFailures="false"
+    />
+  </goal>
+
+  <goal 
+    name="build-lucane"
+    description="Build lucane and applications">
+
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
+      goals="jar,jar:install"
+      banner="Building"
+      ignoreFailures="false"
+      />
+  </goal>
+
+  <goal
+    name="mkdist-lucane"
+    description="Create a distribution"
+    prereqs="build-lucane">
+    
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
+      goals="mkdist"
+      banner="Making dist: "
+      ignoreFailures="false"
+    />
+
+    <copy todir="../dist/doc">
+      <fileset dir="doc" />
+    </copy>
+  </goal>
+
+  <goal
+    name="mkwinsetup-lucane"
+    description="Create a windows installer"
+    prereqs="mkdist-lucane">
+    
+    <echo message="Creating the windows installer:"/>
+
+    <echo message="Checking if nsis is installed..."/>
+
+    <condition property="nsis.present">
+      <available file="${nsis.path}" />
+    </condition>
+    <fail unless="nsis.present">
+    NSIS compiler not found at ${nsis.path}. Please correct the nsis.path property in project.properties and/or download NSIS from http://nsis.sourceforge.net .
+    </fail>
+
+    <echo message="OK"/>
+
+    <echo message="Compiling the NSIS script..."/>
+
+    <mkdir dir="../winsetup"/>
+
+    <exec executable="${nsis.path}">
+
+      <arg line="setup\windows\src\lucane.nsi"/>
+
+      <env key="_PRODUCT_NAME" value="${pom.groupId}"/>
+      <env key="_PRODUCT_VERSION" value="${pom.currentVersion}"/>
+      <env key="_PRODUCT_PUBLISHER" value="${pom.organization.name}"/>
+      <env key="_WEB_SITE_URL" value="${pom.url}"/>
+      <env key="_TRACKER_URL" value="http://developer.berlios.de/bugs/?group_id=1547"/>
+      <env key="_FEATURE_REQUEST_URL" value="http://developer.berlios.de/feature/?group_id=1547"/>
+      <env key="_FORUM_URL" value="http://lucane.org/forum/"/>
+
+      <env key="_BASE_DIR" value="../../../"/>
+      <env key="_NSIS_FILE_DIR" value="setup\windows\src"/>
+      <env key="_DIST_DIR" value="../dist"/>
+      <env key="_OUT_DIR" value="../winsetup"/>
+      <env key="_LICENCE_FILE" value="LICENSE.txt"/>
+
+    </exec>
+
+  </goal>
+
+  <goal
+    name="site-lucane">
+
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
+      goals="site"
+      banner="Creating site: "
+      ignoreFailures="false"
+    />
+  </goal>
+
+</project>
