@@ -2,10 +2,13 @@
 !define PRODUCT_NAME $%_PRODUCT_NAME%
 !define PRODUCT_VERSION $%_PRODUCT_VERSION%
 !define PRODUCT_PUBLISHER "$%_PRODUCT_PUBLISHER%"
-!define PRODUCT_WEB_SITE $%_PRODUCT_WEB_SITE%
+!define WEB_SITE_URL $%_WEB_SITE_URL%
+!define TRACKER_URL $%_TRACKER_URL%
+!define FEATURE_REQUEST_URL $%_FEATURE_REQUEST_URL%
+!define FORUM_URL $%_FORUM_URL%
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
-!define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
+#!define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
 
 !define BASE_DIR $%_BASE_DIR%
 !define NSIS_FILE_DIR $%_NSIS_FILE_DIR%
@@ -59,7 +62,6 @@ SetCompressor lzma
     Delete $R0
 !macroend
 
-
 # MUI Settings
 !define MUI_HEADERIMAGE
 !define MUI_ABORTWARNING
@@ -78,14 +80,15 @@ SetCompressor lzma
 # Shortcuts selection
 Page custom SetShortcuts ValidateShortcuts
 # Start menu page
-var ICONS_GROUP
+#var ICONS_GROUP
+!define ICONS_GROUP ${PRODUCT_NAME}
 # TODO fix the no startmenu shortcuts bug
-!define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}"
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
-!insertmacro MUI_PAGE_STARTMENU "Startmenu" $ICONS_GROUP
+#!define MUI_STARTMENUPAGE_NODISABLE
+#!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}"
+#!define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
+#!define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
+#!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
+#!insertmacro MUI_PAGE_STARTMENU "Startmenu" ${ICONS_GROUP}
 # Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 # Language selection
@@ -142,8 +145,8 @@ Section "Client" CLIENT
   File /r "${DIST_DIR}\client\*"
 SectionEnd
   Section "-Start menu icon" CLIENT_STARTMENU
-    CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-    CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Client.lnk" "$INSTDIR\client\client.bat" ""
+    CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Client.lnk" "$INSTDIR\client\client.bat" ""
   SectionEnd
   Section "-Quick launch icon" CLIENT_QUICKLAUNCH
     CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" ""
@@ -158,8 +161,8 @@ Section "Server" SERVER
   File /r "${DIST_DIR}\server\*"
 SectionEnd
   Section "-Start menu icon" SERVER_STARTMENU
-    CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-    CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Server.lnk" "$INSTDIR\server\server.bat"
+    CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Server.lnk" "$INSTDIR\server\server.bat"
   SectionEnd
 
 Section "Proxy" PROXY
@@ -168,15 +171,22 @@ Section "Proxy" PROXY
   File /r "${DIST_DIR}\proxy\*"
 SectionEnd
   Section "-Start menu icon" PROXY_STARTMENU
-    CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-    CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Proxy.lnk" "$INSTDIR\proxy\proxy.bat"
+    CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Proxy.lnk" "$INSTDIR\proxy\proxy.bat"
   SectionEnd
 
 Section "-AdditionalIcons" ADDITIONAL_ICONS
-  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" "${PRODUCT_WEB_SITE}"
-  CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\${PRODUCT_NAME}'s website.lnk" "$INSTDIR\${PRODUCT_NAME}.url"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  WriteIniStr "$INSTDIR\Web site.url" "InternetShortcut" "URL" "${WEB_SITE_URL}"
+  WriteIniStr "$INSTDIR\Tracker.url" "InternetShortcut" "URL" "${TRACKER_URL}"
+  WriteIniStr "$INSTDIR\Feature request.url" "InternetShortcut" "URL" "${FEATURE_REQUEST_URL}"
+  WriteIniStr "$INSTDIR\Forum.url" "InternetShortcut" "URL" "${FORUM_URL}"
+  CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
+  CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}\${PRODUCT_NAME} on the web"
+  CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\${PRODUCT_NAME} on the web\Website.lnk" "$INSTDIR\Web site.url"
+  CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\${PRODUCT_NAME} on the web\Tracker.lnk" "$INSTDIR\Tracker.url"
+  CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\${PRODUCT_NAME} on the web\Feature request.lnk" "$INSTDIR\Feature request.url"
+  CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\${PRODUCT_NAME} on the web\Forum.lnk" "$INSTDIR\Forum.url"
+  CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Uninstall.lnk" "$INSTDIR\uninst.exe"
 SectionEnd
 
 Section "-Shortcuts" shortcuts
@@ -198,7 +208,7 @@ Section "-Post"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "${PRODUCT_STARTMENU_REGVAL}" "$ICONS_GROUP"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "${PRODUCT_STARTMENU_REGVAL}" "${ICONS_GROUP}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
@@ -334,12 +344,12 @@ FunctionEnd
 #FunctionEnd
 
 Section Uninstall
-  ReadRegStr $ICONS_GROUP ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "${PRODUCT_STARTMENU_REGVAL}"
+#  ReadRegStr ${ICONS_GROUP} ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "${PRODUCT_STARTMENU_REGVAL}"
 
   Delete "$DESKTOP\${PRODUCT_NAME} client.lnk"
   Delete "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk"
 
-  RMDir /r "$SMPROGRAMS\$ICONS_GROUP"
+  RMDir /r "$SMPROGRAMS\${ICONS_GROUP}"
   RMDir /r "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
