@@ -9,7 +9,7 @@
   <server host="localhost" port="9115" />
 
   <!-- language used (if available) -->
-  <!-- supported languages : en, fr, nl -->
+  <!-- supported languages : en, fr, nl, pl, es -->
   <language value="en" />
   
   <!-- look and feel -->
