@@ -16,11 +16,13 @@ public class MonthExporter
 	private CalendarPlugin plugin;
 	private Calendar calendar;
 	private Document document;
+	private boolean sundayFirst = false;
 	
 	public MonthExporter(CalendarPlugin plugin, Calendar calendar)
 	{
 		this.plugin = plugin;
 		this.calendar = calendar;
+		sundayFirst = plugin.getLocalConfig().getInt("sundayFirst", 0) == 1;
 	}
 	
 	public void exportMonth(String filename)
@@ -78,8 +80,12 @@ public class MonthExporter
 		table.getDefaultCell().setBackgroundColor(Color.LIGHT_GRAY);
 		table.setWidthPercentage(100f);		
 
-		for(int i=1;i<=7;i++)		
+		if(sundayFirst)
+			table.addCell(plugin.tr("day.7"));
+		for(int i=1;i<=6;i++)
 			table.addCell(plugin.tr("day." + i));
+		if(!sundayFirst)
+			table.addCell(plugin.tr("day.7"));
 	}
 	
 	private void addContent(PdfPTable table, ArrayList[] events)
@@ -153,7 +159,7 @@ public class MonthExporter
 			Event event = (Event)events.next();
 			cal.setTimeInMillis(event.getStartTime());
 			int day = cal.get(Calendar.DAY_OF_MONTH);
-			int index = this.getFirstDayOfDisplayedMonth() + day;
+			int index = this.getFirstDayOfDisplayedMonth() + day-1;
 			
 			list[index].add(event);
 		}
@@ -203,6 +209,8 @@ public class MonthExporter
 		//as day labels don't respect locales, we have to enforce monday
 		//instead of getFirstDayOfWeek() here to stay consistent
 		int res = c.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
+		if(sundayFirst)
+			res = c.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY;		
 		
 		return res < 0 ? 6 : res;
 	}

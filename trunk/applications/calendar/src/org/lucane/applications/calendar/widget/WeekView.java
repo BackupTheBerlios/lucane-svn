@@ -45,6 +45,8 @@ public class WeekView extends JPanel
 	private Color workedHour = new Color(255, 255, 222);
 	private int workStart = 8;
 	private int workEnd = 17;
+	
+	private boolean sundayFirst = false;
 
 	/**
 	 * Constructor
@@ -60,6 +62,7 @@ public class WeekView extends JPanel
 		workedHour = plugin.getColor("worked", workedHour);
 		workStart = plugin.getLocalConfig().getInt("workStart", workStart);
 		workEnd = plugin.getLocalConfig().getInt("workEnd", workEnd);
+		sundayFirst = plugin.getLocalConfig().getInt("sundayFirst", 0) == 1;
 		
 		this.headerPanel = new JPanel(new GridLayout(1, 7));
 		this.contentPanel = new JPanel(new GridLayout(1, 7));
@@ -68,8 +71,12 @@ public class WeekView extends JPanel
 		this.add(contentScrollPane, BorderLayout.CENTER);
 		
 		headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 16));
-		for(int i=1;i<=7;i++)
+		if(sundayFirst)
+			headerPanel.add(new DayHeader(plugin.tr("day.7")));
+		for(int i=1;i<=6;i++)
 			headerPanel.add(new DayHeader(plugin.tr("day."+i)));
+		if(!sundayFirst)
+			headerPanel.add(new DayHeader(plugin.tr("day.7")));
 				
 		for(int i=0;i<7;i++)
 		{
@@ -128,7 +135,9 @@ public class WeekView extends JPanel
 
 	public void addEvent(int dayOfWeek, BasicEvent event)
 	{
-		getDayView(dayOfWeek-1).addEvent(event);
+		if(!sundayFirst)
+			dayOfWeek--;
+		getDayView(dayOfWeek).addEvent(event);
 	}
 	
 	/**

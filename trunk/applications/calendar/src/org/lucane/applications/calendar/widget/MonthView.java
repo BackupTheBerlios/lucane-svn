@@ -48,6 +48,7 @@ implements MouseListener
 	private int displayedMonth;
 	private int displayedYear;
 	
+	private boolean sundayFirst = false;
 
 	/**
 	 * Constructor
@@ -63,9 +64,14 @@ implements MouseListener
 		this.contentPanel = new JPanel(new GridLayout(6, 7));
 		this.add(headerPanel, BorderLayout.NORTH);
 		this.add(contentPanel, BorderLayout.CENTER);
-		
-		for(int i=1;i<=7;i++)
+		sundayFirst = plugin.getLocalConfig().getInt("sundayFirst", 0) == 1;
+
+		if(sundayFirst)
+			headerPanel.add(new DayHeader(plugin.tr("day.7")));
+		for(int i=1;i<=6;i++)
 			headerPanel.add(new DayHeader(plugin.tr("day."+i)));
+		if(!sundayFirst)
+			headerPanel.add(new DayHeader(plugin.tr("day.7")));
 				
 		for(int i=0;i<42;i++)
 		{
@@ -163,6 +169,8 @@ implements MouseListener
 		//as day labels don't respect locales, we have to enforce monday
 		//instead of getFirstDayOfWeek() here to stay consistent
 		int res = c.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
+		if(sundayFirst)
+			res = c.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY;
 		
 		return res < 0 ? 6 : res;
 	}
