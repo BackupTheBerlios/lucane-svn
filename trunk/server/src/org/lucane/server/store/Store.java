@@ -229,6 +229,16 @@ public class Store
         PluginConcept sendfilePlugin = new PluginConcept("org.lucane.applications.sendfile", "0.7-preview");
         allUsers.addPlugin(sendfilePlugin);
         getPluginStore().storePlugin(sendfilePlugin);
+
+		//audioconf application
+		PluginConcept audioconfPlugin = new PluginConcept("org.lucane.applications.audioconf", "0.7-preview");
+		allUsers.addPlugin(audioconfPlugin);
+		getPluginStore().storePlugin(audioconfPlugin);
+
+		//kick application
+		PluginConcept kickPlugin = new PluginConcept("org.lucane.applications.kick", "0.7-preview");
+		admins.addPlugin(audioconfPlugin);
+		getPluginStore().storePlugin(audioconfPlugin);
                 
         //sendmail application
         ServiceConcept sendmailService = new ServiceConcept("org.lucane.applications.sendmail", false);
