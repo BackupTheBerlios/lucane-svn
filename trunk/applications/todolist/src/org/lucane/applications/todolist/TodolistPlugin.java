@@ -26,6 +26,8 @@ import org.lucane.common.ConnectInfo;
 
 public class TodolistPlugin extends StandalonePlugin {
 	
+	private MainFrame frame;
+	
 	public TodolistPlugin() {
 		this.starter = true;
 	}
@@ -35,6 +37,14 @@ public class TodolistPlugin extends StandalonePlugin {
 	}
 
 	public void start() {
-		new MainFrame(this).show();
+		frame = new MainFrame(this);
+		frame.restoreWidgetState();
+		frame.show();
 	}
+	
+	public void exit()
+	{
+		frame.saveWidgetState();
+		super.exit();
+	}	
 }

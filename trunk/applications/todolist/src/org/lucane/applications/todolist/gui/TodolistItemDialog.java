@@ -19,9 +19,11 @@
 
 package org.lucane.applications.todolist.gui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,16 +31,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.client.Plugin;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
-public class TodolistItemDialog extends JDialog {
+public class TodolistItemDialog extends ManagedWindow {
 	private JTextField jtfName;
 	private HTMLEditor htmledComment;
 	//private JTextField jtfPriority;
@@ -56,6 +58,7 @@ public class TodolistItemDialog extends JDialog {
 	private boolean modify = false;
 	
 	public TodolistItemDialog (Plugin plugin, MainFrame mainFrame, int parentTodolistId) {
+		super(plugin, "");
 		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		this.parentTodolistId = parentTodolistId;
@@ -63,6 +66,7 @@ public class TodolistItemDialog extends JDialog {
 	}
 	
 	public TodolistItemDialog (Plugin plugin, MainFrame mainFrame, TodolistItem todolistItem) {
+		super(plugin, "");
 		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		this.todolistItem = todolistItem;
@@ -76,8 +80,10 @@ public class TodolistItemDialog extends JDialog {
 		} else {
 			setTitle(plugin.tr("TodoListItemDialog.creationTitle"));
 		}
-		setSize(512, 384);
-		
+		setPreferredSize(new Dimension(512, 384));
+	    setIconImage(plugin.getImageIcon().getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+	    this.setName("TodolistItemDialog");
+	    
 		jtfName = new JTextField();
 		htmledComment = new HTMLEditor();
 		//jtfPriority = new JTextField();

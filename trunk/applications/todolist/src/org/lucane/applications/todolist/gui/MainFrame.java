@@ -20,6 +20,7 @@
 package org.lucane.applications.todolist.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +33,6 @@ import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -45,10 +45,12 @@ import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.applications.todolist.io.IO;
 import org.lucane.client.Plugin;
+import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.DialogBox;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends ManagedWindow {
 	private JToolBar jtbToolBar;
 
 	private TodolistTable jtTodolists;
@@ -75,10 +77,11 @@ public class MainFrame extends JFrame {
 	private Plugin plugin;
 	
 	public MainFrame(Plugin plugin) {
-		super();
+		super(plugin, plugin.tr("MainInterface.title"));
+		this.setExitPluginOnClose(true);
 		this.plugin=plugin;
+		this.setName("MainFrame");
 	    setIconImage(plugin.getImageIcon().getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-		setTitle(plugin.tr("MainInterface.title"));
 		mainFrame=this;
 		TodolistItemTableModel.setColumnsNames(new String[] {plugin.tr("MainInterface.items.name"), plugin.tr("MainInterface.items.priority"), plugin.tr("MainInterface.items.complete")});
 		TodolistTableModel.setColumnsNames(new String[] {plugin.tr("MainInterface.lists.name")});
@@ -88,7 +91,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void init(){
-		setSize(640,480);
+		setPreferredSize(new Dimension(640,480));
 		
 		jtTodolists = new TodolistTable();
 		jtTodolists.addListSelectionListener(new ListSelectionListener() {
@@ -118,6 +121,7 @@ public class MainFrame extends JFrame {
 		jpListView.add(htmledListComment, BorderLayout.CENTER);
 		jspList = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolists), jpListView);
 		jspList.setResizeWeight(.70);
+		jspList.setName("jspList");
 
 		jtTodolistItems = new TodolistItemTable();
 
@@ -156,9 +160,11 @@ public class MainFrame extends JFrame {
 
 		jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolistItems), jpItemView);
 		jspItem.setResizeWeight(.70);
+		jspItem.setName("jspItem");
 
 		jspMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jspList, jspItem);
 		jspMain.setResizeWeight(.20);
+		jspMain.setName("jspMain");
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(jspMain, BorderLayout.CENTER);
 
@@ -276,6 +282,23 @@ public class MainFrame extends JFrame {
 		getContentPane().add(jtbToolBar, BorderLayout.NORTH);
 		refreshTodolists();
 	}
+	
+	public void saveWidgetState()
+	{
+		System.out.println("SAVE");
+		WidgetState.save(plugin.getLocalConfig(), jspMain);
+		WidgetState.save(plugin.getLocalConfig(), jspItem);
+		WidgetState.save(plugin.getLocalConfig(), jspList);
+	}
+
+	public void restoreWidgetState()
+	{
+		System.out.println("RESTORE");
+		WidgetState.restore(plugin.getLocalConfig(), jspMain);
+		WidgetState.restore(plugin.getLocalConfig(), jspItem);
+		WidgetState.restore(plugin.getLocalConfig(), jspList);
+	}
+
 	
 	private void refreshTodolists() {
 		ArrayList todolists = IO.getInstance(plugin).getTodolists();

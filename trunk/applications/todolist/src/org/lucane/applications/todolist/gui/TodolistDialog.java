@@ -19,15 +19,16 @@
 
 package org.lucane.applications.todolist.gui;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -35,9 +36,10 @@ import javax.swing.JTextField;
 import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.io.IO;
 import org.lucane.client.Plugin;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
-public class TodolistDialog extends JDialog {
+public class TodolistDialog extends ManagedWindow {
 	private JTextField jtfName;
 	private HTMLEditor htmledComment;
 	private JButton jbOk;
@@ -51,12 +53,14 @@ public class TodolistDialog extends JDialog {
 	private boolean modify = false;
 	
 	public TodolistDialog (Plugin plugin, MainFrame mainFrame) {
+		super(plugin, "");
 		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		init();
 	}
 	
 	public TodolistDialog (Plugin plugin, MainFrame mainFrame, Todolist todolist) {
+		super(plugin, "");
 		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		this.todolist = todolist;
@@ -70,8 +74,9 @@ public class TodolistDialog extends JDialog {
 		} else {
 			setTitle(plugin.tr("TodoListDialog.creationTitle"));
 		}
-		
-		setSize(512, 384);
+		this.setName("TodolistDialog");
+	    setIconImage(plugin.getImageIcon().getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+		setPreferredSize(new Dimension(512, 384));
 		
 		jtfName = new JTextField();
 		htmledComment = new HTMLEditor();
