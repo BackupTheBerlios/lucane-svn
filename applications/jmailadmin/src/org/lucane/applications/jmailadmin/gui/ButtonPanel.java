@@ -26,6 +26,8 @@ import org.lucane.client.Client;
 
 public class ButtonPanel extends JPanel
 {
+	private JButton btnCopy;
+	private JButton btnPaste;
 	private JButton btnSave;
 	private JButton btnClose;
 	
@@ -33,12 +35,21 @@ public class ButtonPanel extends JPanel
 	{
 		super(new BorderLayout());
 		
+		btnCopy = new JButton(plugin.tr("btn.copy"), Client.getIcon("copy.png"));
+		btnPaste = new JButton(plugin.tr("btn.paste"), Client.getIcon("paste.png"));
 		btnSave = new JButton(plugin.tr("btn.save"), Client.getIcon("ok.png"));
 		btnClose = new JButton(plugin.tr("btn.close"), Client.getIcon("cancel.png"));
+		btnCopy.addActionListener(listener);
+		btnPaste.addActionListener(listener);
 		btnSave.addActionListener(listener);
 		btnClose.addActionListener(listener);
 		
 		JPanel container = new JPanel(new GridLayout(1, 2));
+		container.add(btnCopy);
+		container.add(btnPaste);
+		this.add(container, BorderLayout.WEST);
+		
+		container = new JPanel(new GridLayout(1, 2));
 		container.add(btnSave);
 		container.add(btnClose);
 		this.add(container, BorderLayout.EAST);

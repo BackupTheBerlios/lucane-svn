@@ -88,6 +88,7 @@ public class JMailAdminPlugin
 				a = (Account)oc.read();
 		} catch(Exception e) {
 			//probably no account yet
+			a = new Account(user);
 		}
 		
 		oc.close();

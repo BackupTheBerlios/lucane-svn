@@ -32,6 +32,8 @@ implements ActionListener, ListSelectionListener
 	private JMailAdminPlugin plugin;
 	private AccountPanel account;
 	
+	private Account template;
+	
 	public MainFrame(JMailAdminPlugin plugin)
 	{		
 		super(plugin.getTitle());
@@ -49,6 +51,8 @@ implements ActionListener, ListSelectionListener
 	public void actionPerformed(ActionEvent ae)
 	{
 		JButton src = (JButton)ae.getSource();
+		
+		//save & close
 		if(src.getText().equals(plugin.tr("btn.save")))
 			plugin.storeAccount(this.account.getAccount());
 		else if(src.getText().equals(plugin.tr("btn.close")))
@@ -56,6 +60,12 @@ implements ActionListener, ListSelectionListener
 			plugin.exit();
 			this.dispose();
 		}		
+		
+		//copy paste
+		else if(src.getText().equals(plugin.tr("btn.copy")))
+			template = account.getAccount();			
+		else if(src.getText().equals(plugin.tr("btn.paste")))
+			account.applyTemplate(template);
 	}
 
 	public void valueChanged(ListSelectionEvent lse)

@@ -100,6 +100,30 @@ public class AccountPanel extends JPanel
 		this.login.setText(a.login);
 		this.password.setText(a.password);
 	}
+	
+	public void applyTemplate(Account a)
+	{
+		if(a == null)
+			return;
+		
+		//always copy
+		this.type.setSelectedItem(a.type);
+		this.inHost.setText(a.inHost);
+		this.inPort.setText(""+a.inPort);
+		this.outHost.setText(a.outHost);
+		this.outPort.setText(""+a.outPort);
+		
+		//copy if user matches login
+		if(a.user.equals(a.login))
+			this.login.setText(this.account.user);
+		
+		//copy if user matches email
+		if(a.address.startsWith(a.user +"@"))
+		{	
+			this.address.setText(this.account.user 
+					+ a.address.substring(a.address.indexOf('@')));
+		}
+	}
 
 	public Account getAccount()
 	{
