@@ -399,7 +399,7 @@ public class Server
 	public static void main(String[] args)
 	{
 		if (args.length > 1) {
-			System.out.println("USAGE :\nserver.(bat|sh) [server path]");
+			System.err.println("USAGE :\nserver.(bat|sh) [server path]");
 			System.exit(1);
 		}
 
