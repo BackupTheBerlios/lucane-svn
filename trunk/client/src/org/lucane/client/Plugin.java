@@ -161,14 +161,21 @@ public abstract class Plugin
   	exit();
   }
 
+
   /**
    * Allows the Client to know when to quit.
    */
   public void exit()
   {
-    Logging.getLogger().fine("Plugin exited");
-    Client.getInstance().deregisterPlugin();
-  }
+  	Logging.getLogger().fine("Plugin exited");
+  	try {
+  		this.config.save();
+  	} catch(IOException ioe) {
+  		Logging.getLogger().warning("Unable to save localconfig");
+  		ioe.printStackTrace();
+  	}
+  	Client.getInstance().deregisterPlugin();
+  } 
 
   /**
    * Mandatory to be run as a new Thread
