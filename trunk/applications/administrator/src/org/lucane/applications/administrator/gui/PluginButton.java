@@ -23,6 +23,7 @@ import java.awt.event.*;
 import java.net.URL;
 
 import org.lucane.client.*;
+import org.lucane.client.widgets.ListBox;
 import org.lucane.common.ConnectInfo;
 
 
@@ -49,7 +50,26 @@ implements ActionListener
 	
 	public void actionPerformed(ActionEvent ae)
 	{
-		ConnectInfo[] infos = new ConnectInfo[0];
-		PluginLoader.getInstance().run(plugin.getName(), infos);
+	  	ConnectInfo[] friends = null;  	
+	  	
+	  	// get users
+	  	if(plugin.isStandalone())
+	  		friends = new ConnectInfo[0];
+	  	else
+	  	{	
+	  		ListBox userList = new ListBox(null, plugin.getTitle(), plugin.tr("msg.selectUsers"), 
+	  				Client.getInstance().getUserList());
+	  		Object[] users = userList.selectItems();
+	  		if(users != null)
+	  		{	
+	  			friends = new ConnectInfo[users.length];
+	  			for(int i=0;i<friends.length;i++)
+	  				friends[i] = Communicator.getInstance().getConnectInfo((String)users[i]);
+	  		}
+	  	}
+	  	
+	  	// run the plugin if the user didn't click on cancel
+	  	if(friends != null)
+	  		PluginLoader.getInstance().run(plugin.getName(), friends);
 	}
 }
