@@ -37,6 +37,7 @@ public class RssItem implements Serializable {
   private String myTitle              = "";
   private URL myLink                  = null;
   private String myDescription        = "";
+  private String myStrippedDescription        = "";
   private String myAuthor             = "";
   private List myCategoryList         = new ArrayList();
   private URL myComments              = null;
@@ -82,8 +83,25 @@ public class RssItem implements Serializable {
     return this.myDescription;
   }
 
+  public String getStrippedDescription() {
+  	return this.myStrippedDescription;
+  }
+  
   public void setDescription(String description) {
     this.myDescription = description;
+    this.myStrippedDescription = description.trim();
+    
+    int start = myStrippedDescription.indexOf('<');
+    while(start >= 0)
+    {
+    	int end = myStrippedDescription.indexOf('>', start);
+		if(end < 0)
+			break;
+		
+		myStrippedDescription = myStrippedDescription.substring(0, start)
+			+ myStrippedDescription.substring(end+1);
+		start = myStrippedDescription.indexOf('<');
+    }
   }
 
   public RssEnclosure getEnclosure() {
@@ -133,5 +151,4 @@ public class RssItem implements Serializable {
   public void setTitle(String title) {
     this.myTitle = title;
   }
-
 }

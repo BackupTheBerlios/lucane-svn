@@ -150,7 +150,7 @@ class ItemComponent extends Component
 
 	private void paintDescription(Graphics2D g2, int textMargin, float curY)
 	{
-		 String description = item.getDescription().trim();
+		 String description = item.getStrippedDescription();
 		 if(description.length() == 0)
 			 return;
 			
