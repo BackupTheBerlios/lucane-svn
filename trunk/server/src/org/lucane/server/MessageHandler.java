@@ -29,317 +29,270 @@ import org.lucane.common.Message;
 import org.lucane.common.ObjectConnection;
 import org.lucane.common.concepts.ServiceConcept;
 import org.lucane.common.concepts.UserConcept;
+import org.lucane.common.signature.SignatureException;
 import org.lucane.server.store.Store;
 
+/**
+ * Reads messages from the network.
+ * A message is either a command for the server
+ * or for an internal Service.
+ */
 public class MessageHandler extends Thread
 {
 	private Socket socket;
 	
+	private ObjectConnection connection;
+	private Message message;
+	private byte[] signature;
+	
+	boolean isAlreadyConnected;
+	boolean isAuthenticationMessage;
 	
 	/**
-	 * Reads messages from the network.
-	 * A message is either a command for the server
-	 * or for an internal Service.
+	 * Constructor
 	 * 
-	 * @param sock the Socket
+	 * @param socket the client socket
 	 */
 	public MessageHandler(Socket socket)
 	{
 		this.socket = socket;
 	}
 	
+	/**
+	 * The main method
+	 */
 	public void run()
 	{
-		int i;
-		boolean alreadyConnected;
-		boolean isAuthentication;
-		
-		Message message;
-		byte[] signature;
-		
-		String cmd;
-		String cmdData;
-		StringTokenizer stk;
-		
-		ObjectConnection oc = null;
-		
-		try
-		{
-			/* streams initialization */
-			oc = new ObjectConnection(socket);
-			message = (Message)oc.read();
-			signature = (byte[])oc.read();
+		//init handler
+		try {
+			init();
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
 			Logging.getLogger().warning("#Err > Unable to read message.");
+			closeConnection();
 			return;
-		}
+		}		
 		
-		// check wether a user is known or not
-		alreadyConnected = ConnectInfoManager.getInstance().isConnected(message.getSender());
-		
-		//check if command is authentication
-		isAuthentication = message.getApplication().equals("Server") 
-		&& ((String)message.getData()).startsWith("AUTH");
-		
-		//signature check
-		if (alreadyConnected && !isAuthentication)
+		//check signature if needed
+		if(isAlreadyConnected && !isAuthenticationMessage)
 		{
-			boolean sigok = false;
-			try
+			if (!hasValidSignature())
 			{
-				ConnectInfo ci = message.getSender();
-				if (ci.verifier == null)
-					ci = ConnectInfoManager.getInstance().getCompleteConnectInfo(ci);
-				sigok = ci.verifier.verify(message, signature);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			
-			if (!sigok)
-			{
-				try
-				{
-					oc.write("FAILED bad signature");
-				}
-				catch (Exception e)
-				{
-				}
+				try	{
+					connection.write("FAILED bad signature");
+				} catch (Exception e) {}
+				
 				Logging.getLogger().warning("#Err > bad signature: " + message.getSender());
+				closeConnection();
 				return;
 			}
 		}
 		
-		if (message.getApplication().equals("Server"))
-		{
-			cmd = null;
-			
-			try
-			{
-				stk = new StringTokenizer((String)message.getData());
-				cmd = stk.nextToken();
-				cmdData = stk.nextToken("\0").substring(1);
-			}
-			catch (Exception ex)
-			{
-				if (cmd == null)
-					cmd = "";
-				
-				cmdData = "";
-			}
-			
-			/* if the user asks for authentication, we try to do it and exits this method */
-			if (cmd.equals("AUTH"))
-			{
-				try {
-					oc.write("OK");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				Server.getInstance().getAuthenticator().authenticate(oc, message, cmdData);
-			}
-			else if (!alreadyConnected)
-			{
-				Logging.getLogger().info("Access denied to " + message.getSender());
-				try
-				{
-					oc.write("FAILED No Connection");
-				}
-				catch (Exception e)
-				{
-				}
-			}
-			else
-			{
-				internalCommand(oc, message, cmd, cmdData);
-			}
-		}
-		else if (!alreadyConnected)
+		//check if the user is connected 
+		if(!isAlreadyConnected && !isAuthenticationMessage)
 		{
 			Logging.getLogger().info("Access denied to " + message.getSender());
-			try
-			{
-				oc.write("FAILED No Connection");
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		else
-		{
-			Store store = Server.getInstance().getStore();
-			Service s = ServiceManager.getInstance().getService(message.getApplication());
-			boolean serviceFound = false;
-			if(s != null)
-			{
-				serviceFound = true;
-				UserConcept user = null;
-				ServiceConcept service = null;
-				try
-				{
-					user =
-						store.getUserStore().getUser(
-								message.getSender().getName());
-					service =
-						store.getServiceStore().getService(
-								message.getReceiver().getName());
-				}
-				catch (Exception e)
-				{
-				}
-				
-				
-				
-				/* tests serviceManager for permissions */
-				boolean isAutorizedService = false;
-				try {
-					isAutorizedService = store.getServiceStore()
-					.isAuthorizedService(user, service);
-				} catch(Exception e) {}
-				
-				if (!isAutorizedService)
-				{
-					Logging.getLogger().info(
-							"#Err > "
-							+ message.getSender()
-							+ " : Service denied to "
-							+ message.getReceiver().getName());
-					try
-					{
-						oc.write(
-						"FAILED You don't have acces to this service");
-					}
-					catch (Exception e)
-					{
-					}
-				}
-				else
-				{
-					try
-					{
-						oc.write("OK");
-					}
-					catch (Exception e)
-					{
-					}
-					serviceFound = true;
-					s.process(oc, message);
-				}
-			}
-			
-			if (!serviceFound)
-			{
-				try
-				{
-					oc.write("FAILED unknown");
-				}
-				catch (Exception e)
-				{
-				}
-				Logging.getLogger().warning(
-						"#Err > Service "
-						+ message.getReceiver().getName()
-						+ " unknown");
-			}
+			try	{
+				connection.write("FAILED No Connection");
+			} catch (Exception e) {}
 		}
 		
-		oc.close();
+		//the message is for the server
+		else if (message.getApplication().equals("Server"))
+			handleServerMessage();
+		
+		//the message is for a service
+		else
+			handleServiceMessage();
+		
+		closeConnection();
+	}
+	
+	/**
+	 * Init attributes
+	 */
+	private void init() 
+	throws IOException, ClassNotFoundException
+	{
+		connection = new ObjectConnection(socket);
+		message = (Message)connection.read();
+		signature = (byte[])connection.read();
+		
+		isAlreadyConnected = ConnectInfoManager.getInstance().isConnected(message.getSender());
+		isAuthenticationMessage = message.getApplication().equals("Server")	
+			&& ((String)message.getData()).startsWith("AUTH");		
+	}
+	
+	/**
+	 * Check the signature
+	 * 
+	 * @return true if the signature is valid
+	 */
+	private boolean hasValidSignature()
+	{
+		ConnectInfo info = message.getSender();
+		if (info.verifier == null)
+			info = ConnectInfoManager.getInstance().getCompleteConnectInfo(info);
+		
 		try {
-			socket.close();
-		} catch (IOException e) {
-			Logging.getLogger().warning("#Err > Socket::close()");
+			return info.verifier.verify(message, signature);
+		} catch (SignatureException e) {
+			Logging.getLogger().warning("Error while verifying signature : " + e);
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Handle a server message
+	 */
+	private void handleServerMessage()
+	{
+		String command = "";
+		String parameters = "";
+		
+		//separate command and parameters
+		try
+		{
+			StringTokenizer stk = new StringTokenizer((String)message.getData());
+			command = stk.nextToken();
+			parameters = stk.nextToken("\0").substring(1);
+		}
+		catch (Exception ex)
+		{
+			//unable to parse
+		}
+		
+		// if the user asks for authentication, we try to do it and exits this method
+		if(isAuthenticationMessage)
+		{
+			sendAck();
+			Server.getInstance().getAuthenticator().authenticate(connection, message, parameters);
+			return;
+		}
+		
+		//all checks are ok, execute the command
+		executeCommand(command, parameters);
+	}
+	
+	/**
+	 * Handle a service message
+	 */
+	private void handleServiceMessage()
+	{
+		String userName = message.getSender().getName();
+		String serviceName = message.getApplication();
+		
+		//get the service
+		Store store = Server.getInstance().getStore();
+		Service s = ServiceManager.getInstance().getService(serviceName);
+		
+		//ensure that the service is running
+		if(s == null)
+		{
+			try	{
+				connection.write("FAILED not running");
+			} catch (Exception e) {}
+			Logging.getLogger().warning("Service "+ serviceName + " not running");
+			return;
+		}
+		
+		
+		//check for permission
+		boolean isAuthorizedService = false;
+		try {
+			UserConcept user =	store.getUserStore().getUser(userName);
+			ServiceConcept service = store.getServiceStore().getService(serviceName);
+			isAuthorizedService = store.getServiceStore().isAuthorizedService(user, service);
+		} catch(Exception e) {
+			Logging.getLogger().warning("Error while checking service permission");
+			e.printStackTrace();
+		}
+		
+		if(!isAuthorizedService)
+		{
+			Logging.getLogger().warning(serviceName + " : Service denied to " + userName);
+			try	{
+				connection.write("FAILED You don't have acces to this service");
+			} catch (Exception e) {}
+			return;
+		}
+		
+		//process the message
+		sendAck();
+		s.process(connection, message);
+	}
+	
+	/**
+	 * Execute server commands
+	 */
+	private void executeCommand(String command,	String parameters)
+	{
+		if (command.equals("CONNECT_DEL"))
+		{
+			sendAck();
+			ConnectInfoManager.getInstance().removeConnectInfo(message.getSender());
+		}
+		
+		else if (command.equals("CONNECT_GET"))
+		{
+			sendAck();
+			Server.getInstance().sendConnectInfo(parameters, connection);
+		}
+		
+		else if (command.equals("CONNECT_LIST"))
+		{
+			sendAck();
+			Server.getInstance().sendUserList(connection);
+		}
+		
+		else if (command.equals("PLUGIN_LIST"))
+		{
+			sendAck();
+			Server.getInstance().sendPluginList(connection, message.getSender().getName());
+		}
+		
+		else if (command.equals("PLUGIN_GET"))
+		{
+			sendAck();
+			Server.getInstance().sendPluginFile(connection, parameters);
+		}
+		
+		else if (command.equals("STARTUP_PLUGINS"))
+		{
+			sendAck();
+			Server.getInstance().sendStartupPlugin(connection, message.getSender().getName());
+		}
+		
+		else
+		{
+			try	{
+				connection.write("FAILED Unknown command");
+			} catch (Exception e) {}
 		}
 	}
 	
 	/**
-	 * Handle internal commands
+	 * Send "OK" to the client
 	 */
-	private void internalCommand(
-			ObjectConnection oc,
-			Message message,
-			String command,
-			String data)
+	private void sendAck()
 	{
-		if (command.equals("CONNECT_DEL"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			ConnectInfoManager.getInstance().removeConnectInfo(message.getSender());
-		}
-		else if (command.equals("CONNECT_GET"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			Server.getInstance().sendConnectInfo(data, oc);
-		}
-		else if (command.equals("CONNECT_LIST"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			Server.getInstance().sendUserList(oc);
-		}
-		else if (command.equals("PLUGIN_LIST"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			Server.getInstance().sendPluginList(oc, message.getSender().getName());
-		}
-		else if (command.equals("PLUGIN_GET"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			Server.getInstance().sendPluginFile(oc, data);
-		}
-		else if (command.equals("STARTUP_PLUGINS"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			Server.getInstance().sendStartupPlugin(oc, message.getSender().getName());
-		}
-		else
-		{
-			try
-			{
-				oc.write("FAILED Unknown command");
-			}
-			catch (Exception e)
-			{
-			}
-		}
+		try	{
+			connection.write("OK");
+		} catch (Exception e) {}
+	}
+
+	/**
+	 * Close the connection & socket
+	 */
+	private void closeConnection()
+	{
+		try {
+			this.connection.close();
+			this.socket.close();
+		} catch (IOException e) {}
 	}
 }
