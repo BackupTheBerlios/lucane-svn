@@ -22,6 +22,7 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.JOptionPane;
 
+import org.lucane.client.util.Translation;
 import org.lucane.common.Logging;
 
 
@@ -58,8 +59,14 @@ public class DialogBox
    */
   public static boolean question(String title, String message)
   {
-
-    if(JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+  	Object[] options = {Translation.tr("yes"), Translation.tr("no")};
+	int response = JOptionPane.showOptionDialog(
+		null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+		null,     //don't use a custom Icon
+		options,  //the titles of buttons
+		options[0]); //default button title);
+	
+    if(response == JOptionPane.YES_OPTION)
       return true;
     else
       return false;
