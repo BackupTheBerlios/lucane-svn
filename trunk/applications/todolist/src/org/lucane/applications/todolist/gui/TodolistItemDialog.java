@@ -32,7 +32,6 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.TodolistItem;
@@ -132,7 +131,7 @@ public class TodolistItemDialog extends JDialog {
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(new JScrollPane(htmledDescription), c);
+		getContentPane().add(htmledDescription, c);
 
 		c.gridy=2;
 		c.gridx=0;

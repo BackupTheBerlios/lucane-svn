@@ -33,6 +33,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
 import org.lucane.applications.todolist.Todolist;
+import org.lucane.applications.todolist.TodolistItem;
 
 public class TodolistTable extends JTable {
 	ActionListener columnHeaderActionListener;
@@ -154,7 +155,11 @@ class TodolistTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row) {
-		return ((Todolist)lists.get(row));
+		try {
+			return ((Todolist) lists.get(row));
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 	
 	public void clear() {

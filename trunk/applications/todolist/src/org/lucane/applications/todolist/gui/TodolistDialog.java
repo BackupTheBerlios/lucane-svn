@@ -30,7 +30,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.Todolist;
@@ -123,7 +122,7 @@ public class TodolistDialog extends JDialog {
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(new JScrollPane(htmledDescription), c);
+		getContentPane().add(htmledDescription, c);
 
 		c.fill=GridBagConstraints.BOTH;
 		c.gridy=2;

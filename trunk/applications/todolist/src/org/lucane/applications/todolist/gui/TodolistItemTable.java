@@ -165,7 +165,11 @@ class TodolistItemTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row) {
-		return ((TodolistItem)items.get(row));
+		try {
+			return ((TodolistItem)items.get(row));
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 	
 	public void clear() {
