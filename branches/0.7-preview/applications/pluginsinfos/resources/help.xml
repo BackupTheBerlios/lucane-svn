@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<help>
+
+<section name="utilisation">
+Cette application liste les applications que vous pouvez utiliser et affiche leurs informations. Celles-ci sont :
+<table>
+<tr><td><b>Nom</b></td><td>Le nom et la version de l'application</td></tr>
+<tr><td><b>Auteur</b></td><td>Le nom l'adresse de la personne à contacter en cas de problème</td></tr>
+<tr><td><b>Catégorie</b></td><td>La catégorie de l'application. Elle correspond au sous-menu dans laquelle elle se trouve</td></tr>
+<tr><td><b>Titre</b></td><td>Le titre de l'application. C'est le nom du menu ou du bouton correspondant</td></tr>
+<tr><td><b>Infobulle</b></td><td>C'est la mini-aide qui s'affiche lorsque vous laissez le curseur sur le menu ou le bouton de lancement</td></tr>
+</table>
+</section>
+
+</help>

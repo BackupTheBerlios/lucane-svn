@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.forumadmin.ForumAdmin
+Service-Class: org.lucane.applications.forumadmin.ForumAdminService

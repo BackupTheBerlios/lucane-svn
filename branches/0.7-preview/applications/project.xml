@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project>
+  <pomVersion>3</pomVersion>
+
+  <id>applications</id>
+  <name>Lucane Applications</name>
+  
+  <groupId>lucane</groupId>
+  <currentVersion>0.7-preview</currentVersion>
+  <organization>
+    <name>The Lucane Team</name>
+    <url>http://lucane.org</url>
+  </organization>
+  <inceptionYear>2002</inceptionYear>
+
+  <url>http://lucane.org</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>lucane</groupId>
+      <artifactId>lucane-common</artifactId>
+      <version>0.7-preview</version>
+    </dependency>
+    <dependency>
+      <groupId>lucane</groupId>
+      <artifactId>lucane-server</artifactId>
+      <version>0.7-preview</version>
+    </dependency>
+    <dependency>
+      <groupId>lucane</groupId>
+      <artifactId>lucane-client</artifactId>
+      <version>0.7-preview</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <nagEmailAddress>
+    vfiack@mail15.com
+    </nagEmailAddress>
+
+    <resources>
+      <resource>
+        <directory>${basedir}/resources</directory>
+      </resource>
+    </resources>
+
+    <sourceDirectory>src/</sourceDirectory>
+  </build>
+</project>

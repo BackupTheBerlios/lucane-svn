@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<help>
+
+<section name="interface">
+Sur la gauche se trouve la liste des forums. Un click sur un d'entre eux affiche l'arborescence des messages qu'il contient sur la zone de droite. Un click sur un de ces messages l'affiche en bas. Il est alors possible d'y répondre. Dans tous les cas, vous pouvez poster un nouveau message en appuyant sur le bouton <i>Nouveau</i>
+</section>
+
+</help>
