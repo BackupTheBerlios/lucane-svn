@@ -191,7 +191,7 @@ public class QuickMessage
     	try {
     		Plugin help = PluginManager.getInstance().newPluginInstance(
     				"org.lucane.applications.helpbrowser", new ConnectInfo[0], true);
-    		help.start();
+    		help.run();
     		help.invoke("showHelp", new Class[]{Plugin.class}, new Object[]{this});
     		help.invoke("hidePluginList", new Class[0], new Object[0]);
     	} catch (Exception ex) {
