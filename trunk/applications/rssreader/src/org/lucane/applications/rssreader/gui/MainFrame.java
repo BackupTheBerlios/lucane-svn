@@ -1,3 +1,22 @@
+/*
+ * Lucane - a collaborative platform
+ * Copyright (C) 2004  Vincent Fiack <vfiack@mail15.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package org.lucane.applications.rssreader.gui;
 
 import java.awt.*;
@@ -35,6 +54,7 @@ implements ListSelectionListener, ActionListener
 	{
 		super(plugin.getTitle());
 		this.setName("mainFrame");
+		this.setIconImage(plugin.getImageIcon().getImage());
 		
 		this.plugin = plugin;
 		
@@ -105,7 +125,7 @@ implements ListSelectionListener, ActionListener
 			if(channel == null)
 				return;
 			
-			if(DialogBox.question(plugin.getTitle(), "msg.removeChannel"))
+			if(DialogBox.question(plugin.getTitle(), plugin.tr("msg.removeChannel")))
 			{
 				plugin.removeChannel(channel);
 				rssItems.clear();
@@ -120,10 +140,23 @@ implements ListSelectionListener, ActionListener
 
 	public void valueChanged(ListSelectionEvent lse)
 	{
-		final ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
+		ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
 		if(channel == null)
 			return;
 		
+		showChannel(channel);
+	}
+	
+	public void refreshChannelList() 
+	{
+		rssChannels.clear();
+		Iterator i = plugin.getChannels().iterator();
+		while(i.hasNext())
+			rssChannels.addElement(i.next());		
+	}	
+	
+	public void showChannel(final ChannelInfo channel)
+	{
 		Runnable refresh = new Runnable() {
 			public void run() {
 				try {							
@@ -136,21 +169,13 @@ implements ListSelectionListener, ActionListener
 						rssItems.addElement(i.next());
 					status.setIndeterminate(false);			
 				}	catch (MalformedURLException mue) {
-					DialogBox.error("Wrong url : " + mue);
+					DialogBox.error(plugin.tr("err.wrongUrl")+ mue);
 				}	catch (RssException re) {
-					DialogBox.error("RSS Error : " + re);
+					DialogBox.error(plugin.tr("err.rssError") + re);
 				}							
 			}
 		};
 
 		new Thread(refresh).start();
 	}
-	
-	public void refreshChannelList() 
-	{
-		rssChannels.clear();
-		Iterator i = plugin.getChannels().iterator();
-		while(i.hasNext())
-			rssChannels.addElement(i.next());		
-	}	
 }
