@@ -309,7 +309,7 @@ public class Communicator
     catch(Exception e)
     {
       e.printStackTrace();
-      DialogBox.error(Translation.tr("communicatorSendError"));
+      DialogBox.error(Translation.tr("communicatorSendError") + " : " + who);
       return null;
     }
   }

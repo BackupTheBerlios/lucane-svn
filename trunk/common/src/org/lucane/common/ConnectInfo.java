@@ -106,6 +106,7 @@ public class ConnectInfo implements Serializable
   public void setServer(String server)
   {
   	this.server = server;
+  	this.hostname = hostname;
   }
   
   /**
