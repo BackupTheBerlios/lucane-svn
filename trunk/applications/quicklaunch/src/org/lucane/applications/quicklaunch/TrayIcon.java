@@ -1,5 +1,4 @@
 package org.lucane.applications.quicklaunch;
-import java.awt.*;
 import javax.swing.*;
 import com.jeans.trayicon.*;
 
