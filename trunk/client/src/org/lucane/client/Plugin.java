@@ -40,7 +40,7 @@ public abstract class Plugin
 {
   //do not redeclare them in your plugin !
   protected boolean starter;
-  private ResourceBundle bundle;
+  protected ResourceBundle bundle;
   private LocalConfig config;
   
   /**
