@@ -37,10 +37,12 @@ public class CalendarFrame extends JFrame
 implements ActionListener, CalendarListener
 {
 	private MonthPanel monthPanel;
+	private WeekPanel weekPanel;
 	private DayPanel dayPanel;
 	
 	private JButton newEvent;
 	private JButton goToCurrentMonth;
+	private JButton goToCurrentWeek;
 	private JButton goToCurrentDay;
 	private JButton otherCalendars;
 	private JButton close;
@@ -55,9 +57,11 @@ implements ActionListener, CalendarListener
 		
 		monthPanel = new MonthPanel(plugin, this, null);
 		dayPanel = new DayPanel(plugin, this, null);
+		weekPanel = new WeekPanel(plugin, this, null);
 	
 		newEvent = new JButton(tr("btn.newEvent"));
 		goToCurrentMonth = new JButton(tr("btn.thisMonth"));
+		goToCurrentWeek = new JButton(tr("btn.thisWeek"));
 		goToCurrentDay = new JButton(tr("btn.today"));
 		otherCalendars = new JButton(tr("btn.otherCalendars"));
 		close = new JButton(tr("btn.close"));
@@ -65,6 +69,7 @@ implements ActionListener, CalendarListener
 		try {
 			newEvent.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "new.png")));
 			goToCurrentMonth.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
+			goToCurrentWeek.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
 			goToCurrentDay.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
 			otherCalendars.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "other.png")));
 			close.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "close.png")));
@@ -74,6 +79,7 @@ implements ActionListener, CalendarListener
 
 		newEvent.addActionListener(this);
 		goToCurrentMonth.addActionListener(this);
+		goToCurrentWeek.addActionListener(this);
 		goToCurrentDay.addActionListener(this);
 		otherCalendars.addActionListener(this);
 		close.addActionListener(this);
@@ -87,10 +93,11 @@ implements ActionListener, CalendarListener
 	
 	private void initTopBar(JPanel bar)
 	{		
-		JPanel buttons = new JPanel(new GridLayout(1, 5));
+		JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 1, 1));
 		
 		buttons.add(newEvent);
 		buttons.add(goToCurrentMonth);
+		buttons.add(goToCurrentWeek);
 		buttons.add(goToCurrentDay);
 		buttons.add(otherCalendars);
 		buttons.add(close);
@@ -108,7 +115,7 @@ implements ActionListener, CalendarListener
 			Event e = new Event(-1, "", tr("event.newEvent"), Client.getInstance().getMyInfos().getName(),
 					true, time, time+3600*1000, Event.RECUR_NONE, "");
 			
-			new EventFrame(plugin, e, dayPanel, monthPanel).show();
+			new EventFrame(plugin, e, dayPanel, weekPanel, monthPanel).show();
 		}
 		else if(ae.getSource() == goToCurrentMonth)
 		{
@@ -116,7 +123,20 @@ implements ActionListener, CalendarListener
 			if(getContentPane().getComponent(1) != monthPanel)
 			{
 				getContentPane().remove(dayPanel);
+				getContentPane().remove(weekPanel);
 				getContentPane().add(monthPanel, BorderLayout.CENTER);
+				getContentPane().validate();
+				this.repaint();
+			}
+		}
+		else if(ae.getSource() == goToCurrentWeek)
+		{
+			monthPanel.showMonth(Calendar.getInstance());
+			if(getContentPane().getComponent(1) != weekPanel)
+			{
+				getContentPane().remove(monthPanel);
+				getContentPane().remove(dayPanel);
+				getContentPane().add(weekPanel, BorderLayout.CENTER);
 				getContentPane().validate();
 				this.repaint();
 			}
@@ -127,6 +147,7 @@ implements ActionListener, CalendarListener
 			if(getContentPane().getComponent(1) != dayPanel)
 			{
 				getContentPane().remove(monthPanel);
+				getContentPane().remove(weekPanel);
 				getContentPane().add(dayPanel, BorderLayout.CENTER);
 				getContentPane().validate();
 				this.repaint();
@@ -165,7 +186,7 @@ implements ActionListener, CalendarListener
 		Calendar cal = monthPanel.getCalendar();
 		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 		dayPanel.showDay(cal);
-		getContentPane().remove(monthPanel);
+		getContentPane().removeAll();
 		getContentPane().add(dayPanel, BorderLayout.CENTER);
 		getContentPane().validate();
 		this.repaint();
@@ -173,7 +194,7 @@ implements ActionListener, CalendarListener
 
 	public void onEventClick(EventLabel event) 
 	{
-		new EventFrame(plugin, (Event)event.getEvent(), dayPanel, monthPanel).show();
+		new EventFrame(plugin, (Event)event.getEvent(), dayPanel, weekPanel, monthPanel).show();
 	}
 	
 	private String tr(String s)

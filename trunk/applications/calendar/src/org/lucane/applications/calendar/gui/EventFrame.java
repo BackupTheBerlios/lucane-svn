@@ -34,6 +34,7 @@ implements ActionListener
 	private transient CalendarPlugin plugin;
 	private Event event;
 	private DayPanel dayPanel;
+	private WeekPanel weekPanel;
 	private MonthPanel monthPanel;
 	
 	private JButton btnSave;
@@ -46,14 +47,16 @@ implements ActionListener
 	private EventDescriptionPanel description;
 	private AttendeePanel attendees;
 		
-	public EventFrame(CalendarPlugin plugin, Event event, DayPanel day, MonthPanel month)
+	public EventFrame(CalendarPlugin plugin, Event event, DayPanel day, WeekPanel week, MonthPanel month)
 	{
 		super(event.getTitle());
 		
 		this.plugin = plugin;
 		this.event = event;
 		this.dayPanel = day;
+		this.weekPanel = week;
 		this.monthPanel = month;
+		
 		
 		//-- panels
 		description = new EventDescriptionPanel(plugin, event);
@@ -158,6 +161,7 @@ implements ActionListener
 				e.printStackTrace();
 			}
 			dayPanel.refreshView();
+			weekPanel.refreshView();
 			monthPanel.refreshView();
 		}
 		else if(ae.getSource() == btnRemove)
@@ -171,6 +175,7 @@ implements ActionListener
 				e.printStackTrace();
 			}
 			dayPanel.refreshView();
+			weekPanel.refreshView();
 			monthPanel.refreshView();
 		}
 		

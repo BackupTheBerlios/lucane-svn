@@ -221,7 +221,7 @@ implements ActionListener
 			remove(view);
 		view = new DayView(unworkedHour, workedHour, workStart, workEnd);
 		view.addCalendarListener(listener);
-		view.scrollToHour(workStart);
+		view.scrollToHour(workStart-1);
 
 		//-- get day interval (in milliseconds)
 		long start, end;

@@ -113,7 +113,7 @@ implements MouseListener
 			item.reset("");
 		}
 		
-		if(curMonth == month && curYear == curYear)
+		if(curMonth == month && curYear == year)
 			setCurrentDay(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
 		else
 			setCurrentDay(0);

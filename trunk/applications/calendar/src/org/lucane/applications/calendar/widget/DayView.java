@@ -42,7 +42,7 @@ implements MouseListener
 	private JPanel contentPanel;
 	private JPanel[] background;
 	private JPanel[] border;
-	private ArrayList[] occupied;
+	private ArrayList[] occupied;	
 	
 	//-- listeners
 	private ArrayList listeners;
@@ -71,8 +71,7 @@ implements MouseListener
 		
 		//speed up scrolling !
 		this.getVerticalScrollBar().setUnitIncrement(15);
-		
-		
+				
 		GridBagConstraints constraints;		
 		
 		//-- hours
@@ -92,7 +91,7 @@ implements MouseListener
 			lbl.setHorizontalAlignment(JLabel.CENTER);
 			contentPanel.add(lbl, constraints);
 		}
-		
+	
 		//-- border
 		constraints = new GridBagConstraints();
 		constraints.gridx = 1;
@@ -131,6 +130,18 @@ implements MouseListener
 			contentPanel.add(back, constraints); 
 		}		
 	}
+
+	
+	/**
+	 * Set the listeners
+	 * 
+	 * @param listeners the CalendarListeners to set
+	 */
+	public void setCalendarListeners(ArrayList listeners)
+	{
+		this.listeners = listeners;
+	}
+	
 	
 	/**
 	 * Add a listener
@@ -187,8 +198,8 @@ implements MouseListener
 		//-- update attributes
 		for(int i=0;i<length;i++)
 		{
+			this.border[start + i].setBackground(event.getColor());			
 			this.background[start + i].setVisible(false);
-			this.border[start + i].setBackground(event.getColor());
 			this.occupied[start + i].add(new Integer(constraints.gridx));
 		}		
 	}
