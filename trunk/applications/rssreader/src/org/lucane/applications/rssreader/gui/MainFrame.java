@@ -21,6 +21,7 @@ package org.lucane.applications.rssreader.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
@@ -167,17 +168,21 @@ implements ListSelectionListener, ActionListener, MouseListener
 
 					Iterator i = rss.getItemList().iterator();
 					while (i.hasNext())
-						rssItems.addElement(i.next());
-					status.setIndeterminate(false);			
-				}	catch (MalformedURLException mue) {
+						rssItems.addElement(i.next());								
+				} catch (MalformedURLException mue) {
 					DialogBox.error(plugin.tr("err.wrongUrl")+ mue);
-				}	catch (RssException re) {
-					//TODO call proxy config from here
-					//if(re.getCause() != null && re.getCause() instanceof ConnectException)
-					//	re.getCause().printStackTrace();
-					
-					DialogBox.error(plugin.tr("err.rssError") + re);					
-				}							
+				} catch (RssException re) {
+					//call proxy config if unable to connect
+					if(re.getCause() != null && re.getCause() instanceof ConnectException)
+					{
+						if(DialogBox.question("err.connect", "msg.setupProxy"))
+							new ProxyDialog(plugin).show();
+					}
+					else
+						DialogBox.error(plugin.tr("err.rssError") + re);
+				} finally {
+					status.setIndeterminate(false);
+				}
 			}
 		};
 

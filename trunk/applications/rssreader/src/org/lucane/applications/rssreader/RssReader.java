@@ -50,10 +50,8 @@ public class RssReader extends StandalonePlugin
 	{
 		this.service = Communicator.getInstance().getConnectInfo(getName());
 
-		System.setProperty("proxySet", getLocalConfig().get("proxySet", "false"));
-		System.setProperty("proxyHost", getLocalConfig().get("proxyHost", ""));
-		System.setProperty("proxyPort", getLocalConfig().get("proxyPort", ""));
-
+		setProxyFromLocalConfig();
+		
 		frame = new MainFrame(this);
 		frame.refreshChannelList();
 		frame.setPreferredSize(new Dimension(600, 600));
@@ -61,6 +59,13 @@ public class RssReader extends StandalonePlugin
 		frame.show();
 	}
 	
+	public void setProxyFromLocalConfig()
+	{
+		System.setProperty("proxySet", getLocalConfig().get("proxySet", "false"));
+		System.setProperty("proxyHost", getLocalConfig().get("proxyHost", ""));
+		System.setProperty("proxyPort", getLocalConfig().get("proxyPort", ""));
+	}
+
 	public void openUrl(URL url)
 	{
 		try	{
