@@ -21,56 +21,71 @@ package org.lucane.applications.helpbrowser;
 import javax.swing.*;
 import javax.swing.event.*;
 
-
+/**
+ * HelpBrowser's link listener
+ */
 public class LinkListener
-  implements HyperlinkListener
-{
-
-  JEditorPane big;
-  JTextArea mini;
-  HelpBrowser parent;
-
-  public LinkListener(HelpBrowser parent, JEditorPane big, JTextArea mini)
-  {
-    this.big = big;
-    this.mini = mini;
-    this.parent = parent;
-  }
-
-
-  public void hyperlinkUpdate(HyperlinkEvent he)
-  {
-    String url = he.getDescription();
-    boolean tooltip = false;
-    boolean section = false;
-
-    if(url.startsWith("#tooltip:"))
-    {
-      tooltip = true;
-      url = url.substring(9); //#tooltip:
-    }
-    else if(url.startsWith("#section:"))
-    {
-      section = true;
-      url = url.substring(9); //#section:
-    }
-
-    if(he.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
-    {
-      if(section)
-        this.parent.gotoSection(url);
-    }
-    else if(he.getEventType() == HyperlinkEvent.EventType.ENTERED)
-    {
-      if(tooltip)
-        this.mini.setText(url);
-      else if(section)
-        this.mini.setText(parent.tr("gotoSection1") + url + parent.tr("gotoSection2"));
-    }
-    else if(he.getEventType() == HyperlinkEvent.EventType.EXITED)
-    {
-      if(tooltip || section)
-        this.mini.setText("");
-    }
-  }
+implements HyperlinkListener
+{	
+	private JEditorPane big;
+	private JTextArea mini;
+	private HelpBrowser parent;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param parent the help browser
+	 * @param big the help container
+	 * @param mini the tooltip container
+	 */
+	public LinkListener(HelpBrowser parent, JEditorPane big, JTextArea mini)
+	{
+		this.big = big;
+		this.mini = mini;
+		this.parent = parent;
+	}
+	
+	/**
+	 * A link was hovered or clicked
+	 */
+	public void hyperlinkUpdate(HyperlinkEvent he)
+	{
+		String url = he.getDescription();
+		boolean tooltip = false;
+		boolean section = false;
+		
+		if(url.startsWith("#tooltip:"))
+		{
+			tooltip = true;
+			url = url.substring(9); //#tooltip:
+		}
+		else if(url.startsWith("#section:"))
+		{
+			section = true;
+			url = url.substring(9); //#section:
+		}
+		
+		//-- click
+		if(he.getEventType() == HyperlinkEvent.EventType.ACTIVATED)
+		{
+			if(section)
+				this.parent.gotoSection(url);
+		}
+		
+		//-- hover
+		else if(he.getEventType() == HyperlinkEvent.EventType.ENTERED)
+		{
+			if(tooltip)
+				this.mini.setText(url);
+			else if(section)
+				this.mini.setText(parent.tr("gotoSection1") + url + parent.tr("gotoSection2"));
+		}
+		
+		//-- end of hover
+		else if(he.getEventType() == HyperlinkEvent.EventType.EXITED)
+		{
+			if(tooltip || section)
+				this.mini.setText("");
+		}
+	}
 }

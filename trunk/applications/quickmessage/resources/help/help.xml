@@ -2,7 +2,8 @@
 
 <help>
 
-<section name="dialogue">
+<section name="QuickMessage">
+<image file="icon.png"/>
 QuickMessage est une application de dialogue simple. Pour suivre une réunion à plusieurs, on préfera utiliser QReunion.
 
 Vous devez sélectionner un ou plusieurs destinataires avant de lancer l'application. Une boite de saisie s'ouvre alors.

@@ -326,4 +326,9 @@ public abstract class Plugin
   {
   	return this.config;
   }
+  
+  public String toString()
+  {
+  	return getTitle();
+  }
 }

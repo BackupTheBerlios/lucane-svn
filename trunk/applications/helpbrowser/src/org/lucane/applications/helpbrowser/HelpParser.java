@@ -24,246 +24,284 @@ import javax.swing.tree.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
-
+/**
+ * Transform xml help files to html
+ */
 public class HelpParser
 {
-
-  Document document;
-  String directory;
-
-  public HelpParser(String directory, String filename)
-  {
-    this.directory = directory;
-
-    try
-    {
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      InputStream is = new URL(directory + filename).openStream();
-      this.document = builder.parse(is);
-      is.close();
-    }
-    catch(Exception e)
-    {
-      this.document = null;
-    }
-  }
-
-
-  public TreeNode getSections()
-  {
-    if(this.document == null)
-      return null;
-
-    DefaultMutableTreeNode result = new DefaultMutableTreeNode();
-    Node root = this.document.getFirstChild();
-
-    while(root != null && root.getNodeType() != Node.ELEMENT_NODE)
-      root = root.getNextSibling();
-
-    getSections(root, result);
-    return result;
-  }
-
-
-  public String htmlForSection(TreePath path)
-  {
-    if(this.document == null)
-      return null;
-
-    String self = (String)((DefaultMutableTreeNode)path.getLastPathComponent()).getUserObject();
-    String html = "<html>\n<head><title>";
-    html += self;
-    html += "</title></head>\n<body>\n";
-
-    int nbelems = path.getPathCount();
-
-    for(int i = 0; i < nbelems; i++)
-    {
-      String section = (String)((DefaultMutableTreeNode)path.getPathComponent( i)).getUserObject();
-
-      if(section != null)
-        html += "&gt; <a href=\"#section:" + section + "\">" + section + "</a>";
-    }
-
-    html += "<hr>\n";
-    html += htmlize(self);
-    html += "<p><hr>\n";
-
-    for(int i = 0; i < nbelems; i++)
-    {
-      String section = (String)((DefaultMutableTreeNode)path.getPathComponent(i)).getUserObject();
-
-      if(section != null)
-        html += "&gt; <a href=\"#section:" + section + "\">" + section + "</a>";
-    }
-
-    html += "</body>\n</html>";
-    return html;
-  }
-
-
-  private void getSections(Node root, DefaultMutableTreeNode result)
-  {
-    Node section = root.getFirstChild();
-    DefaultMutableTreeNode current = null;
-    String name = null;
-
-    while(section != null)
-    {
-      if(section.getNodeType() == Node.ELEMENT_NODE && 
-         section.getNodeName().equals("section"))
-      {
-        NamedNodeMap nnm = section.getAttributes();
-        name = nnm.getNamedItem("name").getNodeValue();
-        current = new DefaultMutableTreeNode(name);
-        result.add(current);
-        getSections(section, current);
-      }
-
-      section = section.getNextSibling();
-    }
-  }
-
-
-  private Node getSectionNode(String wanted, Node root)
-  {
-    Node result = null;
-    Node section = root.getFirstChild();
-    String name = null;
-
-    while(section != null && result == null)
-    {
-      if(section.getNodeType() == Node.ELEMENT_NODE && 
-         section.getNodeName().equals("section"))
-      {
-        NamedNodeMap nnm = section.getAttributes();
-        name = nnm.getNamedItem("name").getNodeValue();
-
-        if(name.equals(wanted))
-          result = section;
-        else
-          result = getSectionNode(wanted, section);
-      }
-
-      section = section.getNextSibling();
-    }
-
-    return result;
-  }
-
-
-  private String htmlize(String section)
-  {
-    String html = "<h1>" + section + "</h1>\n";
-    Node root = getSectionNode(section, document.getFirstChild());
-    html += htmlize(root);
-    return html;
-  }
-
-  private String htmlize(Node root)
-  {
-    String html = "";
-    String text = "";
-    Node current = root.getFirstChild();
-
-    while(current != null)
-    {
-      if(current.getNodeType() == Node.TEXT_NODE)
-      {
-        text = current.getNodeValue();
-
-        for(int i = 0; i < text.length(); i++)
-        {
-          if(text.charAt(i) == '\n')
-            html += "<br>";
-          else
-            html += text.charAt(i);
-        }
-      }
-      else if(current.getNodeType() == Node.ELEMENT_NODE)
-      {
-        try
-        {
-          if(current.getNodeName().equals("section"))
-          {
-            NamedNodeMap nnm = current.getAttributes();
-            text = nnm.getNamedItem("name").getNodeValue();
-            html += "&gt; <a href=\"#section:" + text + "\">" + text + "</a>";
-          }
-          else if(current.getNodeName().equals("info"))
-          {
-            NamedNodeMap nnm = current.getAttributes();
-            text = nnm.getNamedItem("text").getNodeValue();
-            html += "<a href=\"#tooltip:" + text + "\">";
-            html += htmlize(current);
-            html += "</a>";
-          }
-          else if(current.getNodeName().equals("colored"))
-          {
-            NamedNodeMap nnm = current.getAttributes();
-            text = nnm.getNamedItem("color").getNodeValue();
-            html += "<font color=\"" + text + "\">";
-            html += htmlize(current);
-            html += "</font>";
-          }
-          else if(current.getNodeName().equals("b"))
-          {
-            html += "<b>" + htmlize(current) + "</b>";
-          }
-          else if(current.getNodeName().equals("tt"))
-          {
-            html += "<tt>" + htmlize(current) + "</tt>";
-          }
-          else if(current.getNodeName().equals("i"))
-          {
-            html += "<i>" + htmlize(current) + "</i>";
-          }
-          else if(current.getNodeName().equals("table"))
-          {
-            String border = "1";
-
-            try
-            {
-              NamedNodeMap nnm = current.getAttributes();
-              text = nnm.getNamedItem("border").getNodeValue();
-
-              if(text.equals("no"))
-                border = "0";
-            }
-            catch(Exception e)
-            {
-              //default border
-            }
-
-            html += "<table border=\"" + border + "\">";
-            html += htmlize(current);
-            html += "</table>";
-          }
-          else if(current.getNodeName().equals("tr"))
-          {
-            html += "<tr>" + htmlize(current) + "</tr>";
-          }
-          else if(current.getNodeName().equals("td"))
-          {
-            html += "<td>" + htmlize(current) + "</td>";
-          }
-          else if(current.getNodeName().equals("image"))
-          {
-            NamedNodeMap nnm = current.getAttributes();
-            text = nnm.getNamedItem("file").getNodeValue();
-            html += "<img src=\"" + this.directory + text + "\">";
-            html += "</img>";
-          }
-        }
-        catch(Exception e)
-        {
-          //...
-        }
-      }
-
-      current = current.getNextSibling();
-    }
-
-    return html;
-  }
+	//-- attributes
+	
+	private Document document;
+	private String directory;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param directory where the file is located
+	 * @param filename the help file
+	 */
+	public HelpParser(String directory, String filename)
+	{
+		this.directory = directory;
+		
+		try
+		{
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			InputStream is = new URL(directory + filename).openStream();
+			this.document = builder.parse(is);
+			is.close();
+		}
+		catch(Exception e)
+		{
+			this.document = null;
+		}
+	}
+	
+	/**
+	 * Get the section tree
+	 * 
+	 * @return the sections
+	 */
+	public TreeNode getSections()
+	{
+		if(this.document == null)
+			return null;
+		
+		DefaultMutableTreeNode result = new DefaultMutableTreeNode();
+		Node root = this.document.getFirstChild();
+		
+		while(root != null && root.getNodeType() != Node.ELEMENT_NODE)
+			root = root.getNextSibling();
+		
+		getSections(root, result);
+		return result;
+	}
+	
+	/**
+	 * Get the HTML text corresponding to a section
+	 * 
+	 * @param path the section
+	 * @return the html string
+	 */
+	public String htmlForSection(TreePath path)
+	{
+		if(this.document == null)
+			return null;
+		
+		String self = (String)((DefaultMutableTreeNode)path.getLastPathComponent()).
+		getUserObject();
+		String html = "<html>\n<head><title>";
+		html += self;
+		html += "</title></head>\n<body>\n";
+		
+		int nbelems = path.getPathCount();
+		
+		for(int i = 0; i < nbelems; i++)
+		{
+			String section = (String)((DefaultMutableTreeNode)path.getPathComponent( i)).
+			getUserObject();
+			
+			if(section != null)
+				html += "&gt; <a href=\"#section:" + section + "\">" + section + "</a>";
+		}
+		
+		html += "<hr>\n";
+		html += htmlize(self);
+		html += "<p><hr>\n";
+		
+		for(int i = 0; i < nbelems; i++)
+		{
+			String section = (String)((DefaultMutableTreeNode)path.getPathComponent(i)).
+			getUserObject();
+			
+			if(section != null)
+				html += "&gt; <a href=\"#section:" + section + "\">" + section + "</a>";
+		}
+		
+		html += "</body>\n</html>";
+		return html;
+	}
+	
+	/**
+	 * List the sections under a node
+	 * 
+	 * @param root the node to look at
+	 * @param result the tree to fill
+	 */
+	private void getSections(Node root, DefaultMutableTreeNode result)
+	{
+		Node section = root.getFirstChild();
+		DefaultMutableTreeNode current = null;
+		String name = null;
+		
+		while(section != null)
+		{
+			if(section.getNodeType() == Node.ELEMENT_NODE && 
+					section.getNodeName().equals("section"))
+			{
+				NamedNodeMap nnm = section.getAttributes();
+				name = nnm.getNamedItem("name").getNodeValue();
+				current = new DefaultMutableTreeNode(name);
+				result.add(current);
+				getSections(section, current);
+			}
+			
+			section = section.getNextSibling();
+		}
+	}
+	
+	/**
+	 * Get a section node by name
+	 * 
+	 * @param wanted the name wanted
+	 * @param root the root section
+	 * @return the node
+	 */
+	private Node getSectionNode(String wanted, Node root)
+	{
+		Node result = null;
+		Node section = root.getFirstChild();
+		String name = null;
+		
+		while(section != null && result == null)
+		{
+			if(section.getNodeType() == Node.ELEMENT_NODE && 
+					section.getNodeName().equals("section"))
+			{
+				NamedNodeMap nnm = section.getAttributes();
+				name = nnm.getNamedItem("name").getNodeValue();
+				
+				if(name.equals(wanted))
+					result = section;
+				else
+					result = getSectionNode(wanted, section);
+			}
+			
+			section = section.getNextSibling();
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Transform a section to html
+	 * 
+	 * @param section the section name
+	 * @return the html
+	 */
+	private String htmlize(String section)
+	{
+		String html = "<h1>" + section + "</h1>\n";
+		Node root = getSectionNode(section, document.getFirstChild());
+		html += htmlize(root);
+		return html;
+	}
+	
+	/**
+	 * Transform a section content to html
+	 * 
+	 * @param root the section node
+	 * @return the html
+	 */
+	private String htmlize(Node root)
+	{
+		String html = "";
+		String text = "";
+		Node current = root.getFirstChild();
+		
+		while(current != null)
+		{
+			if(current.getNodeType() == Node.TEXT_NODE)
+			{
+				text = current.getNodeValue();
+				text = text.replaceAll("\n\n", "<p>");
+				text = text.replaceAll("\r\n\r\n", "<p>");
+				html += text;
+			}
+			else if(current.getNodeType() == Node.ELEMENT_NODE)
+			{
+				try
+				{
+					if(current.getNodeName().equals("section"))
+					{
+						NamedNodeMap nnm = current.getAttributes();
+						text = nnm.getNamedItem("name").getNodeValue();
+						html += "&gt; <a href=\"#section:" + text + "\">" + text + "</a>";
+					}
+					else if(current.getNodeName().equals("info"))
+					{
+						NamedNodeMap nnm = current.getAttributes();
+						text = nnm.getNamedItem("text").getNodeValue();
+						html += "<a href=\"#tooltip:" + text + "\">";
+						html += htmlize(current);
+						html += "</a>";
+					}
+					else if(current.getNodeName().equals("colored"))
+					{
+						NamedNodeMap nnm = current.getAttributes();
+						text = nnm.getNamedItem("color").getNodeValue();
+						html += "<font color=\"" + text + "\">";
+						html += htmlize(current);
+						html += "</font>";
+					}
+					else if(current.getNodeName().equals("b"))
+					{
+						html += "<b>" + htmlize(current) + "</b>";
+					}
+					else if(current.getNodeName().equals("tt"))
+					{
+						html += "<tt>" + htmlize(current) + "</tt>";
+					}
+					else if(current.getNodeName().equals("i"))
+					{
+						html += "<i>" + htmlize(current) + "</i>";
+					}
+					else if(current.getNodeName().equals("table"))
+					{
+						String border = "1";
+						
+						try
+						{
+							NamedNodeMap nnm = current.getAttributes();
+							text = nnm.getNamedItem("border").getNodeValue();
+							
+							if(text.equals("no"))
+								border = "0";
+						}
+						catch(Exception e)
+						{
+							//default border
+						}
+						
+						html += "<table border=\"" + border + "\">";
+						html += htmlize(current);
+						html += "</table>";
+					}
+					else if(current.getNodeName().equals("tr"))
+					{
+						html += "<tr>" + htmlize(current) + "</tr>";
+					}
+					else if(current.getNodeName().equals("td"))
+					{
+						html += "<td>" + htmlize(current) + "</td>";
+					}
+					else if(current.getNodeName().equals("image"))
+					{
+						NamedNodeMap nnm = current.getAttributes();
+						text = nnm.getNamedItem("file").getNodeValue();
+						html += "<img src=\"" + this.directory + text + "\">";
+						html += "</img>";
+					}
+				}
+				catch(Exception e)
+				{
+					//...
+				}
+			}
+			
+			current = current.getNextSibling();
+		}
+		
+		return html;
+	}
 }
