@@ -72,7 +72,7 @@ implements ListSelectionListener, ActionListener, MouseListener
 		btnRefresh = new JButton(Client.getIcon("refresh.png"));
 		btnRefresh.setToolTipText(plugin.tr("btn.refresh"));
 		btnRefresh.addActionListener(this);
-		btnAggregate = new JButton(Client.getIcon("refresh.png"));
+		btnAggregate = new JButton(plugin.getImageIcon("aggregate.png"));
 		btnAggregate.setToolTipText(plugin.tr("btn.aggregate"));
 		btnAggregate.addActionListener(this);
 		btnAddChannel = new JButton(Client.getIcon("add.png"));
@@ -83,8 +83,9 @@ implements ListSelectionListener, ActionListener, MouseListener
 		btnRemoveChannel.addActionListener(this);
 		
 		JPanel buttonPanel = new JPanel(new BorderLayout());
-		JPanel buttons = new JPanel(new GridLayout(1, 3));
+		JPanel buttons = new JPanel(new GridLayout(1, 4));
 		buttons.add(btnRefresh);
+		buttons.add(btnAggregate);
 		buttons.add(btnAddChannel);
 		buttons.add(btnRemoveChannel);
 		buttonPanel.add(buttons, BorderLayout.WEST);

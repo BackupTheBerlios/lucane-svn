@@ -30,7 +30,9 @@ public class RssItemComparator implements Comparator
 		RssItem one = (RssItem)o1;
 		RssItem other = (RssItem)o2;
 		
-		if(other.getPubDate() == null || one.getPubDate() == null)
+		if(other.getPubDate() == null)
+			return 1;
+		if(one.getPubDate() == null)
 			return 0;
 
 		return other.getPubDate().compareTo(one.getPubDate());

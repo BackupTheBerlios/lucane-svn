@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
+
 import org.lucane.applications.rssreader.gui.*;
 import org.lucane.applications.rssreader.rss.ChannelInfo;
 import org.lucane.client.*;
@@ -143,4 +145,13 @@ public class RssReader extends StandalonePlugin
 		frame.saveState();
 		this.exit();
 	}
+	
+  public ImageIcon getImageIcon(String name)
+  {
+    try {
+        return new ImageIcon(new URL(getDirectory() + name));
+    } catch(Exception e) {
+        return new ImageIcon();
+    }
+  }
 }
