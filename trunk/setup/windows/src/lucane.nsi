@@ -64,6 +64,10 @@ SetCompressor lzma
 
 # MUI Settings
 !define MUI_HEADERIMAGE
+!define MUI_HEADERIMAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Header\orange-NSIS.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Header\orange-uninstall-NSIS.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Wizard\orange-NSIS.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Wizard\orange-uninstall-NSIS.bmp"
 !define MUI_ABORTWARNING
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
@@ -131,11 +135,20 @@ CRCCheck on
 #FunctionEnd
 
 Function .onInit
+
+  #splash screen
+  SetOutPath $TEMP
+  File /oname=spltmp.bmp "trunk\setup\windows\resources\splash.bmp"
+  splash::show 1000 $TEMP\spltmp
+  Pop $0
+  Delete $TEMP\spltmp.bmp
+
   #Extract InstallOptions files
   #$PLUGINSDIR will automatically be removed when the installer closes
   InitPluginsDir
   File /oname=$PLUGINSDIR\shortcuts.ini "${NSIS_FILE_DIR}\shortcuts.ini"
   File /oname=$PLUGINSDIR\language.ini "${NSIS_FILE_DIR}\language.ini"
+
 FunctionEnd
 
 
