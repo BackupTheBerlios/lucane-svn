@@ -26,7 +26,7 @@ public class TodolistItem implements Serializable {
 	private int id;
 	private int parentTodolistId;
 	private String name;
-	private String description;
+	private String comment;
 	private int priority;
 	private boolean complete;
 	private Date creationDate;
@@ -38,19 +38,19 @@ public class TodolistItem implements Serializable {
 	private static String[] priorityLabels = {"low", "medium", "high"};
 	private static String[] completeLabels = {"false", "true"};
 
-	public TodolistItem(int parentTodolistId, String name, String description, int priority) {
-		this(-1, parentTodolistId, name, description, priority, false);
+	public TodolistItem(int parentTodolistId, String name, String comment, int priority) {
+		this(-1, parentTodolistId, name, comment, priority, false);
 	}
 
-	public TodolistItem(int parentTodolistId, String name, String description, int priority, boolean complete) {
-		this(-1, parentTodolistId, name, description, priority, complete);
+	public TodolistItem(int parentTodolistId, String name, String comment, int priority, boolean complete) {
+		this(-1, parentTodolistId, name, comment, priority, complete);
 	}
 
-	public TodolistItem(int id, int parentTodolistId, String name, String description, int priority, boolean complete) {
+	public TodolistItem(int id, int parentTodolistId, String name, String comment, int priority, boolean complete) {
 		this.id = id;
 		this.parentTodolistId = parentTodolistId;
 		this.name = name;
-		this.description = description;
+		this.comment = comment;
 		this.priority = priority;
 		this.creationDate = new Date();
 		this.completionDate = null;
@@ -63,8 +63,8 @@ public class TodolistItem implements Serializable {
 	public boolean isComplete() {
 		return complete;
 	}
-	public String getDescription() {
-		return description;
+	public String getComment() {
+		return comment;
 	}
 	public String getName() {
 		return name;
@@ -92,8 +92,8 @@ public class TodolistItem implements Serializable {
 			this.completionDate = null;
 		complete = b;
 	}
-	public void setDescription(String string) {
-		description = string;
+	public void setComment(String string) {
+		comment = string;
 	}
 	public void setName(String string) {
 		name = string;

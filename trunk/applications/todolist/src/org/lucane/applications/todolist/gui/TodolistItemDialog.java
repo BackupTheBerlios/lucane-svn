@@ -40,7 +40,7 @@ import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 public class TodolistItemDialog extends JDialog {
 	private JTextField jtfName;
-	private HTMLEditor htmledDescription;
+	private HTMLEditor htmledComment;
 	//private JTextField jtfPriority;
 	private JComboBox jcmbPriority;
 	private JCheckBox jcbComplete;
@@ -79,7 +79,7 @@ public class TodolistItemDialog extends JDialog {
 		setSize(512, 384);
 		
 		jtfName = new JTextField();
-		htmledDescription = new HTMLEditor();
+		htmledComment = new HTMLEditor();
 		//jtfPriority = new JTextField();
 		jcmbPriority = new JComboBox(TodolistItem.getPriorityLabels());
 		
@@ -93,11 +93,11 @@ public class TodolistItemDialog extends JDialog {
 									todolistItem.getId(),
 									todolistItem.getParentTodolistId(),
 									jtfName.getText(),
-									htmledDescription.getText(),
+									htmledComment.getText(),
 									jcmbPriority.getSelectedIndex(),
 									jcbComplete.isSelected()));
 				else
-					mainFrame.addTodolistItem(new TodolistItem(parentTodolistId, jtfName.getText(), htmledDescription.getText(), jcmbPriority.getSelectedIndex()));
+					mainFrame.addTodolistItem(new TodolistItem(parentTodolistId, jtfName.getText(), htmledComment.getText(), jcmbPriority.getSelectedIndex()));
 				hide();
 			}
 		});
@@ -131,11 +131,11 @@ public class TodolistItemDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=1;
-		getContentPane().add(new JLabel(plugin.tr("TodoListItemDialog.description")), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListItemDialog.comment")), c);
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(htmledDescription, c);
+		getContentPane().add(htmledComment, c);
 
 		c.gridy=2;
 		c.gridx=0;
@@ -167,7 +167,7 @@ public class TodolistItemDialog extends JDialog {
 			getContentPane().add(jcbComplete, c);
 
 			jtfName.setText(todolistItem.getName());
-			htmledDescription.setText(todolistItem.getDescription());
+			htmledComment.setText(todolistItem.getComment());
 			jcmbPriority.setSelectedIndex(todolistItem.getPriority());
 			jcbComplete.setSelected(todolistItem.isComplete());
 		}

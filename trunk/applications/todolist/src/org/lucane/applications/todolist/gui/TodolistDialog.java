@@ -39,7 +39,7 @@ import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 public class TodolistDialog extends JDialog {
 	private JTextField jtfName;
-	private HTMLEditor htmledDescription;
+	private HTMLEditor htmledComment;
 	private JButton jbOk;
 	private JButton jbCancel;
 	
@@ -74,7 +74,7 @@ public class TodolistDialog extends JDialog {
 		setSize(512, 384);
 		
 		jtfName = new JTextField();
-		htmledDescription = new HTMLEditor();
+		htmledComment = new HTMLEditor();
 		
 		jbOk = new JButton(plugin.tr("TodoListDialog.ok"));
 		jbOk.addActionListener(new ActionListener() {
@@ -86,9 +86,9 @@ public class TodolistDialog extends JDialog {
 									todolist.getId(),									
 									todolist.getUserName(),
 									jtfName.getText(),
-									htmledDescription.getText()));
+									htmledComment.getText()));
 				else
-					mainFrame.addTodolist(new Todolist(IO.getInstance(plugin).getUserName(), jtfName.getText(), htmledDescription.getText()));
+					mainFrame.addTodolist(new Todolist(IO.getInstance(plugin).getUserName(), jtfName.getText(), htmledComment.getText()));
 				hide();
 			}
 		});
@@ -122,11 +122,11 @@ public class TodolistDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=1;
-		getContentPane().add(new JLabel(plugin.tr("TodoListDialog.description")), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListDialog.comment")), c);
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(htmledDescription, c);
+		getContentPane().add(htmledComment, c);
 
 		c.fill=GridBagConstraints.BOTH;
 		c.gridy=2;
@@ -138,7 +138,7 @@ public class TodolistDialog extends JDialog {
 		
 		if (modify) {
 			jtfName.setText(todolist.getName());
-			htmledDescription.setText(todolist.getDescription());
+			htmledComment.setText(todolist.getComment());
 		}
 	}
 }

@@ -25,16 +25,16 @@ public class Todolist implements Serializable {
 	private int id;
 	private String userName;
 	private String name;
-	private String description;
+	private String comment;
 	
-	public Todolist(String userName, String name, String description) {
-		this(-1, userName, name, description);
+	public Todolist(String userName, String name, String comment) {
+		this(-1, userName, name, comment);
 	}
-	public Todolist(int id, String userName, String name, String description) {
+	public Todolist(int id, String userName, String name, String comment) {
 		this.id = id;
 		this.userName = userName;
 		this.name = name;
-		this.description = description;
+		this.comment = comment;
 	}
 
 	public int getId() {
@@ -43,8 +43,8 @@ public class Todolist implements Serializable {
 	public String getUserName() {
 		return userName;
 	}
-	public String getDescription() {
-		return description;
+	public String getComment() {
+		return comment;
 	}
 	public String getName() {
 		return name;
@@ -56,8 +56,8 @@ public class Todolist implements Serializable {
 	public void setUserName(String string) {
 		userName = string;
 	}
-	public void setDescription(String string) {
-		description = string;
+	public void setComment(String string) {
+		comment = string;
 	}
 	public void setName(String string) {
 		name = string;

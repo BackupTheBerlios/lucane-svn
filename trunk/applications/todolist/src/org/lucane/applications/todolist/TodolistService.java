@@ -184,7 +184,7 @@ public class TodolistService extends Service {
 			st.setInt(1, id);
 			st.setString(2, newTodolist.getUserName());
 			st.setString(3, newTodolist.getName());
-			st.setString(4, newTodolist.getDescription());
+			st.setString(4, newTodolist.getComment());
 			st.executeUpdate();
 			st.close();
 
@@ -203,7 +203,7 @@ public class TodolistService extends Service {
 					"UPDATE todolists SET user_name=?, name=?, description=? WHERE id=?");
 			st.setString(1, newTodolist.getUserName());
 			st.setString(2, newTodolist.getName());
-			st.setString(3, newTodolist.getDescription());
+			st.setString(3, newTodolist.getComment());
 			st.setInt(4, oldTodolistId);
 			st.executeUpdate();
 			st.close();
@@ -266,7 +266,7 @@ public class TodolistService extends Service {
 					"INSERT INTO todolistitems (id, name, description, id_list, priority, complete) VALUES (?, ?, ?, ?, ?, ?)");
 			st.setInt(1, id);
 			st.setString(2, newTodolistItem.getName());
-			st.setString(3, newTodolistItem.getDescription());
+			st.setString(3, newTodolistItem.getComment());
 			st.setInt(4, newTodolistItem.getParentTodolistId());
 			st.setInt(5, newTodolistItem.getPriority());
 			st.setInt(6, newTodolistItem.isComplete()?1:0);
@@ -287,7 +287,7 @@ public class TodolistService extends Service {
 			st = conn.prepareStatement(
 					"UPDATE todolistitems SET name=?, description=?, id_list=?, priority=?, complete=? WHERE id=?");
 			st.setString(1, newTodolistItem.getName());
-			st.setString(2, newTodolistItem.getDescription());
+			st.setString(2, newTodolistItem.getComment());
 			st.setInt(3, newTodolistItem.getParentTodolistId());
 			st.setInt(4, newTodolistItem.getPriority());
 			st.setInt(5, newTodolistItem.isComplete()?1:0);

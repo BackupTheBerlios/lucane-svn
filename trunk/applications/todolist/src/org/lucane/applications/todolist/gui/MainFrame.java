@@ -51,12 +51,12 @@ public class MainFrame extends JFrame {
 
 	private TodolistTable jtTodolists;
 	private JSplitPane jspList;
-	private HTMLEditor htmledListDescription;
+	private HTMLEditor htmledListComment;
 	private JPanel jpListView;
 
 	private TodolistItemTable jtTodolistItems;
 	private JSplitPane jspItem;
-	private HTMLEditor htmledListItemDescription;
+	private HTMLEditor htmledListItemComment;
 	private JPanel jpItemView;
 	
 	private JSplitPane jspMain;
@@ -94,12 +94,12 @@ public class MainFrame extends JFrame {
 				refreshTodolistItems();
 			}
 		});
-		htmledListDescription = new HTMLEditor();
-		htmledListDescription.setEditable(false);
-		htmledListDescription.setToolbarVisible(false);
+		htmledListComment = new HTMLEditor();
+		htmledListComment.setEditable(false);
+		htmledListComment.setToolbarVisible(false);
 		jpListView = new JPanel(new BorderLayout());
-		jpListView.add(new JLabel(plugin.tr("MainInterface.decription")), BorderLayout.NORTH);
-		jpListView.add(htmledListDescription, BorderLayout.CENTER);
+		jpListView.add(new JLabel(plugin.tr("MainInterface.comment")), BorderLayout.NORTH);
+		jpListView.add(htmledListComment, BorderLayout.CENTER);
 		jspList = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolists), jpListView);
 		jspList.setResizeWeight(.70);
 
@@ -109,20 +109,20 @@ public class MainFrame extends JFrame {
 			public void valueChanged(ListSelectionEvent lse) {
 				TodolistItem tli = jtTodolistItems.getSelectedTodolistItem();
 				if (tli!=null) {
-					htmledListItemDescription.setText(tli.getDescription());
+					htmledListItemComment.setText(tli.getComment());
 				} else {
-					htmledListItemDescription.clear();
+					htmledListItemComment.clear();
 				}
 			}
 		});
 
 		jpItemView = new JPanel();
 		jpItemView.setLayout(new BorderLayout());
-		jpItemView.add(new JLabel(plugin.tr("MainInterface.decription")), BorderLayout.NORTH);
-		htmledListItemDescription = new HTMLEditor();
-		htmledListItemDescription.setEditable(false);
-		htmledListItemDescription.setToolbarVisible(false);
-		jpItemView.add(htmledListItemDescription, BorderLayout.CENTER);
+		jpItemView.add(new JLabel(plugin.tr("MainInterface.comment")), BorderLayout.NORTH);
+		htmledListItemComment = new HTMLEditor();
+		htmledListItemComment.setEditable(false);
+		htmledListItemComment.setToolbarVisible(false);
+		jpItemView.add(htmledListItemComment, BorderLayout.CENTER);
 
 		jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolistItems), jpItemView);
 		jspItem.setResizeWeight(.70);
@@ -237,7 +237,7 @@ public class MainFrame extends JFrame {
 				if (tli!=null) {
 					new TodolistItemDialog(plugin, mainFrame, tli).show();
 				} else {
-					htmledListItemDescription.clear();
+					htmledListItemComment.clear();
 				}
 			}
 		});
@@ -259,7 +259,7 @@ public class MainFrame extends JFrame {
 	private void refreshTodolistItems() {
 		Todolist tl = jtTodolists.getSelectedTodolist();
 		if (tl!=null) {
-			htmledListDescription.setText(tl.getDescription());
+			htmledListComment.setText(tl.getComment());
 
 			ArrayList todolistItems = IO.getInstance(plugin).getTodolistItems(tl.getId());
 			jtTodolistItems.clear();
@@ -268,7 +268,7 @@ public class MainFrame extends JFrame {
 				jtTodolistItems.add((TodolistItem)it.next());
 		}
 		else {
-			htmledListDescription.clear();
+			htmledListComment.clear();
 			jtTodolistItems.clear();
 		}
 	}
