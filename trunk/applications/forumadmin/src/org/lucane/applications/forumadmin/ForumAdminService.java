@@ -84,10 +84,6 @@ public class ForumAdminService
     }
   }
 
-  public void install()
-  {
-  }
-
   private void list(ObjectConnection sc)
   {
     try

@@ -35,37 +35,6 @@ public class ForumService
   private Statement st = null;
   private ResultSet res = null;
 
-
-  public void createTable()
-  {
-    try
-    {
-      String request;
-      request = "CREATE TABLE forum (name " + layer.resolveType("SMALLTEXT") + ")";
-      st = conn.createStatement();
-      st.execute(request);
-    }
-    catch(SQLException ex)
-    {
-		Logging.getLogger().warning("Error : " + ex);
-    }
-
-    try
-    {
-      String request;
-      request = "CREATE TABLE forumMessage (id " + layer.resolveType("INT") +
-                ", idref " + layer.resolveType("INT") + ", forum " + layer.resolveType("SMALLTEXT") +
-                ", author " + layer.resolveType("SMALLTEXT") + ", title " + layer.resolveType("SMALLTEXT") +  
-                ", datum " + layer.resolveType("SMALLTEXT") + ", content " + layer.resolveType("TEXT") + ")";
-      st = conn.createStatement();
-      st.execute(request);
-    }
-    catch(SQLException ex)
-    {
-		Logging.getLogger().warning("Error : " + ex);
-    }
-  }
-
   /**
    * Creates a new ForumService object.
    */
@@ -122,7 +91,13 @@ public class ForumService
 
   public void install()
   {
-    createTable();
+  		try {
+  			String dbDescription = getDirectory()	+ "db-forum.xml";
+  			layer.getTableCreator().createFromXml(dbDescription);
+		} catch (Exception e) {
+			Logging.getLogger().severe("Unable to install ForumService !");
+			e.printStackTrace();
+		}  
   }
 
   private void list(ObjectConnection sc)

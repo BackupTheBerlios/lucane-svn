@@ -52,94 +52,21 @@ extends Service
 	 * Only called the first time a service is initialized.
 	 */
 	public void install() 
-	{
-		String query;		
-		Connection c;		
-		Statement st;
-		
-		Logging.getLogger().info("Creating CalEvents table");
-		query = "create table CalEvents(id " + layer.resolveType("INT") +
-			", title " + layer.resolveType("TEXT") +
-			", type " + layer.resolveType("TEXT") +
-			", organizer " + layer.resolveType("TEXT") +
-			", isPublic " + layer.resolveType("SMALLINT") +
-			", startTime " + layer.resolveType("BIGINT") +
-			", endTime " + layer.resolveType("BIGINT") +
-			", recurrence " + layer.resolveType("INT") +
-			", description " + layer.resolveType("TEXT") + ")";
+	{		
 		try {
-			c = layer.openConnection();
-			st = c.createStatement();
+			String dbDescription = getDirectory()	+ "db-calendar.xml";
+			layer.getTableCreator().createFromXml(dbDescription);
+			
+			String query = "insert into CalEventTypes values ('default', 170, 140, 220)";
+			Connection c = layer.openConnection();
+			Statement st = c.createStatement();
 			st.execute(query);
 			st.close();
 			c.close();
-		} catch(SQLException se) {
-			se.printStackTrace();
-		}
-		
-		Logging.getLogger().info("Creating CalEventTypes table");
-		query = "create table CalEventTypes(type " + layer.resolveType("TEXT") +
-			", red " + layer.resolveType("SMALLINT") +
-			", green " + layer.resolveType("SMALLINT") +
-			", blue " + layer.resolveType("SMALLINT") + ")";
-		try {
-			c = layer.openConnection();
-			st = c.createStatement();
-			st.execute(query);
-			st.close();
-			c.close();
-		} catch(SQLException se) {
-			se.printStackTrace();
-		}
-		query = "insert into CalEventTypes values ('default', 170, 140, 220)";
-		try {
-			c = layer.openConnection();
-			st = c.createStatement();
-			st.execute(query);
-			st.close();
-			c.close();
-		} catch(SQLException se) {
-			se.printStackTrace();
-		}		
-		Logging.getLogger().info("Creating CalObjects table");
-		query = "create table CalObjects(name " + layer.resolveType("TEXT") +")";
-		try {
-			c = layer.openConnection();
-			st = c.createStatement();
-			st.execute(query);
-			st.close();
-			c.close();
-		} catch(SQLException se) {
-			se.printStackTrace();
-		}
-		
-		Logging.getLogger().info("Creating CalAttendees table");
-		query = "create table CalAttendees(eventId " + layer.resolveType("INT") +
-			", userName " + layer.resolveType("TEXT") +
-			", mandatory " + layer.resolveType("SMALLINT") +
-			", status " + layer.resolveType("TEXT") + ")";
-		try {
-			c = layer.openConnection();
-			st = c.createStatement();
-			st.execute(query);
-			st.close();
-			c.close();
-		} catch(SQLException se) {
-			se.printStackTrace();
-		}
-
-		Logging.getLogger().info("Creating CalResources table");
-		query = "create table CalResources(eventId " + layer.resolveType("INT") +
-			", object " + layer.resolveType("TEXT") + ")";
-		try {
-			c = layer.openConnection();
-			st = c.createStatement();
-			st.execute(query);
-			st.close();
-			c.close();
-		} catch(SQLException se) {
-			se.printStackTrace();
-		}
+		} catch (Exception e) {
+			Logging.getLogger().severe("Unable to install CalendarService !");
+			e.printStackTrace();
+		}    
 	}
 	
 	public void process(ObjectConnection oc, Message message) 

@@ -41,30 +41,13 @@ extends Service
 
   public void install()
   {
-	try 
-	{
-	  Connection connex = layer.openConnection();
-	  Statement stmt = connex.createStatement();
-	  stmt.execute("CREATE TABLE JMailAccounts(" +
-		  "userName " + layer.resolveType("SMALLTEXT") +
-		", address " + layer.resolveType("SMALLTEXT") +
-		", type " + layer.resolveType("SMALLTEXT") +
-		", inHost " + layer.resolveType("SMALLTEXT") +
-		", inPort " + layer.resolveType("INT") +
-		", outHost " + layer.resolveType("SMALLTEXT") +
-		", outPort " + layer.resolveType("INT") +
-		", login " + layer.resolveType("SMALLTEXT") +
-		", password " + layer.resolveType("SMALLTEXT") +
-		")");
-
-	  stmt.close();
-	  connex.close();
-	}
-	catch(SQLException se)
-	{
-		Logging.getLogger().info("Unable to create JMail tables");
-        se.printStackTrace();
-	}
+  	try {
+  		String dbDescription = getDirectory()	+ "db-jmail.xml";
+  		layer.getTableCreator().createFromXml(dbDescription);
+  	} catch (Exception e) {
+  		Logging.getLogger().severe("Unable to install JMailService !");
+  		e.printStackTrace();
+  	}  
   }
 
   public void process(ObjectConnection oc, Message message)

@@ -41,24 +41,20 @@ public class SendMailService extends Service
 
         public void createTable()
         {
-             try
-             {
+             try  {  	
+             	String dbDescription = getDirectory()	+ "db-sendmail.xml";
+             	layer.getTableCreator().createFromXml(dbDescription);
+             	
                  conn = layer.openConnection();
-                 String request = "CREATE TABLE smtphost(hostname " + layer.resolveType("SMALLTEXT") + ")";
-                 st = conn.createStatement();
-                 st.execute(request);
-                 st.close();
-                 
-                 request = "INSERT INTO smtphost VALUES ('" + SMTP_HOST + "')";
+                 String request = "INSERT INTO smtphost VALUES ('" + SMTP_HOST + "')";
                  st = conn.createStatement();
                  st.execute(request);
                  st.close();
                  conn.close();
-             }
-             catch(SQLException e)
-             {
-				Logging.getLogger().warning("Error : " + e);
-             }
+             } catch (Exception e) {
+             	Logging.getLogger().severe("Unable to install SendMailService !");
+             	e.printStackTrace();
+             }    
         }
 
         public void initSmtpHost()

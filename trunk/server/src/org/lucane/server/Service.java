@@ -39,6 +39,21 @@ public abstract class Service
   }
 
   /**
+   * Return the service base directory
+   * 
+   * @return the service directory
+   */
+  public String getDirectory()
+  {
+  	String pack = this.getClass().getPackage().getName();
+
+  	String url = "jar:file:///" + System.getProperty("user.dir") + "/" + 
+		Server.APPLICATIONS_DIRECTORY + pack + ".jar!/";
+
+  	return url.replace('\\', '/');
+  }
+
+  /**
    * Called each time a request for this service has to be treated.
    * 
    * @param oc the connection

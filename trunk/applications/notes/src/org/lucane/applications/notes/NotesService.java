@@ -48,36 +48,13 @@ extends Service
 
   public void install()
   {
-	try 
-	{
-	  Statement stmt = connex.createStatement();
-	  stmt.execute("CREATE TABLE notes(" +
-		  "id " + layer.resolveType("INT") +
-		  ", author " + layer.resolveType("SMALLTEXT") +
-		  ", title " + layer.resolveType("SMALLTEXT") +
-		  ", content " + layer.resolveType("TEXT") +
-		  ", creationDate " + layer.resolveType("BIGINT") +
-		  ", editionDate " + layer.resolveType("BIGINT") +
-		  ", isPublic " + layer.resolveType("SMALLINT") +
-		  ", commentable " + layer.resolveType("SMALLINT") +
-		  ")");
-
-	  stmt.execute("CREATE TABLE notes_comments(" +
-		  "id " + layer.resolveType("INT") +
-		  ", idnote " + layer.resolveType("INT") +
-		  ", author " + layer.resolveType("SMALLTEXT") +
-		  ", title " + layer.resolveType("SMALLTEXT") +
-		  ", content " + layer.resolveType("TEXT") +
-		  ", creationDate " + layer.resolveType("BIGINT") +
-		  ")");
-
-	  stmt.close();
-	}
-	catch(SQLException se)
-	{
-		Logging.getLogger().info("Unable to create notes tables");
-          se.printStackTrace();
-	}
+  	try {
+  		String dbDescription = getDirectory()	+ "db-notes.xml";
+  		layer.getTableCreator().createFromXml(dbDescription);
+  	} catch (Exception e) {
+  		Logging.getLogger().severe("Unable to install NotesService !");
+  		e.printStackTrace();
+  	}    
   }
 
   public void process(ObjectConnection oc, Message message)

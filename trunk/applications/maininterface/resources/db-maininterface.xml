@@ -1,0 +1,10 @@
+<database>
+
+  <table name="MIUse">
+    <column name="login" type="smalltext" />
+    <column name="plugin" type="text" />
+    <column name="nbUse" type="smalltext" />
+    <primary-key columns="login,plugin" />
+  </table>
+
+</database>

@@ -33,22 +33,6 @@ public class MIService
   private Statement st = null;
   private ResultSet res = null;
 
-  public void createTable()
-  {
-    try
-    {
-      String request;
-      request = "CREATE TABLE MIUse (login " + layer.resolveType("SMALLTEXT") +  
-                ", plugin " + layer.resolveType("TEXT") + ", nbUse " + layer.resolveType("INT") + ")";
-      st = conn.createStatement();
-      st.execute(request);
-    }
-    catch(SQLException ex)
-    {
-		Logging.getLogger().warning("Error : " + ex);
-    }
-  }
-
   /**
    * Creates a new MIService object.
    */
@@ -96,7 +80,13 @@ public class MIService
 
   public void install()
   {
-    createTable();
+  	try {
+  		String dbDescription = getDirectory()	+ "db-maininterface.xml";
+  		layer.getTableCreator().createFromXml(dbDescription);
+  	} catch (Exception e) {
+  		Logging.getLogger().severe("Unable to install MIService !");
+  		e.printStackTrace();
+  	}    	
   }
 
   private void getUse(String who, String data, ObjectConnection oc)
