@@ -124,7 +124,7 @@ public class TodolistService extends Service {
 	private void getTodolists(ObjectConnection oc, String userName) {
 		try {
 			st = conn.prepareStatement(
-					"SELECT id, user_name, name, description FROM todolists WHERE user_name=?");
+					"SELECT id, user_name, name, comment FROM todolists WHERE user_name=?");
 			st.setString(1, userName);
 			res = st.executeQuery();
 			
@@ -147,7 +147,7 @@ public class TodolistService extends Service {
 	private void getTodolistItems(ObjectConnection oc, int idList) {
 		try {
 			st = conn.prepareStatement(
-					"SELECT id, id_list, name, description, priority, complete FROM todolistitems WHERE id_list=?");
+					"SELECT id, id_list, name, comment, priority, completed FROM todolistitems WHERE id_list=?");
 			st.setInt(1, idList);
 			res = st.executeQuery();
 			
@@ -179,7 +179,7 @@ public class TodolistService extends Service {
 			st.close();
 			
 			st = conn.prepareStatement(
-					"INSERT INTO todolists (id, user_name, name, description) VALUES (?, ?, ?, ?)");
+					"INSERT INTO todolists (id, user_name, name, comment) VALUES (?, ?, ?, ?)");
 			newTodolist.setId(id);
 			st.setInt(1, id);
 			st.setString(2, newTodolist.getUserName());
@@ -200,7 +200,7 @@ public class TodolistService extends Service {
 	private void modifyTodolist(ObjectConnection oc, int oldTodolistId, Todolist newTodolist) {
 		try {
 			st = conn.prepareStatement(
-					"UPDATE todolists SET user_name=?, name=?, description=? WHERE id=?");
+					"UPDATE todolists SET user_name=?, name=?, comment=? WHERE id=?");
 			st.setString(1, newTodolist.getUserName());
 			st.setString(2, newTodolist.getName());
 			st.setString(3, newTodolist.getComment());
@@ -263,13 +263,13 @@ public class TodolistService extends Service {
 			st.close();
 		
 			st = conn.prepareStatement(
-					"INSERT INTO todolistitems (id, name, description, id_list, priority, complete) VALUES (?, ?, ?, ?, ?, ?)");
+					"INSERT INTO todolistitems (id, name, comment, id_list, priority, completed) VALUES (?, ?, ?, ?, ?, ?)");
 			st.setInt(1, id);
 			st.setString(2, newTodolistItem.getName());
 			st.setString(3, newTodolistItem.getComment());
 			st.setInt(4, newTodolistItem.getParentTodolistId());
 			st.setInt(5, newTodolistItem.getPriority());
-			st.setInt(6, newTodolistItem.isComplete()?1:0);
+			st.setInt(6, newTodolistItem.isCompleted()?1:0);
 			st.executeUpdate();
 			st.close();
 
@@ -285,12 +285,12 @@ public class TodolistService extends Service {
 	private void modifyTodolistItem(ObjectConnection oc, int oldTodolistItemId, TodolistItem newTodolistItem) {
 		try {
 			st = conn.prepareStatement(
-					"UPDATE todolistitems SET name=?, description=?, id_list=?, priority=?, complete=? WHERE id=?");
+					"UPDATE todolistitems SET name=?, comment=?, id_list=?, priority=?, completed=? WHERE id=?");
 			st.setString(1, newTodolistItem.getName());
 			st.setString(2, newTodolistItem.getComment());
 			st.setInt(3, newTodolistItem.getParentTodolistId());
 			st.setInt(4, newTodolistItem.getPriority());
-			st.setInt(5, newTodolistItem.isComplete()?1:0);
+			st.setInt(5, newTodolistItem.isCompleted()?1:0);
 			st.setInt(6, oldTodolistItemId);
 			st.executeUpdate();
 			st.close();

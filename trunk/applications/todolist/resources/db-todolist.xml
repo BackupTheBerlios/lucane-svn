@@ -4,7 +4,7 @@
     <column name="id" type="int" />
     <column name="user_name" type="smalltext" />
     <column name="name" type="smalltext" />
-    <column name="description" type="text" />
+    <column name="comment" type="text" />
     <primary-key columns="id" />
   </table>
 
@@ -12,9 +12,9 @@
     <column name="id" type="int" />
     <column name="id_list" type="int" /> <!-- references TodoLists -->
     <column name="name" type="smalltext" />
-    <column name="description" type="text" />
+    <column name="comment" type="text" />
     <column name="priority" type="smallint" />
-    <column name="complete" type="smallint" />
+    <column name="completed" type="smallint" />
     <primary-key columns="id" />
   </table>
 

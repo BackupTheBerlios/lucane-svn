@@ -169,7 +169,7 @@ class TodolistItemTableModel extends AbstractTableModel {
 			case 1 :
 				return TodolistItem.getPriorityLabels()[item.getPriority()];
 			case 2 :
-				return TodolistItem.getCompleteLabels()[item.isComplete()?1:0];
+				return TodolistItem.getCompleteLabels()[item.isCompleted()?1:0];
 		}
 		return "";
 	}
@@ -214,7 +214,7 @@ class TodolistItemsSorter implements Comparator {
 			case PRIORITY :
 				return direction*(tli2.getPriority()-tli1.getPriority());
 			case COMPLETED :
-				return direction*((tli1.isComplete()?1:0)-(tli2.isComplete()?1:0));
+				return direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
 		}
 		return 0;
 	}

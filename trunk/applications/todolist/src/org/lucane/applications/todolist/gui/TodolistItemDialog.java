@@ -169,7 +169,7 @@ public class TodolistItemDialog extends JDialog {
 			jtfName.setText(todolistItem.getName());
 			htmledComment.setText(todolistItem.getComment());
 			jcmbPriority.setSelectedIndex(todolistItem.getPriority());
-			jcbComplete.setSelected(todolistItem.isComplete());
+			jcbComplete.setSelected(todolistItem.isCompleted());
 		}
 	}
 }

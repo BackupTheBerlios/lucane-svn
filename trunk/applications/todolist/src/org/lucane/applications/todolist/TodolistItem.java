@@ -60,7 +60,7 @@ public class TodolistItem implements Serializable {
 	public int getId() {
 		return id;
 	}
-	public boolean isComplete() {
+	public boolean isCompleted() {
 		return complete;
 	}
 	public String getComment() {
