@@ -79,6 +79,9 @@ implements ActionListener
 			try {
 				ArrayList users = plugin.getUsers();
 				int index = DialogBox.list(null, tr("userSelection"), tr("msg.selectUser"), new Vector(users));
+				if(index < 0)
+					return;
+				
 				UserConcept user = (UserConcept)users.get(index);
 				attendees.addAttendee(new Attendee(user.getName(), true));
 			} catch(Exception e) {

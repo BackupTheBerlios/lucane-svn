@@ -22,6 +22,8 @@ package org.lucane.applications.calendar.gui;
 import javax.swing.*;
 
 import org.lucane.client.Client;
+import org.lucane.client.widgets.DialogBox;
+import org.lucane.common.concepts.UserConcept;
 import org.lucane.applications.calendar.CalendarPlugin;
 import org.lucane.applications.calendar.Event;
 import org.lucane.applications.calendar.widget.*;
@@ -30,7 +32,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.net.URL;
-import java.text.*;
 
 public class CalendarFrame extends JFrame
 implements ActionListener, CalendarListener
@@ -41,6 +42,7 @@ implements ActionListener, CalendarListener
 	private JButton newEvent;
 	private JButton goToCurrentMonth;
 	private JButton goToCurrentDay;
+	private JButton otherCalendars;
 	private JButton close;
 	
 	private transient CalendarPlugin plugin;
@@ -57,12 +59,14 @@ implements ActionListener, CalendarListener
 		newEvent = new JButton(tr("btn.newEvent"));
 		goToCurrentMonth = new JButton(tr("btn.thisMonth"));
 		goToCurrentDay = new JButton(tr("btn.today"));
+		otherCalendars = new JButton(tr("btn.otherCalendars"));
 		close = new JButton(tr("btn.close"));
 		
 		try {
 			newEvent.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "new.png")));
 			goToCurrentMonth.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
 			goToCurrentDay.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
+			otherCalendars.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "other.png")));
 			close.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "close.png")));
 		} catch(Exception e) {
 			//nothing, no icons :-/
@@ -71,6 +75,7 @@ implements ActionListener, CalendarListener
 		newEvent.addActionListener(this);
 		goToCurrentMonth.addActionListener(this);
 		goToCurrentDay.addActionListener(this);
+		otherCalendars.addActionListener(this);
 		close.addActionListener(this);
 
 		JPanel topbar = new JPanel(new BorderLayout());
@@ -82,17 +87,14 @@ implements ActionListener, CalendarListener
 	
 	private void initTopBar(JPanel bar)
 	{		
-		Locale locale = new Locale(Client.getInstance().getLanguage());
-		DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, locale);
-		JLabel dayLabel = new JLabel(df.format(new Date()));
-		JPanel buttons = new JPanel(new GridLayout(1, 4));
+		JPanel buttons = new JPanel(new GridLayout(1, 5));
 		
 		buttons.add(newEvent);
 		buttons.add(goToCurrentMonth);
 		buttons.add(goToCurrentDay);
+		buttons.add(otherCalendars);
 		buttons.add(close);
 		
-		bar.add(dayLabel, BorderLayout.WEST);
 		bar.add(buttons, BorderLayout.EAST);
 		bar.setBorder(BorderFactory.createEmptyBorder(2, 15, 5, 1));
 	}
@@ -100,8 +102,7 @@ implements ActionListener, CalendarListener
 	public void actionPerformed(ActionEvent ae)
 	{
 		if(ae.getSource() == newEvent)
-		{
-			
+		{			
 			//TODO create a better default event
 			long time = Calendar.getInstance().getTimeInMillis();
 			Event e = new Event(-1, "", tr("event.newEvent"), Client.getInstance().getMyInfos().getName(),
@@ -130,6 +131,26 @@ implements ActionListener, CalendarListener
 				getContentPane().validate();
 				this.repaint();
 			}
+		}
+		else if(ae.getSource() == otherCalendars)
+		{
+			ArrayList users;
+			try {
+				users = plugin.getUsers();
+				int index = DialogBox.list(this, tr("userSelection"), tr("msg.selectUser"), new Vector(users));
+				if(index < 0)
+					return;
+				
+				UserConcept user = (UserConcept)users.get(index);
+				CalendarViewer viewer = new CalendarViewer(plugin, user.getName());
+				viewer.setSize(780, 550);
+				viewer.setIconImage(plugin.getImageIcon().getImage());
+				viewer.show();					
+			} catch (Exception e) {
+				DialogBox.error(tr("err.unableToFetchUserList"));
+				e.printStackTrace();
+			}
+
 		}
 		else if(ae.getSource() == close)
 		{

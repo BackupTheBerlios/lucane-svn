@@ -21,7 +21,6 @@ package org.lucane.applications.calendar.gui;
 
 import javax.swing.*;
 
-import org.lucane.client.Client;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.applications.calendar.CalendarPlugin;
 import org.lucane.applications.calendar.widget.*;
@@ -31,7 +30,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.net.URL;
-import java.text.*;
 
 public class CalendarViewer extends JFrame
 implements ActionListener, CalendarListener
@@ -79,16 +77,12 @@ implements ActionListener, CalendarListener
 	
 	private void initTopBar(JPanel bar)
 	{		
-		Locale locale = new Locale(Client.getInstance().getLanguage());
-		DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, locale);
-		JLabel dayLabel = new JLabel(df.format(new Date()));
 		JPanel buttons = new JPanel(new GridLayout(1, 3));
 		
 		buttons.add(goToCurrentMonth);
 		buttons.add(goToCurrentDay);
 		buttons.add(close);
 		
-		bar.add(dayLabel, BorderLayout.WEST);
 		bar.add(buttons, BorderLayout.EAST);
 		bar.setBorder(BorderFactory.createEmptyBorder(2, 15, 5, 1));
 	}

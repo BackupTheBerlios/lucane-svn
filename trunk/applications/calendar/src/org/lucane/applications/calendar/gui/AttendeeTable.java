@@ -18,6 +18,8 @@
  */
 package org.lucane.applications.calendar.gui;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -26,21 +28,29 @@ import javax.swing.table.*;
 
 import org.lucane.client.Plugin;
 import org.lucane.applications.calendar.Attendee;
+import org.lucane.applications.calendar.CalendarPlugin;
 
 public class AttendeeTable extends JTable
+implements MouseListener
 {
-	public AttendeeTable(Plugin plugin, String name, ArrayList attendees)
+	private CalendarPlugin plugin;
+	
+	public AttendeeTable(CalendarPlugin plugin, String name, ArrayList attendees)
 	{
 		super(new AttendeeTableModel(plugin, attendees));
+
 		getColumnModel().getColumn(0).setMinWidth(16);
 		getColumnModel().getColumn(0).setMaxWidth(20);
 		getTableHeader().getColumnModel().getColumn(0).setHeaderValue("");
 		getTableHeader().getColumnModel().getColumn(1).setHeaderValue(name);
 		setRowSelectionAllowed(true);
 		setShowVerticalLines(false);
+		
+		this.plugin = plugin;
+		this.addMouseListener(this);
 	}
 
-	public AttendeeTable(Plugin plugin, String name)
+	public AttendeeTable(CalendarPlugin plugin, String name)
 	{
 		this(plugin, name, new ArrayList());	
 	}
@@ -72,6 +82,22 @@ public class AttendeeTable extends JTable
 		int row = this.getSelectedRow();
 		if(row >= 0)
 			((AttendeeTableModel)this.getModel()).removeAt(row);
+	}
+
+	public void mouseEntered(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) 
+	{
+		if(e.getClickCount() == 2)
+		{	
+			Attendee a = this.getAttendeeAt(this.getSelectedRow());
+			CalendarViewer viewer = new CalendarViewer(plugin, a.getUser());
+			viewer.setSize(780, 550);
+			viewer.setIconImage(plugin.getImageIcon().getImage());
+			viewer.show();				
+		}
 	}
 }
 
