@@ -52,6 +52,8 @@ public class Client
     private String publicIp;
     private String language;
 	private ClientConfig config;
+	
+	private String startupPlugin;
 
 
     private static Client instance = null;
@@ -134,13 +136,13 @@ public class Client
             ObjectConnection oc = this.communicator.sendMessageTo(serverInfos, "Server",
                 "STARTUP_PLUGINS");
             
-            String startup = oc.readString();
+            this.startupPlugin = oc.readString();
             
-            if(this.pluginloader.hasPlugin(startup))
-                this.pluginloader.run(startup, new ConnectInfo[0]);
+            if(this.pluginloader.hasPlugin(startupPlugin))
+                this.pluginloader.run(startupPlugin, new ConnectInfo[0]);
             else
             {
-                DialogBox.error(startup + " : " + Translation.tr("clientUnknownPlugin"));
+                DialogBox.error(startupPlugin + " : " + Translation.tr("clientUnknownPlugin"));
                 this.cleanExit();
             }
             
@@ -370,6 +372,14 @@ public class Client
     public String getLanguage()
     {        
         return this.language;
+    }
+    
+    /**
+     * Get the startup plugin for the current user
+     */
+    public String getStartupPlugin()
+	{
+    	return this.startupPlugin;
     }
 
 	/**

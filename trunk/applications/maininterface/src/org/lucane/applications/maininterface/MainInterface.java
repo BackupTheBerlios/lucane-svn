@@ -313,8 +313,13 @@ public class MainInterface
   {
 	Logging.getLogger().finer("MainInterface::cleanExit()");
     parent.removeUserListListener(this);
-
-    while(true)
-      exit();
+    exit();
+    
+    //if we are the main plugin, let's exit everyone
+    if(Client.getInstance().getStartupPlugin().equals(this.getName()))
+    {	
+    	while(true)
+    		exit();
+    }
   }
 }
