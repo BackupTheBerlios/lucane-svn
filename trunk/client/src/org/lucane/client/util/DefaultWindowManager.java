@@ -38,6 +38,9 @@ public class DefaultWindowManager implements WindowManager
         public void show(ManagedWindow window)
         {
                 final JFrame f = new JFrame();
+                windows.put(window, f);
+                f.addWindowListener(new ManagedWindowListener(window));
+                
                 f.setName(window.getName());
                 f.setContentPane(window.getContentPane());
                 f.setIconImage(window.getIconImage());
@@ -50,15 +53,12 @@ public class DefaultWindowManager implements WindowManager
                 else
                         f.setSize(window.getPreferredSize());
                 
-                if(window.mustExitPluginOnClose())
-                        f.addWindowListener(new PluginExitWindowListener(window.getOwner()));
-
-                WidgetState.restore(window.getOwner().getLocalConfig(), f);
-                windows.put(window, f);
-                
+                if(window.discardWidgetState())
+                	WidgetState.restore(window.getOwner().getLocalConfig(), f);
+                                
                 Iterator listeners = window.getWindowListeners();
                 while(listeners.hasNext())
-                        f.addWindowListener((WindowListener)listeners.next());
+                    f.addWindowListener((WindowListener)listeners.next());
                 
                 SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
@@ -80,8 +80,12 @@ public class DefaultWindowManager implements WindowManager
         public void dispose(ManagedWindow window)
         {
                 JFrame f = (JFrame)windows.get(window);
-                WidgetState.save(window.getOwner().getLocalConfig(), f);
-                f.dispose();            
+                
+                if(!window.discardWidgetState())
+                	WidgetState.save(window.getOwner().getLocalConfig(), f);
+                
+                windows.remove(window);
+                f.dispose();                            
                 
                 if(window.mustExitPluginOnClose())
                         window.getOwner().exit();               

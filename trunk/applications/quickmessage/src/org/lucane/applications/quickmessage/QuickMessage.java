@@ -94,6 +94,7 @@ public class QuickMessage
 
     dialog = new ManagedWindow(this, getTitle());
     dialog.setExitPluginOnClose(true);
+    dialog.setDiscardWidgetState(true);
     dialog.getContentPane().setLayout(new BorderLayout());
     txtWho = new JTextField(friends[0].getName());
     txtWho.setEditable(false);
@@ -109,7 +110,7 @@ public class QuickMessage
     dialog.getContentPane().add(txtNew, BorderLayout.CENTER);
     dialog.getContentPane().add(btnMain, BorderLayout.SOUTH);
     dialog.setPreferredSize(new Dimension(350, 200));
-	  dialog.setIconImage(this.getImageIcon().getImage());
+	dialog.setIconImage(this.getImageIcon().getImage());
     dialog.show();
   }
 
@@ -128,6 +129,7 @@ public class QuickMessage
   	
     dialog = new ManagedWindow(this, getTitle());
     dialog.setExitPluginOnClose(true);
+    dialog.setDiscardWidgetState(true);
     dialog.getContentPane().setLayout(new BorderLayout());
     txtWho = new JTextField(friends[0].getName());
     txtWho.setEditable(false);

@@ -45,6 +45,7 @@ public class ManagedWindow
 	private Dimension preferredSize = null;
 	private Plugin owner;
 	private boolean exitPluginOnClose = false;
+	private boolean discardWidgetState = false;
 	
 	public ManagedWindow(Plugin owner, String title)
 	{
@@ -55,6 +56,16 @@ public class ManagedWindow
 	public Plugin getOwner()
 	{
 		return this.owner;
+	}
+	
+	public void setDiscardWidgetState(boolean widgetState)
+	{
+		this.discardWidgetState = widgetState;
+	}
+	
+	public boolean discardWidgetState()
+	{
+		return discardWidgetState;
 	}
 	
 	public void setExitPluginOnClose(boolean exit)
