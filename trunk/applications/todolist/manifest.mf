@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.todolist.TodolistPlugin
+Service-Class: org.lucane.applications.todolist.TodolistService

@@ -1,0 +1,22 @@
+<database>
+
+  <table name="TodoLists">
+    <column name="user_name" type="smalltext" />
+    <column name="name" type="smalltext" />
+    <column name="description" type="text" />
+    <!-- using miltiple pk so there is less unique constrainst -->
+    <primary-key columns="user_name, name" />
+  </table>
+
+  <table name="TodoListItems">
+    <column name="user_name" type="smalltext" />
+    <column name="list_name" type="smalltext" />
+    <column name="name" type="smalltext" />
+    <column name="description" type="text" />
+    <column name="priority" type="smallint" />
+    <column name="complete" type="smallint" />
+    <!-- using miltiple pk so there is less unique constrainst -->
+    <primary-key columns="user_name, list_name, name" />
+  </table>
+
+</database>

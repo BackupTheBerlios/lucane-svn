@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-todolist</id>
+  <name>Lucane Groupware - Todo list</name>
+  <package>org.lucane.applications.todolist</package>
+
+  <shortDescription>Lucane todo list</shortDescription>
+
+  <dependencies>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.4-dev-8</version>
+    </dependency>
+  </dependencies>
+
+</project>
