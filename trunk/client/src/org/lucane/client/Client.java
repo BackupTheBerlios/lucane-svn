@@ -89,6 +89,12 @@ public class Client
         this.publicIp = null;
         this.language = "en";
 		this.config = null;
+		
+
+		//create application directory structure
+		String appPath = System.getProperty("user.dir") + '/' + APPLICATIONS_DIRECTORY;
+		new File(appPath).mkdirs();
+		new File(appPath + "config").mkdirs();
     }
     
     /**

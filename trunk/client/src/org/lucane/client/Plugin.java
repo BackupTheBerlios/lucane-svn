@@ -40,6 +40,7 @@ public abstract class Plugin
   //do not redeclare them in your plugin !
   protected boolean starter;
   protected ResourceBundle bundle;
+  protected LocalConfig config;
   
   /**
    * Used by the PluginLoader
@@ -177,7 +178,8 @@ public abstract class Plugin
     Client.getInstance().registerPlugin();
 	Logging.getLogger().fine("attempt to start a plugin thread");
 	Logging.getLogger().fine("starter = " + this.starter);
-
+	this.config = new LocalConfig(this.getName());	
+	
     if(this.starter)
       start();
     else
@@ -191,20 +193,14 @@ public abstract class Plugin
    */
   public void setLocale(String lang)
   {
-    try
-    {
+    try {
       InputStream is = new URL(getDirectory() + "messages_" + lang +  ".properties").openStream();
       this.bundle = new PropertyResourceBundle(is);
-    }
-    catch(Exception e1)
-    {
-      try
-      {
+    } catch(Exception e1) {
+      try {
         InputStream is = new URL(getDirectory() + "messages.properties").openStream();
         this.bundle = new PropertyResourceBundle(is);
-      }
-      catch(Exception e2)
-      {
+      } catch(Exception e2) {
         this.bundle = null;
       }
     }
@@ -218,12 +214,9 @@ public abstract class Plugin
    */
   public String tr(String origin)
   {
-    try
-    {
+    try {
       return bundle.getString(origin);
-    }
-    catch(Exception e)
-    {
+    } catch(Exception e) {
       return origin;
     }
   }
@@ -281,5 +274,15 @@ public abstract class Plugin
   		//no image
   		return new ImageIcon();
   	}
+  }
+  
+  /**
+   * Return the LocalConfig object
+   * 
+   * @return the local config
+   */
+  public LocalConfig getLocalConfig()
+  {
+  	return this.config;
   }
 }

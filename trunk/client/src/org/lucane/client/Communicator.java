@@ -133,8 +133,7 @@ public class Communicator
    */
   protected void downloadPlugin(String name)
   {
-    String subdirectory = Client.APPLICATIONS_DIRECTORY;
-    new File(subdirectory).mkdirs();
+    String subdirectory = Client.APPLICATIONS_DIRECTORY;    
 	Logging.getLogger().info("downloading plugin : " + name);
 	
 	ObjectConnection oc = null;
