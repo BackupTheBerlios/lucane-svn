@@ -39,6 +39,7 @@ public class Server
 	private String workingDirectory;
 	
 	private static final String CONFIG_FILE = "etc/server-config.xml";
+	private static final String LOG_FILE = "logs/lucane.log";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
 	public static final String VERSION = "0.7.1-beta";
 	
@@ -368,8 +369,23 @@ public class Server
 	{
 		return this.authenticator;
 	}
+		
+	/**
+	 * Get the working directory
+	 * 
+	 * @return the working directory
+	 */
+	public String getWorkingDirectory() 
+	{
+		return workingDirectory;
+	}
+
 	
 	//-- static methods
+	
+	/**
+	 * Used to shutdown the server for the NT service
+	 */
 	public static void shutdownServer(String [] args)
 	{
 		Server.getInstance().shutdown();
@@ -402,7 +418,7 @@ public class Server
 
 		//init logging
 		try {
-			Logging.init(workingDirectory+"lucane.log", "ALL");
+			Logging.init(workingDirectory+LOG_FILE, "ALL");
 		} catch(IOException ioe) {
 			System.err.println("Unable to init logging, exiting.");
 			System.exit(1);
@@ -428,8 +444,4 @@ public class Server
 		server.acceptConnections();		
 	}
 	
-	public String getWorkingDirectory() {
-		Logging.getLogger().fine(workingDirectory);
-		return workingDirectory;
-	}
 }
