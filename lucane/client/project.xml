@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>lucane-client</id>
+  <name>Lucane Groupware - Client</name>
+  <package>org.lucane.client</package>
+
+  <shortDescription>Lucane client</shortDescription>
+
+  <dependencies>
+    <dependency>
+      <groupId>lucane</groupId>
+      <artifactId>lucane-common</artifactId>
+      <version>0.6.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>sun</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sun</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.0.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>incors</groupId>
+      <artifactId>kunststoff</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+
+
+  </dependencies>
+
+</project>

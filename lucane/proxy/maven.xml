@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project
+  xmlns:deploy="deploy">
+
+  <property name="dist.dir" value="../../dist/proxy" />
+  <property name="dist.lib.dir" value="${dist.dir}/lib" />
+
+  <goal name="deploy">
+    <deploy:copy-deps todir="${dist.lib.dir}" />
+    <copy todir="${dist.lib.dir}">
+      <fileset dir="target">
+        <include name="*.jar" />
+      </fileset>
+    </copy>
+
+    <copy todir="${dist.dir}">
+      <fileset dir=".">
+        <include name="proxy.*" />
+      </fileset>
+    </copy>
+  </goal>
+  
+</project>

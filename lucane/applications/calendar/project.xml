@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-calendar</id>
+  <name>Lucane Groupware - Calendar</name>
+  <package>org.lucane.applications.calendar</package>
+
+  <shortDescription>Lucane Calendar</shortDescription>
+
+</project>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>lucane-proxy</id>
+  <name>Lucane Groupware - Proxy</name>
+  <package>org.lucane.proxy</package>
+
+  <shortDescription>Lucane proxy</shortDescription>
+
+  <dependencies>
+    <dependency>
+      <groupId>lucane</groupId>
+      <artifactId>lucane-common</artifactId>
+      <version>0.6.3</version>
+    </dependency>
+  </dependencies>
+
+</project>

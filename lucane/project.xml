@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project>
+  <pomVersion>3</pomVersion>
+  <groupId>lucane</groupId>
+  <currentVersion>0.6.3</currentVersion>
+  <organization>
+    <name>The Lucane Team</name>
+    <url>http://lucane.org</url>
+  </organization>
+  <inceptionYear>2002</inceptionYear>
+
+  <url>http://lucane.org</url>
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <nagEmailAddress>
+    vfiack@mail15.com
+    </nagEmailAddress>
+
+    <resources>
+      <resource>
+        <directory>${basedir}/resources</directory>
+      </resource>
+    </resources>
+
+    <sourceDirectory>src/</sourceDirectory>
+  </build>
+</project>

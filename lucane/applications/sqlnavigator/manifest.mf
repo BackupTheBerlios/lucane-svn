@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.sqlnavigator.SqlPlugin
+Service-Class: org.lucane.applications.sqlnavigator.SqlService

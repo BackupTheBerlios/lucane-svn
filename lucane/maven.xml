@@ -1,0 +1,47 @@
+<project
+  default="deploy-all"
+  xmlns:j="jelly:core"
+  xmlns:maven="jelly:maven">
+
+
+  <goal
+    name="clean-all"
+    description="Clean all">
+                                                                                          
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      goals="clean"
+      banner="Cleaning"
+      ignoreFailures="false"
+    />
+  </goal>
+
+  <goal 
+    name="build-all"
+    description="Build lucane and applications">
+
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      goals="jar:install"
+      banner="Building"
+      ignoreFailures="false"
+      />
+  </goal>
+
+  <goal
+    name="deploy-all"
+    description="Deploy lucane and applications">
+    
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      excludes="project.xml"
+      goals="deploy"
+      banner="Deploying"
+      ignoreFailures="false"
+    />
+  </goal>
+
+</project>

@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.administrator.AdministratorPlugin
+Service-Class: org.lucane.applications.administrator.AdministratorService

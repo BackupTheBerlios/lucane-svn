@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-pluginsinfos</id>
+  <name>Lucane Groupware - Plugins Infos</name>
+  <package>org.lucane.applications.pluginsinfos</package>
+
+  <shortDescription>Lucane Plugins Infos</shortDescription>
+
+</project>

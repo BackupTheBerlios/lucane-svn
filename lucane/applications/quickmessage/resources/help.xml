@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<help>
+
+<section name="dialogue">
+QuickMessage est une application de dialogue simple. Pour suivre une réunion à plusieurs, on préfera utiliser QReunion.
+
+Vous devez sélectionner un ou plusieurs destinataires avant de lancer l'application. Une boite de saisie s'ouvre alors.
+Vous pouvez cliquer sur <i>Envoyer</i> ou appluyer sur <i>Ctrl+Entree</i> pour envoyer le message.
+Les destinataires auront une boite similaire, avec le contenu de votre message en haut et une zone de saisie en bas. Si quelqu'un vous répond, la même boite s'ouvrira alors sur votre écran.
+</section>
+
+</help>

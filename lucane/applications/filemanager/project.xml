@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-filemanager</id>
+  <name>Lucane Groupware - Filemanager</name>
+  <package>org.lucane.applications.filemanager</package>
+
+  <shortDescription>Lucane File Manager</shortDescription>
+
+</project>
