@@ -120,7 +120,7 @@ implements ActionListener
 					break;
 				case 1: //users
 					name = DialogBox.input(plugin.getTitle(), tr("msg.new.user"));
-					concept = new UserConcept(name, "password", true, "org.lucane.applications.maininterface");
+					concept = new UserConcept(name, "password", false, "org.lucane.applications.quicklaunch");
 					break;
 				case 2: //plugins
 					name = DialogBox.input(plugin.getTitle(), tr("msg.new.plugin"));

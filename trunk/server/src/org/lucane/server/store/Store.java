@@ -125,19 +125,19 @@ public class Store
         grantedUsers.addParent(allUsers);
         
         //admin user
-        UserConcept admin = new UserConcept("admin", MD5.encode("admin"), false, "org.lucane.applications.maininterface");
+        UserConcept admin = new UserConcept("admin", MD5.encode("admin"), false, "org.lucane.applications.quicklaunch");
         admin.generateKeys("admin");
         admins.addUser(admin);
         getUserStore().storeUser(admin);
 
         //guest user
-        UserConcept guest = new UserConcept("guest", MD5.encode("guest"), false, "org.lucane.applications.maininterface");
+        UserConcept guest = new UserConcept("guest", MD5.encode("guest"), false, "org.lucane.applications.quicklaunch");
         guest.generateKeys("guest");
         allUsers.addUser(guest);
         getUserStore().storeUser(guest);
         
         //granted user
-        UserConcept granted = new UserConcept("granted", MD5.encode("granted"), false, "org.lucane.applications.maininterface");
+        UserConcept granted = new UserConcept("granted", MD5.encode("granted"), false, "org.lucane.applications.quicklaunch");
         granted.generateKeys("granted");
         grantedUsers.addUser(granted);
         getUserStore().storeUser(granted);

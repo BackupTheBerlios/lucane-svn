@@ -66,8 +66,13 @@ public class QuickLaunch
   	try {  		
 	  	this.trayIcon = new TrayIcon(this.getImageIcon(), this.getTitle());
 	} catch(Throwable t) {
-		DialogBox.error(tr("err.noTray"));
-		PluginLoader.getInstance().run(MAIN_INTERFACE, new ConnectInfo[0]);	
+		//no user message if we aren't on windows
+		if(System.getProperty("os.name").startsWith("Win"))
+			DialogBox.error(tr("err.noTray"));
+		else
+			Logging.getLogger().info("Not on windows, running MainInterface instead of QuickLaunch");
+		
+		PluginLoader.getInstance().run(MAIN_INTERFACE, new ConnectInfo[0]);
 		Client.getInstance().setStartupPlugin(MAIN_INTERFACE);
 		return;
 	}
