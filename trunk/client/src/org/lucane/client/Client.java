@@ -27,6 +27,7 @@ import java.io.*;
 import java.util.*;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 
 /**
@@ -459,10 +460,12 @@ public class Client
             System.exit(1);
         }
         
-		//look and feel
-		try {
-			javax.swing.UIManager.setLookAndFeel(config.getLooknfeel());
-		} catch(Exception e) {}
+	//look and feel
+	try {
+		UIManager.setLookAndFeel(config.getLooknfeel());
+	} catch(Exception e) {}
+        UIManager.getDefaults().put("ClassLoader", Client.class.getClassLoader());
+		
 
         //initialization
         Client client = Client.getInstance();
