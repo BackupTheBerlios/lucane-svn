@@ -49,7 +49,7 @@
   <goal
     name="mkwinsetup-lucane"
     description="Create a windows installer"
-><!--    prereqs="mkdist-lucane">-->
+    prereqs="mkdist-lucane">
     
     <echo message="Creating the windows installer:"/>
 
@@ -78,9 +78,10 @@
       <env key="_PRODUCT_WEB_SITE" value="${pom.url}"/>
 
       <env key="_BASE_DIR" value="../../../../"/>
+      <env key="_NSIS_FILE_DIR" value="trunk\setup\windows\src"/>
       <env key="_DIST_DIR" value="dist"/>
       <env key="_OUT_DIR" value="winsetup"/>
-      <env key="_LICENCE_FILE" value="trunk/LICENSE.txt"/>
+      <env key="_LICENCE_FILE" value="trunk\LICENSE.txt"/>
 
     </exec>
 
