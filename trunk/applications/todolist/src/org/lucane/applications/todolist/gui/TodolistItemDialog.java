@@ -19,13 +19,13 @@
 
 package org.lucane.applications.todolist.gui;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -35,7 +35,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.applications.todolist.io.IO;
 
@@ -74,10 +73,6 @@ public class TodolistItemDialog extends JDialog {
 			setTitle("Item creation ...");
 		}
 		setSize(320, 240);
-		JPanel contentPane = new JPanel(new BorderLayout(3, 3));
-		contentPane.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
-		setContentPane(contentPane);
-		
 		
 		jtfName = new JTextField();
 		jtaDescription = new JTextArea();
@@ -108,45 +103,64 @@ public class TodolistItemDialog extends JDialog {
 			}
 		});
 		
-		JPanel jpName = new JPanel(new BorderLayout(3, 3));
-		jpName.add(new JLabel("Name :"), BorderLayout.WEST);
-		jpName.add(jtfName, BorderLayout.CENTER);
-
-		JPanel jpPriority = new JPanel(new BorderLayout(3, 3));
-		jpPriority.add(new JLabel("Priority :"), BorderLayout.WEST);
-		jpPriority.add(jtfPriority, BorderLayout.CENTER);
-
-		JPanel jpComplete = null;
-		if (modify) {
-			jpComplete = new JPanel(new BorderLayout(3, 3));
-			jpComplete.add(new JLabel("Complete :"), BorderLayout.WEST);
-			jcbComplete = new JCheckBox();
-			jpComplete.add(jcbComplete, BorderLayout.CENTER);
-		}
-
-		JPanel jpDescription = new JPanel(new BorderLayout(3, 3));
-		jpDescription.add(new JLabel("Description :"), BorderLayout.NORTH);
-		jpDescription.add(new JScrollPane(jtaDescription), BorderLayout.CENTER);
-
-		JPanel jpButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 3, 3));
+		JPanel jpButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 2, 2));
 		jpButtons.add(jbOk);
 		jpButtons.add(jbCancel);
-
-		JPanel jpFields;
-		if (modify)
-			jpFields = new JPanel(new GridLayout(3, 1, 3, 3));
-		else
-			jpFields = new JPanel(new GridLayout(2, 1, 3, 3));
-		jpFields.add(jpName);
-		jpFields.add(jpPriority);
-		if (modify)
-			jpFields.add(jpComplete);
 		
-		getContentPane().add(jpFields, BorderLayout.NORTH);
-		getContentPane().add(jpDescription, BorderLayout.CENTER);
-		getContentPane().add(jpButtons, BorderLayout.SOUTH);
+		getContentPane().setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.insets=new Insets(2,2,2,2);
+		c.anchor=GridBagConstraints.NORTH;
+		c.fill=GridBagConstraints.HORIZONTAL;
+		c.gridy=0;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=0;
+		getContentPane().add(new JLabel("Name :"), c);
+		c.gridx=1;
+		c.weightx=1;
+		getContentPane().add(jtfName, c);
 
+		c.gridy=1;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=1;
+		getContentPane().add(new JLabel("Description :"), c);
+		c.fill=GridBagConstraints.BOTH;
+		c.gridx=1;
+		c.weightx=1;
+		getContentPane().add(new JScrollPane(jtaDescription), c);
+
+		c.gridy=2;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=0;
+		getContentPane().add(new JLabel("Priority :"), c);
+		c.gridx=1;
+		c.weightx=1;
+		getContentPane().add(jtfPriority, c);
+
+		c.fill=GridBagConstraints.BOTH;
+		c.gridy=4;
+		c.gridx=0;
+		c.weightx=1;
+		c.weighty=0;
+		c.gridwidth=2;
+		getContentPane().add(jpButtons, c);
+		
+		JPanel jpComplete = null;
 		if (modify) {
+			jcbComplete = new JCheckBox();
+			c.gridy=3;
+			c.gridx=0;
+			c.weightx=0;
+			c.weighty=0;
+			getContentPane().add(new JLabel("Complete :"), c);
+			c.gridx=1;
+			c.weightx=1;
+			getContentPane().add(jcbComplete, c);
+
 			jtfName.setText(todolistItem.getName());
 			jtaDescription.setText(todolistItem.getDescription());
 			jtfPriority.setText("" + todolistItem.getPriority());

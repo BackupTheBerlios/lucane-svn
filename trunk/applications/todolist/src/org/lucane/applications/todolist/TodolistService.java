@@ -19,15 +19,19 @@
 
 package org.lucane.applications.todolist;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
-import org.lucane.common.*;
-import org.lucane.common.concepts.*;
-import org.lucane.server.*;
+import org.lucane.common.Logging;
+import org.lucane.common.Message;
+import org.lucane.common.ObjectConnection;
+import org.lucane.server.Server;
+import org.lucane.server.Service;
 import org.lucane.server.database.DatabaseAbstractionLayer;
-import org.lucane.server.store.*;
-import java.sql.*;
+import org.lucane.server.store.Store;
 
 public class TodolistService extends Service {
 	private Store store;

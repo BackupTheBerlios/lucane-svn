@@ -20,8 +20,6 @@
 package org.lucane.applications.todolist;
 
 import org.lucane.applications.todolist.gui.MainFrame;
-import org.lucane.applications.todolist.Todolist;
-import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.applications.todolist.io.IO;
 import org.lucane.client.Plugin;
 import org.lucane.client.StandalonePlugin;

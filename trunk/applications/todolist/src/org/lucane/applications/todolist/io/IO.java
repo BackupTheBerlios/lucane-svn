@@ -26,7 +26,6 @@ import org.lucane.applications.todolist.TodolistAction;
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.client.Client;
 import org.lucane.client.Communicator;
-import org.lucane.client.Plugin;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.ConnectInfo;
 import org.lucane.common.ObjectConnection;
