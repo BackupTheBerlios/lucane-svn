@@ -32,7 +32,7 @@ import javax.swing.event.MenuListener;
 
 import org.lucane.client.Client;
 import org.lucane.client.Plugin;
-import org.lucane.client.PluginLoader;
+import org.lucane.client.PluginManager;
 import org.lucane.client.widgets.ManagedWindow;
 
 public class WindowMenu extends JMenu
@@ -60,7 +60,7 @@ implements MenuListener, ActionListener
 		//create the menu
 		toggleButtons.clear();
 		this.removeAll();
-		Iterator plugins = PluginLoader.getInstance().getRunningPlugins();
+		Iterator plugins = PluginManager.getInstance().getRunningPlugins();
 		while(plugins.hasNext())
 		{
 			Plugin plugin = (Plugin)plugins.next();

@@ -43,7 +43,7 @@ public class PasswdChanger
   private ConnectInfo cinfo;
 
   /**
-   * Void contructor. Used by PluginLoader
+   * Void contructor. Used by PluginManager
    */
   public PasswdChanger()
   {

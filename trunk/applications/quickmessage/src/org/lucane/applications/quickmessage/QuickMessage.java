@@ -189,7 +189,7 @@ public class QuickMessage
     else if(e.getKeyCode() == KeyEvent.VK_F1)
     {
     	try {
-    		Plugin help = PluginLoader.getInstance().newPluginInstance(
+    		Plugin help = PluginManager.getInstance().newPluginInstance(
     				"org.lucane.applications.helpbrowser", new ConnectInfo[0], true);
     		help.start();
     		help.invoke("showHelp", new Class[]{Plugin.class}, new Object[]{this});

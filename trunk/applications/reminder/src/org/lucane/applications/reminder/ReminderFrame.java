@@ -47,7 +47,7 @@ implements ActionListener
 		content.setToolbarVisible(false);
 		getContentPane().add(content, BorderLayout.CENTER);
 		
-		Plugin p = PluginLoader.getInstance().getPlugin(infos.getPlugin());		
+		Plugin p = PluginManager.getInstance().getPlugin(infos.getPlugin());		
 		btnPlugin = new JButton(p.getTitle(), p.getImageIcon());
 		btnClose = new JButton(plugin.tr("close"), Client.getIcon("cancel.png"));
 		btnPlugin.addActionListener(this);
@@ -66,7 +66,7 @@ implements ActionListener
 	public void actionPerformed(ActionEvent ae)
 	{
 		if(ae.getSource() == btnPlugin)
-			PluginLoader.getInstance().run(infos.getPlugin(), null);
+			PluginManager.getInstance().run(infos.getPlugin(), null);
 		dispose();
 	}
 }

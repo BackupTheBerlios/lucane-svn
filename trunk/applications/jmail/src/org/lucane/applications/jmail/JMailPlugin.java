@@ -61,10 +61,10 @@ public class JMailPlugin
 
 			splash.dispose();
 		} catch(Exception e) {
-			if(PluginLoader.getInstance().isAvailable(ACCOUNT_APP))
+			if(PluginManager.getInstance().isAvailable(ACCOUNT_APP))
 			{	
 				if(DialogBox.question("JMail", tr("msg.accountCreation")))
-					PluginLoader.getInstance().run(ACCOUNT_APP, new ConnectInfo[0]);
+					PluginManager.getInstance().run(ACCOUNT_APP, new ConnectInfo[0]);
 			}
 			else
 				DialogBox.error(tr("err.getAccount"));							

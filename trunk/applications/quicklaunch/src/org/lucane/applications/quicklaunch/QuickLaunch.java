@@ -39,7 +39,7 @@ public class QuickLaunch
   private TrayIcon trayIcon;
   
   /**
-   * Void contructor. Used by PluginLoader
+   * Void contructor. Used by PluginManager
    */
   public QuickLaunch()
   {
@@ -80,7 +80,7 @@ public class QuickLaunch
 		else
 			Logging.getLogger().info("Not on windows, running MainInterface instead of QuickLaunch");
 		
-		PluginLoader.getInstance().run(MAIN_INTERFACE, new ConnectInfo[0]);
+		PluginManager.getInstance().run(MAIN_INTERFACE, new ConnectInfo[0]);
 		Client.getInstance().setStartupPlugin(MAIN_INTERFACE);
 		return;
 	}
@@ -126,7 +126,7 @@ public class QuickLaunch
   	HashMap categories = new HashMap();
   	
   	//create menu list	
-	Iterator plugins = PluginLoader.getInstance().getAvailablePlugins();
+	Iterator plugins = PluginManager.getInstance().getAvailablePlugins();
 	while(plugins.hasNext())
 	{
 		Plugin p = (Plugin)plugins.next();
@@ -180,7 +180,7 @@ public class QuickLaunch
   private void runPlugin(String pluginName)
   {
   	ConnectInfo[] friends = null;  	
-  	Plugin plugin = PluginLoader.getInstance().getPlugin(pluginName);
+  	Plugin plugin = PluginManager.getInstance().getPlugin(pluginName);
   	
   	// get users
   	if(plugin.isStandalone())
@@ -199,7 +199,7 @@ public class QuickLaunch
   	
   	// run the plugin if the user didn't click on cancel
   	if(friends != null)
-  		PluginLoader.getInstance().run(pluginName, friends);  	
+  		PluginManager.getInstance().run(pluginName, friends);  	
   }
   
   private void cleanExit()

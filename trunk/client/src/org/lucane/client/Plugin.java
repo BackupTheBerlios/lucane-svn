@@ -43,7 +43,7 @@ public abstract class Plugin
   private LocalConfig config;
   
   /**
-   * Used by the PluginLoader
+   * Used by the PluginManager
    *
    * @return the plugin class name
    */
@@ -53,7 +53,7 @@ public abstract class Plugin
   }
 
   /**
-   * Used by the PluginLoader to check if new versions needs to be downloaded
+   * Used by the PluginManager to check if new versions needs to be downloaded
    * 
    * @return lthe plugin's version
    */
@@ -142,7 +142,7 @@ public abstract class Plugin
   }
 
   /**
-   * Used by the PluginLoader to initialize the plugin with adequate parameters
+   * Used by the PluginManager to initialize the plugin with adequate parameters
    * 
    * @param friends the connections to use
    * @param starter true if the start() method has to be called
@@ -151,7 +151,7 @@ public abstract class Plugin
   public abstract Plugin newInstance(ConnectInfo[] friends, boolean starter);
 
   /**
-   * Used by the PluginLoader to load a plugin previously initialized
+   * Used by the PluginManager to load a plugin previously initialized
    * with a command String and a Socket to communicate with.
    * 
    * @param oc the ObjectConnection
@@ -173,7 +173,7 @@ public abstract class Plugin
   }
 
   /**
-   * Used by the PluginLoader when a plugin is loaded after a network query.
+   * Used by the PluginManager when a plugin is loaded after a network query.
    */
   public void follow() 
   {
@@ -208,7 +208,7 @@ public abstract class Plugin
   		Logging.getLogger().warning("Unable to save localconfig");
   		ioe.printStackTrace();
   	}
-  	PluginLoader.getInstance().removeRunningPlugin(this);
+  	PluginManager.getInstance().removeRunningPlugin(this);
   } 
 
   /**
@@ -216,7 +216,7 @@ public abstract class Plugin
    */
   public void run()
   {
-    PluginLoader.getInstance().addRunningPlugin(this);
+    PluginManager.getInstance().addRunningPlugin(this);
 	Logging.getLogger().fine("attempt to start a plugin thread");
 	Logging.getLogger().fine("starter = " + this.starter);
 	this.config = new LocalConfig(this.getName());	

@@ -111,11 +111,11 @@ public class Communicator
 	  parent.getConnectBox().setProgressValue(i, plugin + " v" + version);
 	  
       /* download the plugin if necessary */
-      if(! PluginLoader.getInstance().isAvailable(plugin, version, true))
+      if(! PluginManager.getInstance().isAvailable(plugin, version, true))
       {
         this.downloadPlugin(plugin);
 
-        if(! PluginLoader.getInstance().isAvailable(plugin, version, true))
+        if(! PluginManager.getInstance().isAvailable(plugin, version, true))
           DialogBox.error(Translation.tr("communicatorPluginLoadError") + plugin);
         else
           nupdated++;

@@ -33,7 +33,7 @@ import javax.swing.UIManager;
 /**
  * The client main class.
  * It's a singleton containing the different client parts : 
- *   Listener, Communicator, PluginLoader, ...
+ *   Listener, Communicator, PluginManager, ...
  * It is used as a glue between the different components
  */
 public class Client
@@ -46,7 +46,7 @@ public class Client
     private ConnectInfo realinfos;  //has the real infos
 	private ConnectInfo serverInfos;
 
-    private PluginLoader pluginloader;
+    private PluginManager pluginloader;
     private Listener listener;
     private Communicator communicator;
 
@@ -130,7 +130,7 @@ public class Client
 		new File(configPath).mkdirs();
 		
         this.listener.listen();
-        this.pluginloader = PluginLoader.getInstance();       
+        this.pluginloader = PluginManager.getInstance();       
 		this.communicator.updatePlugins();
  
         

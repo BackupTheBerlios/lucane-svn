@@ -44,7 +44,7 @@ public class PluginsInfos
   JPanel infos;
   JLabel lblIcon;
   JComboBox plugins;
-  PluginLoader ploader;
+  PluginManager ploader;
 
   public PluginsInfos()
   {
@@ -58,7 +58,7 @@ public class PluginsInfos
 
   public void start()
   {
-    ploader = PluginLoader.getInstance();
+    ploader = PluginManager.getInstance();
 
     JPanel jpmain = new JPanel();
     jpmain.setLayout(new BorderLayout());
@@ -102,7 +102,7 @@ public class PluginsInfos
     infos.add(lblIcon, BorderLayout.EAST);
     jpmain.add(infos, BorderLayout.CENTER);
 
-    Iterator i = PluginLoader.getInstance().getAvailablePlugins();
+    Iterator i = PluginManager.getInstance().getAvailablePlugins();
     while(i.hasNext())
     {
     	Plugin p = (Plugin)i.next();   

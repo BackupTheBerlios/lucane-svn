@@ -90,7 +90,7 @@ implements TreeSelectionListener, ActionListener
 		plugins = new JComboBox();
 		plugins.addActionListener(this);
 		
-		Iterator i = PluginLoader.getInstance().getAvailablePlugins();
+		Iterator i = PluginManager.getInstance().getAvailablePlugins();
 		while(i.hasNext())
 			plugins.addItem(i.next());
 		

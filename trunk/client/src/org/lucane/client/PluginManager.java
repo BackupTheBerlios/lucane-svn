@@ -29,9 +29,9 @@ import java.util.jar.*;
  * This is an important part of the Client.
  * It can dynamically load plugins.
  */
-public class PluginLoader
+public class PluginManager
 {
-	private static PluginLoader instance = null;
+	private static PluginManager instance = null;
 	
 	//stores available plugins in a (name, plugin) map
 	private HashMap availablePlugins;
@@ -40,22 +40,22 @@ public class PluginLoader
 	private ArrayList runningPlugins;
 	
 	/**
-	 * PluginLoader is a singleton
+	 * PluginManager is a singleton
 	 * 
-	 * @return the unique PluginLoader instance
+	 * @return the unique PluginManager instance
 	 */
-	public static PluginLoader getInstance()
+	public static PluginManager getInstance()
 	{
 		if(instance == null)
-			instance = new PluginLoader();
+			instance = new PluginManager();
 		
 		return instance;
 	}
 	
 	/**
-	 * Creates a PluginLoader and initialize its plugins list
+	 * Creates a PluginManager and initialize its plugins list
 	 */
-	private PluginLoader()
+	private PluginManager()
 	{
 		this.availablePlugins = new HashMap();
 		this.runningPlugins = new ArrayList();
@@ -145,7 +145,7 @@ public class PluginLoader
 	 * 
 	 * @param name the Plugin to check
 	 * @param version the version to check
-	 * @param load trus if the PluginLoader has to load the Plugin
+	 * @param load trus if the PluginManager has to load the Plugin
 	 * @return true if the Client has this version of the Plugin
 	 */
 	protected boolean isAvailable(String name, String version, boolean load)

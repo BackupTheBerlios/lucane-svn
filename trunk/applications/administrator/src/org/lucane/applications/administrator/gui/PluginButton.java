@@ -70,6 +70,6 @@ implements ActionListener
 	  	
 	  	// run the plugin if the user didn't click on cancel
 	  	if(friends != null)
-	  		PluginLoader.getInstance().run(plugin.getName(), friends);
+	  		PluginManager.getInstance().run(plugin.getName(), friends);
 	}
 }

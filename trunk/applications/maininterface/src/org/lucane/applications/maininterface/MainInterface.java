@@ -47,7 +47,7 @@ public class MainInterface
   /* client components */
   private Client parent;
   private Communicator commu;
-  private PluginLoader ploader;
+  private PluginManager ploader;
 
   /* dialog components */
   private ManagedWindow window;
@@ -61,7 +61,7 @@ public class MainInterface
   private JMenuItem mnuExit;
 
   /**
-   * Void contructor. Used by PluginLoader
+   * Void contructor. Used by PluginManager
    */
   public MainInterface()
   {
@@ -89,7 +89,7 @@ public class MainInterface
     this.buttons = new Vector();
     this.commu = Communicator.getInstance();
     this.parent = Client.getInstance();
-    this.ploader = PluginLoader.getInstance();
+    this.ploader = PluginManager.getInstance();
 
     this.service = commu.getConnectInfo(this.getName());
 	

@@ -170,13 +170,13 @@ class Listener
       else
       {
 
-        if(PluginLoader.getInstance().isAvailable(message.getApplication()))
+        if(PluginManager.getInstance().isAvailable(message.getApplication()))
         {
 		try {
 			oc.write("OK");
 		} catch(Exception e) {}
 			
-          	PluginLoader.getInstance().load(oc, message);
+          	PluginManager.getInstance().load(oc, message);
         }
         else
         {
