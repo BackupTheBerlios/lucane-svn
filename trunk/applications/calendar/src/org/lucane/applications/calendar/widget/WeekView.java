@@ -36,6 +36,7 @@ public class WeekView extends JPanel
 	//-- display
 	public JPanel headerPanel;
 	public JPanel contentPanel;
+	private JScrollPane contentScrollPane;
 	
 	//-- listeners
 	private ArrayList listeners;
@@ -62,19 +63,21 @@ public class WeekView extends JPanel
 		
 		this.headerPanel = new JPanel(new GridLayout(1, 7));
 		this.contentPanel = new JPanel(new GridLayout(1, 7));
+		this.contentScrollPane = new JScrollPane(contentPanel);
 		this.add(headerPanel, BorderLayout.NORTH);
-		this.add(contentPanel, BorderLayout.CENTER);
+		this.add(contentScrollPane, BorderLayout.CENTER);
 		
+		headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 16));
 		for(int i=1;i<=7;i++)
 			headerPanel.add(new DayHeader(plugin.tr("day."+i)));
 				
 		for(int i=0;i<7;i++)
 		{
 			DayView day = new DayView(unworkedHour, workedHour, workStart, workEnd);
-			day.scrollToHour(workStart-1);
 			day.setCalendarListeners(listeners);
 			contentPanel.add(day);
 		}
+		scrollToHour(workStart-1);
 		
 		Calendar c = Calendar.getInstance();
 		setDisplayedWeek(c.get(Calendar.WEEK_OF_YEAR)+1, c.get(Calendar.YEAR));
@@ -98,10 +101,19 @@ public class WeekView extends JPanel
 		for(int i=0;i<7;i++)
 		{			
 			DayView day = new DayView(unworkedHour, workedHour, workStart, workEnd);
-			day.scrollToHour(workStart-1);
 			day.setCalendarListeners(listeners);
 			contentPanel.add(day);
 		}
+		scrollToHour(workStart-1);
+	}
+	
+	/**
+	 * Scroll to an hour
+	 * @param hour the hour that should be on top
+	 */
+	public void scrollToHour(int hour)
+	{
+		contentScrollPane.getViewport().setViewPosition(new Point(0, hour*40));
 	}
 	
 	/**
