@@ -123,10 +123,13 @@ public class AudioRecorder implements Runnable
 			{	
 				int length = audioStream.read(buffer);
 				
-				listeners = this.listeners.iterator();
-				while(listeners.hasNext())
-					((AudioRecorderListener)listeners.next()).audioRecorded(buffer, length);				
-			}
+				if(length > 0)
+				{	
+					listeners = this.listeners.iterator();
+					while(listeners.hasNext())
+						((AudioRecorderListener)listeners.next()).audioRecorded(buffer, length);
+				}
+			}				
 		} catch (IOException e)	{
 			//TODO hande this error
 			e.printStackTrace();
