@@ -6,6 +6,6 @@ del /F ~tmp.bat
 
 set VM_OPTIONS=-Djava.library.path=lib
 
-start javaw %VM_OPTIONS% -classpath %TMPCLASSPATH% org.lucane.client.Client
+start javaw %VM_OPTIONS% -classpath %TMPCLASSPATH% org.lucane.client.Client %1 %2
 
 set TMPCLASSPATH=
