@@ -1,6 +1,7 @@
 /*
  * Lucane - a collaborative platform
  * Copyright (C) 2002  Gautier Ringeisen <gautier_ringeisen@hotmail.com>
+ * Copyright (C) 2004  Vincent Fiack <vfiack@mail15.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -31,7 +32,7 @@ import java.util.*;
 /**
  * The server's class
  */
-public class Server implements Runnable
+public class Server
 {
 	private static final String CONFIG_FILE = "etc/server-config.xml";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
@@ -120,322 +121,18 @@ public class Server implements Runnable
 	/**
 	 * Accepts connections
 	 */
-	public void run()
+	public void acceptConnections()
 	{
-		Socket client = null;
-		
-		try {
-			client = socket.accept();
-			new Thread(this).start();
-			getMessage(client);
-		} catch (IOException ex) {
-			Logging.getLogger().warning("#Err > Unable to accept connections.");
-		}
-		
-		try {
-			client.close();
-		} catch (Exception ex) {
-			Logging.getLogger().warning("#Err > Socket::close()");
-		}
-	}
-	
-	/**
-	 * Reads messages from the network.
-	 * A message is either a command for the server
-	 * or for an internal Service.
-	 * 
-	 * @param sock the Socket
-	 */
-	private void getMessage(Socket sock)
-	{
-		int i;
-		boolean alreadyConnected;
-		boolean isAuthentication;
-		
-		Message message;
-		byte[] signature;
-		
-		String cmd;
-		String cmdData;
-		StringTokenizer stk;
-		
-		ObjectConnection oc = null;
-		
-		try
+		while(true)
 		{
-			/* streams initialization */
-			oc = new ObjectConnection(sock);
-			message = (Message)oc.read();
-			signature = (byte[])oc.read();
+			try {
+				MessageHandler handler = new MessageHandler(socket.accept());
+				handler.start();
+			} catch (IOException ex) {
+				Logging.getLogger().warning("#Err > Unable to accept connections.");
+			}	
 		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-			Logging.getLogger().warning("#Err > Unable to read message.");
-			return;
-		}
-		
-		// check wether a user is known or not
-		alreadyConnected = ConnectInfoManager.getInstance().isConnected(message.getSender());
-		
-		//check if command is authentication
-		isAuthentication = message.getApplication().equals("Server") 
-		&& ((String)message.getData()).startsWith("AUTH");
-		
-		//signature check
-		if (alreadyConnected && !isAuthentication)
-		{
-			boolean sigok = false;
-			try
-			{
-				ConnectInfo ci = message.getSender();
-				if (ci.verifier == null)
-					ci = ConnectInfoManager.getInstance().getCompleteConnectInfo(ci);
-				sigok = ci.verifier.verify(message, signature);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			
-			if (!sigok)
-			{
-				try
-				{
-					oc.write("FAILED bad signature");
-				}
-				catch (Exception e)
-				{
-				}
-				Logging.getLogger().warning("#Err > bad signature: " + message.getSender());
-				return;
-			}
-		}
-		
-		if (message.getApplication().equals("Server"))
-		{
-			cmd = null;
-			
-			try
-			{
-				stk = new StringTokenizer((String)message.getData());
-				cmd = stk.nextToken();
-				cmdData = stk.nextToken("\0").substring(1);
-			}
-			catch (Exception ex)
-			{
-				if (cmd == null)
-					cmd = "";
-				
-				cmdData = "";
-			}
-			
-			/* if the user asks for authentication, we try to do it and exits this method */
-			if (cmd.equals("AUTH"))
-			{
-				try {
-					oc.write("OK");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				
-				authenticator.authenticate(oc, message, cmdData);
-			}
-			else if (!alreadyConnected)
-			{
-				Logging.getLogger().info("Access denied to " + message.getSender());
-				try
-				{
-					oc.write("FAILED No Connection");
-				}
-				catch (Exception e)
-				{
-				}
-			}
-			else
-			{
-				internalCommand(oc, message, cmd, cmdData);
-			}
-		}
-		else if (!alreadyConnected)
-		{
-			Logging.getLogger().info("Access denied to " + message.getSender());
-			try
-			{
-				oc.write("FAILED No Connection");
-			}
-			catch (Exception e)
-			{
-			}
-		}
-		else
-		{
-			Service s = ServiceManager.getInstance().getService(message.getApplication());
-			boolean serviceFound = false;
-			if(s != null)
-			{
-				serviceFound = true;
-				UserConcept user = null;
-				ServiceConcept service = null;
-				try
-				{
-					user =
-						store.getUserStore().getUser(
-								message.getSender().getName());
-					service =
-						store.getServiceStore().getService(
-								message.getReceiver().getName());
-				}
-				catch (Exception e)
-				{
-				}
-				
-				
-				
-				/* tests serviceManager for permissions */
-				boolean isAutorizedService = false;
-				try {
-					isAutorizedService = store.getServiceStore()
-					.isAuthorizedService(user, service);
-				} catch(Exception e) {}
-				
-				if (!isAutorizedService)
-				{
-					Logging.getLogger().info(
-							"#Err > "
-							+ message.getSender()
-							+ " : Service denied to "
-							+ message.getReceiver().getName());
-					try
-					{
-						oc.write(
-						"FAILED You don't have acces to this service");
-					}
-					catch (Exception e)
-					{
-					}
-				}
-				else
-				{
-					try
-					{
-						oc.write("OK");
-					}
-					catch (Exception e)
-					{
-					}
-					serviceFound = true;
-					s.process(oc, message);
-				}
-			}
-			
-			if (!serviceFound)
-			{
-				try
-				{
-					oc.write("FAILED unknown");
-				}
-				catch (Exception e)
-				{
-				}
-				Logging.getLogger().warning(
-						"#Err > Service "
-						+ message.getReceiver().getName()
-						+ " unknown");
-			}
-		}
-		
-		oc.close();
-	}
-	
-	
-	
-	/**
-	 * Handle internal commands
-	 */
-	private void internalCommand(
-			ObjectConnection oc,
-			Message message,
-			String command,
-			String data)
-	{
-		if (command.equals("CONNECT_DEL"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			ConnectInfoManager.getInstance().removeConnectInfo(message.getSender());
-		}
-		else if (command.equals("CONNECT_GET"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			this.getConnectInfo(data, oc);
-		}
-		else if (command.equals("CONNECT_LIST"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			this.getUserList(oc);
-		}
-		else if (command.equals("PLUGIN_LIST"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			this.sendPluginList(oc, message.getSender().getName());
-		}
-		else if (command.equals("PLUGIN_GET"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			this.sendPlugin(oc, data);
-		}
-		else if (command.equals("STARTUP_PLUGINS"))
-		{
-			try
-			{
-				oc.write("OK");
-			}
-			catch (Exception e)
-			{
-			}
-			this.getStartupPlugin(oc, message.getSender().getName());
-		}
-		else
-		{
-			try
-			{
-				oc.write("FAILED Unknown command");
-			}
-			catch (Exception e)
-			{
-			}
-		}
-	}
+	}	
 	
 	
 	/**
@@ -443,7 +140,7 @@ public class Server implements Runnable
 	 * 
 	 * @param name the user wanted
 	 */
-	private void getConnectInfo(String name, ObjectConnection oc)
+	public void getConnectInfo(String name, ObjectConnection oc)
 	{
 		ConnectInfo ci = ConnectInfoManager.getInstance().getConnectInfo(name);
 		if(ci != null)
@@ -463,7 +160,7 @@ public class Server implements Runnable
 	/**
 	 * Send the connected users list
 	 */
-	private void getUserList(ObjectConnection oc)
+	public void getUserList(ObjectConnection oc)
 	{
 		//get into vector
 		Vector v = new Vector();		
@@ -483,7 +180,7 @@ public class Server implements Runnable
 	 * 
 	 * @param source the user that asked this command
 	 */
-	private void sendPluginList(ObjectConnection oc, String source)
+	public void sendPluginList(ObjectConnection oc, String source)
 	{
 		Vector plist = new Vector();
 		Iterator plugins;
@@ -515,7 +212,7 @@ public class Server implements Runnable
 	 * 
 	 * @param data the plugin name
 	 */
-	private void sendPlugin(ObjectConnection oc, String data)
+	public void sendPlugin(ObjectConnection oc, String data)
 	{
 		DataInputStream dis = null;
 		try
@@ -545,7 +242,7 @@ public class Server implements Runnable
 	 * 
 	 * @param source the user
 	 */
-	private void getStartupPlugin(ObjectConnection oc, String source)
+	public void getStartupPlugin(ObjectConnection oc, String source)
 	{
 		try
 		{
@@ -633,6 +330,15 @@ public class Server implements Runnable
 		return store;
 	}
 	
+	/**
+	 * Get the authenticator
+	 * 
+	 * @return the authenticator instance
+	 */
+	public Authenticator getAuthenticator() 
+	{
+		return this.authenticator;
+	}
 	
 	/**
 	 * Main Method
@@ -664,6 +370,6 @@ public class Server implements Runnable
 		server = new Server(config);
 		server.generateKeys();
 		Logging.getLogger().info("Server is ready.");
-		server.run();		
+		server.acceptConnections();		
 	}
 }
