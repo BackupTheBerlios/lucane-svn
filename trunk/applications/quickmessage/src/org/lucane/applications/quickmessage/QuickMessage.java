@@ -19,6 +19,7 @@
 package org.lucane.applications.quickmessage;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 import org.lucane.common.*;
@@ -93,7 +94,7 @@ public class QuickMessage
     }
 
     dialog = new JFrame("QuickMessage");
-    dialog.addWindowListener(this);
+    dialog.addWindowListener(new PluginExitWindowListener(this));
     dialog.getContentPane().setLayout(new BorderLayout());
     txtWho = new JTextField(friends[0].getName());
     txtWho.setEditable(false);
@@ -127,7 +128,7 @@ public class QuickMessage
   	feedback.play();
   	
     dialog = new JFrame("QuickMessage");
-    dialog.addWindowListener(this);
+    dialog.addWindowListener(new PluginExitWindowListener(this));
     dialog.getContentPane().setLayout(new BorderLayout());
     txtWho = new JTextField(friends[0].getName());
     txtWho.setEditable(false);

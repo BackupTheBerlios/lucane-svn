@@ -19,6 +19,7 @@
 package org.lucane.applications.forum;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 import org.lucane.common.*;
@@ -138,7 +139,7 @@ public class Forum
     right.setLayout(new BorderLayout());
     right.add(buttons, BorderLayout.NORTH);
     mainFrame.setSize(600, 400);
-    mainFrame.addWindowListener(this);
+    mainFrame.addWindowListener(new PluginExitWindowListener(this));
 	mainFrame.setIconImage(this.getImageIcon().getImage());
     mainFrame.setVisible(true);
     split.setDividerLocation(0.5);

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import org.lucane.applications.jmailadmin.gui.MainFrame;
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.ConnectInfo;
 import org.lucane.common.ObjectConnection;
@@ -46,7 +47,7 @@ public class JMailAdminPlugin
 	{
 		this.service = Communicator.getInstance().getConnectInfo("org.lucane.applications.jmailadmin");
 		MainFrame mf = new MainFrame(this);
-		mf.addWindowListener(this);
+		mf.addWindowListener(new PluginExitWindowListener(this));
 		mf.show();
 	}
 	

@@ -20,6 +20,7 @@
 package org.lucane.applications.maininterface;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
@@ -98,7 +99,7 @@ public class MainInterface
     frame.setName("maininterface");
     
     frame.getContentPane().setLayout(new BorderLayout());
-    frame.addWindowListener(this);
+    frame.addWindowListener(new PluginExitWindowListener(this));
     mnuBar = new JMenuBar();
     mnuMain = new JMenu("Lucane");
     mnuExtends = new JMenu(tr("applications"));

@@ -19,6 +19,7 @@
 package org.lucane.applications.filemanager;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -158,7 +159,7 @@ public class FileManager
   private void showMainFrame()
   {
     mainFrame = new JFrame(getTitle());
-    mainFrame.addWindowListener(this);
+    mainFrame.addWindowListener(new PluginExitWindowListener(this));
     mainFrame.setSize(400, 300);
     mainFrame.getContentPane().setLayout(new BorderLayout());
     filelist = new JList();

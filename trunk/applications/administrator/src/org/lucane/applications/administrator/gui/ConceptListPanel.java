@@ -21,7 +21,6 @@ package org.lucane.applications.administrator.gui;
  
 import java.awt.*;
 import java.awt.event.*;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.*;

@@ -24,6 +24,7 @@ import java.util.*;
 import javax.swing.JFrame;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import org.lucane.common.concepts.*;
@@ -55,7 +56,7 @@ public class AdministratorPlugin extends StandalonePlugin
 		service = Communicator.getInstance().getConnectInfo("org.lucane.applications.administrator");
 		
 		JFrame jf = new JFrame("Admin plugin");
-		jf.addWindowListener(this);
+		jf.addWindowListener(new PluginExitWindowListener(this));
 		jf.getContentPane().add(new MainPanel(this));
 		jf.setSize(800, 550);
 		jf.setIconImage(this.getImageIcon().getImage());

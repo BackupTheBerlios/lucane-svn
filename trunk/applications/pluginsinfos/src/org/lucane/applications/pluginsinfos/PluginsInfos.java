@@ -19,6 +19,7 @@
 package org.lucane.applications.pluginsinfos;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.common.*;
 
 import java.awt.*;
@@ -62,7 +63,7 @@ public class PluginsInfos
     JPanel jpmain = new JPanel();
     jpmain.setLayout(new BorderLayout());
     frame = new JFrame(tr("ftitle"));
-    frame.addWindowListener(this);
+    frame.addWindowListener(new PluginExitWindowListener(this));
     frame.getContentPane().setLayout(new BorderLayout());
     frame.getContentPane().add(jpmain, BorderLayout.CENTER);
     plugins = new JComboBox();

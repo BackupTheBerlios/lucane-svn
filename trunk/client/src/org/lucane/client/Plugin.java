@@ -20,7 +20,6 @@ package org.lucane.client;
 
 import org.lucane.common.*;
 
-import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -36,7 +35,7 @@ import javax.swing.ImageIcon;
  * the various plugins for more infiormations.
  */
 public abstract class Plugin
-  implements Runnable, WindowListener
+  implements Runnable
 {
   //do not redeclare them in your plugin !
   protected boolean starter;
@@ -262,32 +261,6 @@ public abstract class Plugin
       return origin;
     }
   }
-
-  /**
-   * Useful to exit() properly. Must be used as WindowListener
-   * for graphical plugins. Example :  JFrame jf =
-   * new JFrame(); jf.addWindowListener(this);
-   * 
-   * @param e an event.
-   */
-  public void windowClosing(WindowEvent e)
-  {
-    exit();
-  }
-
-  public void windowActivated(WindowEvent e)
-  {}
-  public void windowClosed(WindowEvent e)
-  {}
-  public void windowDeactivated(WindowEvent e)
-  {}
-  public void windowDeiconified(WindowEvent e)
-  {}
-  public void windowIconified(WindowEvent e)
-  {}
-  public void windowOpened(WindowEvent e)
-  {}
-
   /**
    * Return the plugin's base directory
    * 

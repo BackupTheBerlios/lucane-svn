@@ -32,6 +32,7 @@ import org.jperdian.rss2.dom.RssChannel;
 import org.lucane.applications.rssreader.RssReader;
 import org.lucane.applications.rssreader.rss.ChannelInfo;
 import org.lucane.client.Client;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.DialogBox;
 
@@ -100,7 +101,7 @@ implements ListSelectionListener, ActionListener
 		getContentPane().add(buttonPanel, BorderLayout.NORTH);
 		getContentPane().add(split, BorderLayout.CENTER);
 		
-		addWindowListener(plugin);
+		addWindowListener(new PluginExitWindowListener(plugin));
 	}
 	
 	public void saveState()

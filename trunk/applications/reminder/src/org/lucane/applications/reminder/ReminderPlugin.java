@@ -20,6 +20,7 @@
 package org.lucane.applications.reminder;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.common.*;
 
 public class ReminderPlugin extends StandalonePlugin
@@ -52,7 +53,7 @@ public class ReminderPlugin extends StandalonePlugin
 	public void follow()
 	{
 		ReminderFrame frame = new ReminderFrame(this, infos);
-		frame.addWindowListener(this);
+		frame.addWindowListener(new PluginExitWindowListener(this));
 		frame.show();
 	}
 }

@@ -19,6 +19,7 @@
 package org.lucane.applications.sendmail;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -59,7 +60,7 @@ public class MailClient extends StandalonePlugin implements ActionListener
 		this.sendmail = Communicator.getInstance().getConnectInfo("org.lucane.applications.sendmail");
 		
 		frame = new JFrame(getTitle());
-		frame.addWindowListener(this);
+		frame.addWindowListener(new PluginExitWindowListener(this));
 		frame.getContentPane().setLayout(new GridLayout(0, 2));
 		
 		from = new JTextField();

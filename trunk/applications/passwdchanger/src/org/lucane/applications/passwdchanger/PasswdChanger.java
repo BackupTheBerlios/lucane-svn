@@ -19,6 +19,7 @@
 package org.lucane.applications.passwdchanger;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import org.lucane.common.signature.*;
@@ -68,7 +69,7 @@ public class PasswdChanger
   {
     this.cinfo = Communicator.getInstance().getConnectInfo("org.lucane.applications.passwdchanger");
     frame = new JFrame(getTitle());
-    frame.addWindowListener(this);
+    frame.addWindowListener(new PluginExitWindowListener(this));
     frame.getContentPane().setLayout(new GridLayout(0, 2));
     txtold = new JPasswordField();
     txtnew1 = new JPasswordField();

@@ -19,6 +19,7 @@
 package org.lucane.applications.reunion;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 import org.lucane.common.*;
@@ -91,7 +92,7 @@ implements ActionListener, KeyListener, ObjectListener
     /* creation of the frame */
     dialog = new JFrame(getTitle());
     dialog.setIconImage(this.getImageIcon().getImage());
-    dialog.addWindowListener(this);
+    dialog.addWindowListener(new PluginExitWindowListener(this));
     dialog.addKeyListener(this);
     dialog.getContentPane().setLayout(new BorderLayout());
     /* the subject */
@@ -114,7 +115,7 @@ implements ActionListener, KeyListener, ObjectListener
   {
     /* creation of the frame */
     dialog = new JFrame(getTitle());
-    dialog.addWindowListener(this);
+    dialog.addWindowListener(new PluginExitWindowListener(this));
     dialog.getContentPane().setLayout(new BorderLayout());
     /* the subject */
     lblInfo = new JLabel("[" + this.coordinator.getName() + "]");
@@ -157,8 +158,7 @@ implements ActionListener, KeyListener, ObjectListener
     }
 
     /* hide the subject window */
-    dialog.removeWindowListener(this);
-    dialog.setVisible(false);
+    dialog.dispose();
 
     /* create the ReunionUsersProperties */
     reunionUsersProperties = new ReunionUsersProperties();
@@ -246,7 +246,6 @@ implements ActionListener, KeyListener, ObjectListener
   {
     /* creation of the frame */
     frame = new JFrame(this.subject);
-    frame.addWindowListener(this);
     frame.setSize(640, 480);
     frame.getContentPane().setLayout(new BorderLayout());
     
@@ -283,7 +282,7 @@ implements ActionListener, KeyListener, ObjectListener
     txtSend.getEditorPane().addKeyListener(this);
     frame.getContentPane().add(txtSend, BorderLayout.SOUTH);
     
-    frame.addWindowListener(this);
+    frame.addWindowListener(new PluginExitWindowListener(this));
     frame.setVisible(true);
   }
 

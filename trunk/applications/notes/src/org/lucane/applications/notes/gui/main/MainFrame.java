@@ -24,6 +24,7 @@ import javax.swing.*;
 
 import org.lucane.applications.notes.*;
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 
 public class MainFrame extends JFrame
 {
@@ -47,7 +48,7 @@ public class MainFrame extends JFrame
 		this.getContentPane().add(lists, BorderLayout.NORTH);
 		this.getContentPane().add(content, BorderLayout.CENTER);
 
-                this.addWindowListener(parent);
+         this.addWindowListener(new PluginExitWindowListener(parent));
 	}
 	
 	public void setAuthors(Object[] data)

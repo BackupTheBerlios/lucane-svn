@@ -19,6 +19,7 @@
 package org.lucane.applications.sendfile;
 
 import org.lucane.client.*;
+import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -192,7 +193,7 @@ public class SendFile
   public void follow()
   {
     dialog = new JFrame();
-    dialog.addWindowListener(this);
+    dialog.addWindowListener(new PluginExitWindowListener(this));
     dialog.getContentPane().setLayout(new FlowLayout());
     lblNewFile = new JLabel( "[" + friend.getName() + "] " + this.filename);
     btnDlg = new JButton(tr("reject"));

@@ -4,6 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import org.lucane.client.util.PluginExitWindowListener;
+
 /**
  * SQLNavigator
  */
@@ -22,7 +24,7 @@ class Navigator extends JFrame implements ListSelectionListener
     public Navigator(SqlPlugin plugin)
 	{
         this.plugin = plugin;
-        this.addWindowListener(plugin);
+        this.addWindowListener(new PluginExitWindowListener(plugin));
            
         result = new JPanel();
         result.setLayout(new BorderLayout());       
