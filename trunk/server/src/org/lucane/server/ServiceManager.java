@@ -50,45 +50,51 @@ public class ServiceManager
 		this.services = new HashMap();
 	}	
 	
+	/**
+	 * Load the services from the jar files
+	 */
 	protected void loadAllServices()
 	{
-			String baseURL = System.getProperty("user.dir")	+ "/" + Server.APPLICATIONS_DIRECTORY;
-						
-			//get all services from store
-			Iterator services;
-			try {
-				services = store.getServiceStore().getAllServices();
-			} catch (Exception e) {
-				Logging.getLogger().severe("Unable get service list : " + e);
-				services = new ArrayList().iterator();
-			}
-			
-			LucaneClassLoader loader = LucaneClassLoader.getInstance();
-			while (services.hasNext())
+		String baseURL = System.getProperty("user.dir")	+ "/" + Server.APPLICATIONS_DIRECTORY;
+		
+		//get all services from store
+		Iterator services;
+		try {
+			services = store.getServiceStore().getAllServices();
+		} catch (Exception e) {
+			Logging.getLogger().severe("Unable get service list : " + e);
+			services = new ArrayList().iterator();
+		}
+		
+		LucaneClassLoader loader = LucaneClassLoader.getInstance();
+		while (services.hasNext())
+		{
+			ServiceConcept service = (ServiceConcept)services.next();
+			String servicename = service.getName();
+			try
 			{
-				ServiceConcept service = (ServiceConcept)services.next();
-				String servicename = service.getName();
-				try
-				{
-					String jarPath = baseURL + servicename + ".jar";
-					loader.addUrl("jar:file:///" + jarPath + "!/");
-
-					String className = JarUtils.getServiceClass(jarPath);
-					if (className == null)
-						continue;
-					
-					Service serv = (Service)Class.forName(className, true, loader).newInstance();
-					this.services.put(serv.getName(), serv);
-					Logging.getLogger().info("Service '" + servicename + "' loaded.");
-				}
-				catch (Exception e)
-				{
-					Logging.getLogger().warning("Unable to load service '" + servicename);
-					e.printStackTrace();
-				}
+				String jarPath = baseURL + servicename + ".jar";
+				loader.addUrl("jar:file:///" + jarPath + "!/");
+				
+				String className = JarUtils.getServiceClass(jarPath);
+				if (className == null)
+					continue;
+				
+				Service serv = (Service)Class.forName(className, true, loader).newInstance();
+				this.services.put(serv.getName(), serv);
+				Logging.getLogger().info("Service '" + servicename + "' loaded.");
 			}
+			catch (Exception e)
+			{
+				Logging.getLogger().warning("Unable to load service '" + servicename);
+				e.printStackTrace();
+			}
+		}
 	}
 	
+	/**
+	 * Start all services
+	 */
 	protected void startAllServices()
 	{
 		
@@ -98,10 +104,11 @@ public class ServiceManager
 			Service serv = (Service)services.next();
 			try
 			{
-				ServiceConcept service = store.getServiceStore().getService(serv.getName());
-				
+				// start the service
+				ServiceConcept service = store.getServiceStore().getService(serv.getName());				
 				serv.init(Server.getInstance());
 				
+				// install if necessary		
 				if (! service.isInstalled())
 				{
 					serv.install();
@@ -109,15 +116,12 @@ public class ServiceManager
 					store.getServiceStore().updateService(service);
 				}
 				
-				//TODO clean the connectinfo creation
-				ConnectInfoManager.getInstance().addConnectInfo(
-						new ConnectInfo(
-								serv.getName(),
-								Server.getInstance().serverIp,
-								Server.getInstance().serverIp,
-								Server.getInstance().port,
-								"nokey",
-						"service"));
+				//add the service connect info
+				ConnectInfo serverInfo = ConnectInfoManager.getInstance().getMyInfos();
+				ConnectInfo serviceInfo = new ConnectInfo(serv.getName(),
+						serverInfo.getAuthenticationServer(), serverInfo.hostname,
+						serverInfo.port, "nokey", "service");
+				ConnectInfoManager.getInstance().addConnectInfo(serviceInfo);
 				
 				Logging.getLogger().info("Service '" + serv.getName() + "' started.");
 			}
@@ -126,8 +130,26 @@ public class ServiceManager
 				Logging.getLogger().warning("Unable to start service : " + serv.getName() + " : " + e);
 				e.printStackTrace();
 			}
-		}
+		}		
+	}
+	
+	/**
+	 * Shutdown all services
+	 */
+	protected void shutdownAllServices()
+	{
 		
+		Iterator services = this.services.values().iterator();
+		while(services.hasNext())
+		{
+			Service serv = (Service)services.next();
+			serv.shutdown();
+			
+			//remove the connectInfo
+			ConnectInfoManager.getInstance().removeConnectInfo(serv.getName());
+			
+			Logging.getLogger().info("Service '" + serv.getName() + "' shutdowned.");
+		}		
 	}
 	
 	/**
