@@ -4,6 +4,7 @@
 
   <property name="dist.dir" value="../../dist/server" />
   <property name="dist.lib.dir" value="${dist.dir}/lib" />
+  <property name="dist.tools.dir" value="${dist.dir}/tools" />
   <property name="dist.etc.dir" value="${dist.dir}/etc" />
 
   <goal name="mkdist">
@@ -17,6 +18,13 @@
     <copy todir="${dist.etc.dir}">
       <fileset dir="etc">
         <include name="*.xml" />
+      </fileset>
+    </copy>
+
+    <copy todir="${dist.tools.dir}">
+      <fileset dir="tools">
+        <include name="*.bat" />
+        <include name="*.sh" />
       </fileset>
     </copy>
 
