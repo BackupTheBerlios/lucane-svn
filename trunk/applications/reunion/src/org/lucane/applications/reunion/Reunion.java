@@ -198,13 +198,7 @@ implements ActionListener, KeyListener, ObjectListener, WindowListener
 	public void windowIconified(WindowEvent e) {}
 	public void windowOpened(WindowEvent e) {}
 	public void windowClosing(WindowEvent we)
-	{
-		/*jsp_txtRead_lstUsers.setDividerLocation(
-		 Integer.parseInt(
-		 this.getLocalConfig().get("jsp_txtRead_lstUsers_dividerLocation", "520")));*/
-		
-		System.out.println(""+this.getLocalConfig());
-		System.out.println("" + jsp_txtRead_lstUsers.getDividerLocation());
+	{	
 		this.getLocalConfig().set(
 				"jsp_txtRead_lstUsers_dividerLocation",
 				"" + jsp_txtRead_lstUsers.getDividerLocation());

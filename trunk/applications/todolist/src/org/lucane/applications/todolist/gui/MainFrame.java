@@ -285,7 +285,6 @@ public class MainFrame extends ManagedWindow {
 	
 	public void saveWidgetState()
 	{
-		System.out.println("SAVE");
 		WidgetState.save(plugin.getLocalConfig(), jspMain);
 		WidgetState.save(plugin.getLocalConfig(), jspItem);
 		WidgetState.save(plugin.getLocalConfig(), jspList);
@@ -293,7 +292,6 @@ public class MainFrame extends ManagedWindow {
 
 	public void restoreWidgetState()
 	{
-		System.out.println("RESTORE");
 		WidgetState.restore(plugin.getLocalConfig(), jspMain);
 		WidgetState.restore(plugin.getLocalConfig(), jspItem);
 		WidgetState.restore(plugin.getLocalConfig(), jspList);
