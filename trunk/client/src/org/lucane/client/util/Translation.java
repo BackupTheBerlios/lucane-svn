@@ -34,6 +34,7 @@ import org.lucane.common.Logging;
 public class Translation
 {
     private static ResourceBundle bundle;
+    private static ResourceBundle defaultBundle;
     
     /**
      * Places the correct Locale.
@@ -42,25 +43,23 @@ public class Translation
     public static void setLocale(String lang)
     {
     	Locale.setDefault(new Locale(lang));
-        try
-        {
-            InputStream is = new URL(getDirectory() + "messages_" + lang + ".properties").openStream();
-            Translation.bundle = new PropertyResourceBundle(is);
-        }
-        catch (Exception e1)
-        {            
-            try
-            {                
-                InputStream is = new URL(getDirectory() + "messages.properties").openStream();
-                Translation.bundle = new PropertyResourceBundle(is);
-            }
-            catch (Exception e2)
-            {
+		try {
+			InputStream is = new URL(getDirectory() + "messages.properties").openStream();
+			Translation.bundle = new PropertyResourceBundle(is);
+			Translation.defaultBundle = Translation.bundle;
+		} catch(Exception e) {
+			Translation.bundle = null;
+			Translation.defaultBundle = null;
+		}		
+		
+		try {
+			InputStream is = new URL(getDirectory() + "messages_" + lang +  ".properties").openStream();
+			Translation.bundle = new PropertyResourceBundle(is);
+		} catch(Exception e) {
+			if(Translation.bundle == null)
 				Logging.getLogger().info("unable to set language");
-                Translation.bundle = null;
-            }
-        }
-        
+		}
+		
         try {
 	        if(Translation.bundle != null)
     	    	Translation.changeUIMessages();            
@@ -77,11 +76,15 @@ public class Translation
      */
     public static String tr(String origin)
     {        
-        try {            
-            return bundle.getString(origin);
-        } catch (Exception e) {
-            return origin;
-        }
+		try {
+			return bundle.getString(origin);
+		} catch(Exception e) {    
+			try {
+				return defaultBundle.getString(origin);
+			} catch(Exception e2) {    
+				return origin;
+			}
+		}
     }
     
     /**
