@@ -79,7 +79,7 @@ extends Service
   {
   	Account a = null;
   	
-  	Connection connex = layer.openConnection();  	
+  	Connection connex = layer.getConnection();  	
 	PreparedStatement select = connex.prepareStatement(
 			"SELECT * FROM JMailAccounts WHERE userName=?");
 	select.setString(1, user);

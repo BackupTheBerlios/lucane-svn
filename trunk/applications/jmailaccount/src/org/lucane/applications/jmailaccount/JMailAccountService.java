@@ -75,7 +75,7 @@ extends Service
   {
   	Account a = null;
 
-  	Connection connex = layer.openConnection();  	
+  	Connection connex = layer.getConnection();  	
   	PreparedStatement select = connex.prepareStatement(
   	"SELECT * FROM JMailAccounts WHERE userName=?");
   	
@@ -107,7 +107,7 @@ extends Service
   private void storeAccount(String user, Account a)
   throws Exception
   {  	  	
-  	Connection connex = layer.openConnection();  	  	
+  	Connection connex = layer.getConnection();  	  	
 
   	PreparedStatement delete = connex.prepareStatement(
   	"DELETE FROM JMailAccounts WHERE userName = ?");

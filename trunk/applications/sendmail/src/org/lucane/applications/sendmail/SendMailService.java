@@ -45,7 +45,7 @@ public class SendMailService extends Service
 			String dbDescription = getDirectory()	+ "db-sendmail.xml";
 			layer.getTableCreator().createFromXml(dbDescription);
 			
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 			String request = "INSERT INTO smtphost VALUES ('" + SMTP_HOST + "')";
 			st = conn.createStatement();
 			st.execute(request);
@@ -62,7 +62,7 @@ public class SendMailService extends Service
 		try 
 		{
 			String request = "SELECT hostname FROM smtphost";
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 			st = conn.createStatement();
 			res = st.executeQuery(request);
 			if(res.next())

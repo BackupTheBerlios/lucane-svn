@@ -70,7 +70,7 @@ public class SqlGroupStore extends GroupStore
 	public void storeGroup(GroupConcept group)
 	throws SQLException
 	{       
-        Connection c = layer.openConnection();
+        Connection c = layer.getConnection();
         PreparedStatement insert;
         Iterator i;
                
@@ -145,7 +145,7 @@ public class SqlGroupStore extends GroupStore
 		//-- delete basic infos	
 		removeGroupOnly(group);
 		
-        Connection c = layer.openConnection();           
+        Connection c = layer.getConnection();           
         
         //delete group links
         PreparedStatement delete = c.prepareStatement("DELETE FROM " + GROUPLINKS 
@@ -163,7 +163,7 @@ public class SqlGroupStore extends GroupStore
 	{
         GroupConcept group = null;
 
-        Connection c = layer.openConnection();
+        Connection c = layer.getConnection();
         PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
             + " WHERE name=?");
         select.setString(1, name);
@@ -194,7 +194,7 @@ public class SqlGroupStore extends GroupStore
     {
 		ArrayList all = new ArrayList();
 		
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
 		ResultSet rs = select.executeQuery();
 					
@@ -300,7 +300,7 @@ public class SqlGroupStore extends GroupStore
 	private void removeGroupOnly(GroupConcept group)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement delete;
                
 		//delete group

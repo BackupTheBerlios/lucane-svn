@@ -139,7 +139,7 @@ extends Service
 	{
 		int id = 0;
 
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT max(id)+1 FROM CalEvents");
 				
@@ -164,7 +164,7 @@ extends Service
 		else
 			removeEvent(event);
 
-		Connection c = layer.openConnection();			
+		Connection c = layer.getConnection();			
 		PreparedStatement insert = c.prepareStatement(
 			"INSERT INTO CalEvents VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 		
@@ -190,7 +190,7 @@ extends Service
 	private void storeAttendees(Event event)
 	throws Exception
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement insert = c.prepareStatement(
 			"INSERT INTO CalAttendees VALUES(?, ?, ?, ?)");
 
@@ -212,7 +212,7 @@ extends Service
 	private void storeResources(Event event)
 	throws Exception
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement insert = c.prepareStatement(
 			"INSERT INTO CalResources VALUES(?, ?)");
 
@@ -238,7 +238,7 @@ extends Service
 			return;
 
 		Logging.getLogger().fine("Removing event : " + event.getTitle());
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement delete;
 		
 		delete = c.prepareStatement("DELETE FROM CalEvents WHERE id=?");
@@ -265,7 +265,7 @@ extends Service
 	throws Exception
 	{
 		ArrayList events = new ArrayList();				
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		
 		//events where the user is organizer
 		PreparedStatement select = c.prepareStatement(
@@ -336,7 +336,7 @@ extends Service
 	{
 		ArrayList events = new ArrayList();
 		
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT e.* FROM CalEvents e, CalResources r WHERE " +
 			"e.id = r.eventId AND r.object = ?");
@@ -383,7 +383,7 @@ extends Service
 	{
 		ArrayList resources = new ArrayList();
 		
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT * FROM CalObjects");				
 
@@ -414,7 +414,7 @@ extends Service
 	private void loadColor(Event event)
 	throws Exception
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT * FROM CalEventTypes WHERE type = ?");
 					
@@ -439,7 +439,7 @@ extends Service
 	throws Exception
 	{
 		ArrayList types = new ArrayList();
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT * FROM CalEventTypes");
 
@@ -458,7 +458,7 @@ extends Service
 	throws Exception
 	{
 		ArrayList attendees = new ArrayList();
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT * FROM CalAttendees WHERE eventId = ?");
 					
@@ -486,7 +486,7 @@ extends Service
 	throws Exception
 	{
 		ArrayList resources = new ArrayList();
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement(
 			"SELECT * FROM CalResources WHERE eventId = ?");
 
@@ -509,7 +509,7 @@ extends Service
 	private void addType(String name, int red, int green, int blue)
 	throws Exception
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement insert = c.prepareStatement(
 			"INSERT INTO CalEventTypes VALUES(?, ?, ?, ?)");
 			

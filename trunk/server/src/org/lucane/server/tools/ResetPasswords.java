@@ -76,7 +76,7 @@ public class ResetPasswords
 		
 		DatabaseAbstractionLayer dbLayer = DatabaseAbstractionLayer.createLayer(config);
 
-		Connection c = dbLayer.openConnection();
+		Connection c = dbLayer.getConnection();
         PreparedStatement update = c.prepareStatement(
         		"UPDATE users SET passwd=?, pubkey=?, privkey=? WHERE login=?");
 

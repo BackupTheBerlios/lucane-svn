@@ -109,7 +109,7 @@ extends Service
     if(note.getEditionDate() != null)
       editionDate = note.getEditionDate().getTime();
 
-  	connex = layer.openConnection();
+  	connex = layer.getConnection();
 
     
     //new note, fetch a new id
@@ -158,7 +158,7 @@ extends Service
   private void deleteNote(String noteId)
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
 	PreparedStatement delete = connex.prepareStatement("DELETE FROM notes WHERE id=?");
 	delete.setString(1, noteId);
@@ -176,7 +176,7 @@ extends Service
   private Object[] getPersonnalNotes(String author)
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
   	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
@@ -209,7 +209,7 @@ extends Service
   private Object[] getPublishedAuthors()
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
@@ -232,7 +232,7 @@ extends Service
   private Object[] getRecentPublishedNotes(Integer max)
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
@@ -265,7 +265,7 @@ extends Service
   private Object[] getPublishedNotesByAuthor(String author)
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
@@ -301,7 +301,7 @@ extends Service
   private synchronized void saveComment(Comment comment)
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
 	//fetch a new id
     try {
@@ -335,7 +335,7 @@ extends Service
   private Object[] getCommentsForNote(String idNote)
     throws Exception
   {
- 	connex = layer.openConnection();
+ 	connex = layer.getConnection();
 
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(

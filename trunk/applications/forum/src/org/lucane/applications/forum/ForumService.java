@@ -100,7 +100,7 @@ extends Service
 		try
 		{
 			Vector v = new Vector();
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 			
 			st = conn.prepareStatement("SELECT name FROM forum");
 			res = st.executeQuery();
@@ -129,7 +129,7 @@ extends Service
 		try
 		{
 			Vector v = new Vector();
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 			
 			st = conn.prepareStatement("SELECT id, idref, author, datum, title " + 
 					"FROM forumMessage WHERE forum=?" +
@@ -161,7 +161,7 @@ extends Service
 	{
 		try
 		{
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 			
 			st = conn.prepareStatement("SELECT content FROM forumMessage WHERE id=?");
 			st.setString(1, data);
@@ -208,7 +208,7 @@ extends Service
 		{
 			try
 			{
-				conn = layer.openConnection();
+				conn = layer.getConnection();
 				
 				st = conn.prepareStatement("SELECT max(id)+1 FROM forumMessage");
 				res = st.executeQuery();

@@ -61,11 +61,11 @@ public abstract class DatabaseAbstractionLayer
 	}
 		
 	/**
-	 * Open a new connection
+	 * Get an opened connection
 	 *
 	 * @return the connection
 	 */
-	public abstract Connection openConnection() throws SQLException;
+	public abstract Connection getConnection() throws SQLException;
 	
 	/**
 	 * Check if a table is existing in the system
@@ -78,7 +78,7 @@ public abstract class DatabaseAbstractionLayer
 	{
 		boolean has = false;
 		String[] types = {"TABLE"};
-		Connection c = this.openConnection();
+		Connection c = this.getConnection();
 		ResultSet rs = c.getMetaData().getTables(null, null, null, types);
 		
 		while(!has && rs.next())

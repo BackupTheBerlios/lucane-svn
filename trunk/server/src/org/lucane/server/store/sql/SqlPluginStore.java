@@ -42,7 +42,7 @@ public class SqlPluginStore extends PluginStore
 	throws SQLException
 	{	
 		//store plugin
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
 			+ " VALUES(?, ?, ?)");
 		insert.setString(1, plugin.getName());
@@ -56,7 +56,7 @@ public class SqlPluginStore extends PluginStore
 	public void updatePlugin(PluginConcept plugin)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		
 		//try to delete plugin
 		try {
@@ -84,7 +84,7 @@ public class SqlPluginStore extends PluginStore
 	public void removePlugin(PluginConcept plugin)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		Statement s = c.createStatement();
 		
 		PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
@@ -108,7 +108,7 @@ public class SqlPluginStore extends PluginStore
 	{
 		PluginConcept plugin = null;
 
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
 			+ " WHERE name=?");
 		select.setString(1, name);
@@ -136,7 +136,7 @@ public class SqlPluginStore extends PluginStore
 	{
 		ArrayList all = new ArrayList();
 		
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
 		ResultSet rs = select.executeQuery();
 					

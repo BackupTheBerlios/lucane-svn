@@ -90,7 +90,7 @@ extends Service
 	{
 		ArrayList channels = new ArrayList();
 		
-		Connection connection = layer.openConnection();
+		Connection connection = layer.getConnection();
 		PreparedStatement select = connection.prepareStatement(
 				"SELECT name, url FROM rssChannels WHERE user=?");
 		
@@ -114,7 +114,7 @@ extends Service
 	private void addChannel(String user, ChannelInfo channel) 
 	throws Exception
 	{
-		Connection connection = layer.openConnection();
+		Connection connection = layer.getConnection();
 		PreparedStatement insert = connection.prepareStatement(
 			"INSERT INTO rssChannels VALUES(?, ?, ?)");
 		
@@ -130,7 +130,7 @@ extends Service
 	private void removeChannel(String user, ChannelInfo channel) 
 	throws Exception
 	{
-		Connection connection = layer.openConnection();
+		Connection connection = layer.getConnection();
 		PreparedStatement delete = connection.prepareStatement(
 			"DELETE FROM rssChannels WHERE user=? AND name=?");
 		

@@ -72,7 +72,7 @@ extends Service
 	{
 		try
 		{
-			conn = Server.getInstance().getDBLayer().openConnection();
+			conn = Server.getInstance().getDBLayer().getConnection();
 			
 			Vector v = new Vector();
 			PreparedStatement select = conn.prepareStatement("SELECT name FROM forum");
@@ -97,7 +97,7 @@ extends Service
 	{
 		try
 		{
-			conn = Server.getInstance().getDBLayer().openConnection();
+			conn = Server.getInstance().getDBLayer().getConnection();
 			
 			PreparedStatement delete = conn.prepareStatement("DELETE FROM forum WHERE name= ?");
 			delete.setString(1, forum);
@@ -120,7 +120,7 @@ extends Service
 		
 		try
 		{
-			conn = Server.getInstance().getDBLayer().openConnection();
+			conn = Server.getInstance().getDBLayer().getConnection();
 			
 			PreparedStatement insert = conn.prepareStatement(
 			"INSERT INTO forum VALUES(?)");

@@ -66,7 +66,7 @@ extends Service
 		{
 			SqlResult result = new SqlResult();
 			
-			Connection c = layer.openConnection();
+			Connection c = layer.getConnection();
 			Statement stm = c.createStatement();
 			ResultSet rs = stm.executeQuery((String)object);
 			
@@ -104,7 +104,7 @@ extends Service
 		
 		try
 		{
-	  		Connection connection = layer.openConnection();
+	  		Connection connection = layer.getConnection();
 			DatabaseMetaData dbmd = connection.getMetaData();
 			String[] types = {"TABLE", "VIEW"};
 			ResultSet rs = dbmd.getTables(null,null,null,types);
@@ -128,7 +128,7 @@ extends Service
 	{
 		try
 		{
-			Connection connection = layer.openConnection();
+			Connection connection = layer.getConnection();
 			DatabaseMetaData dbmd = connection.getMetaData();
 			String info = dbmd.getDriverName() + " " + dbmd.getDriverVersion();
 			connection.close();

@@ -42,7 +42,7 @@ public class SqlUserStore extends UserStore
 	throws SQLException
 	{	
 		//store user
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
 			+ " VALUES(?, ?, ?, ?, ?, ?, ?);");
 		
@@ -63,7 +63,7 @@ public class SqlUserStore extends UserStore
 	public void updateUser(UserConcept user)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		Statement s = c.createStatement();			
 
 		//try to delete user
@@ -95,7 +95,7 @@ public class SqlUserStore extends UserStore
 	public void removeUser(UserConcept user)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		
 		PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
 			+ " WHERE login=?");
@@ -115,7 +115,7 @@ public class SqlUserStore extends UserStore
 	{
 		UserConcept user = null;
 
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
 			+ " WHERE login=?");
@@ -149,7 +149,7 @@ public class SqlUserStore extends UserStore
 	{
 		ArrayList all = new ArrayList();
 		
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
 		ResultSet rs = select.executeQuery();		
 							

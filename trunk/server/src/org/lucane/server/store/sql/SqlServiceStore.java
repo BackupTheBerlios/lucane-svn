@@ -42,7 +42,7 @@ public class SqlServiceStore extends ServiceStore
 	throws SQLException
 	{	
 		//store service
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
 			+ " VALUES(?, ?, ?)");
 		
@@ -58,7 +58,7 @@ public class SqlServiceStore extends ServiceStore
 	public void updateService(ServiceConcept service)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();			
+		Connection c = layer.getConnection();			
 		
 		//try to delete service
 		try {
@@ -85,7 +85,7 @@ public class SqlServiceStore extends ServiceStore
 	public void removeService(ServiceConcept service)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 
 		PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
 						+ " WHERE name=?");
@@ -105,7 +105,7 @@ public class SqlServiceStore extends ServiceStore
 	{
 		ServiceConcept service = null;
 
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
 			+ " WHERE name=?");
 		select.setString(1, name);
@@ -133,7 +133,7 @@ public class SqlServiceStore extends ServiceStore
 	{
 		ArrayList all = new ArrayList();
 		
-		Connection c = layer.openConnection();
+		Connection c = layer.getConnection();
 		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
 		ResultSet rs = select.executeQuery();
 					

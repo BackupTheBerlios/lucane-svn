@@ -37,7 +37,7 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
 	bds.setUrl(getAbsoluteUrl(bds.getUrl()));
   }
   
-  public Connection openConnection()
+  public Connection getConnection()
   throws SQLException
   {    
 	return dataSource.getConnection();

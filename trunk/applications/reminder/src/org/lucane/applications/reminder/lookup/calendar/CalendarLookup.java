@@ -114,7 +114,7 @@ public class CalendarLookup implements Lookup
 	{
 		ArrayList events = new ArrayList();
 		
-		Connection c = Server.getInstance().getDBLayer().openConnection();
+		Connection c = Server.getInstance().getDBLayer().getConnection();
 		Statement s = c.createStatement();
 		
 		String query = "SELECT * FROM CalEvents WHERE "

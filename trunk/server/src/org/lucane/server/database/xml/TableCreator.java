@@ -31,7 +31,7 @@ public abstract class TableCreator
   	 
   	 
 	   //-- tables
-	   Connection c = Server.getInstance().getDBLayer().openConnection();
+	   Connection c = Server.getInstance().getDBLayer().getConnection();
 	   node = node.getFirstChild();
 	   while(node != null)
 	   {	

@@ -117,7 +117,7 @@ public class TodolistService extends Service {
 	
 	private void getTodolists(ObjectConnection oc, String userName) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"SELECT id, user_name, name, comment FROM todolists WHERE user_name=?");
@@ -143,7 +143,7 @@ public class TodolistService extends Service {
 	
 	private void getTodolistItems(ObjectConnection oc, int idList) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"SELECT id, id_list, name, comment, priority, completed FROM todolistitems WHERE id_list=?");
@@ -169,7 +169,7 @@ public class TodolistService extends Service {
 	
 	private void addTodolist(ObjectConnection oc, Todolist newTodolist) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"SELECT MAX(id) FROM todolists");
@@ -202,7 +202,7 @@ public class TodolistService extends Service {
 	
 	private void modifyTodolist(ObjectConnection oc, int oldTodolistId, Todolist newTodolist) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"UPDATE todolists SET user_name=?, name=?, comment=? WHERE id=?");
@@ -224,7 +224,7 @@ public class TodolistService extends Service {
 	
 	private void deleteTodolist(ObjectConnection oc, int id) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"DELETE FROM todolists WHERE id=?");
@@ -249,7 +249,7 @@ public class TodolistService extends Service {
 	
 	private void addTodolistItem(ObjectConnection oc, TodolistItem newTodolistItem) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"SELECT count(*) FROM todolists WHERE id=?");
@@ -297,7 +297,7 @@ public class TodolistService extends Service {
 	
 	private void modifyTodolistItem(ObjectConnection oc, int oldTodolistItemId, TodolistItem newTodolistItem) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"UPDATE todolistitems SET name=?, comment=?, id_list=?, priority=?, completed=? WHERE id=?");
@@ -321,7 +321,7 @@ public class TodolistService extends Service {
 	
 	private void deleteTodolistItem(ObjectConnection oc, int id) {
 		try {
-			conn = layer.openConnection();
+			conn = layer.getConnection();
 
 			st = conn.prepareStatement(
 			"DELETE FROM todolistitems WHERE id=?");
