@@ -18,6 +18,8 @@
  */
 package org.lucane.applications.audioconf;
 
+import java.io.IOException;
+
 import org.lucane.applications.audioconf.audio.*;
 import org.lucane.applications.audioconf.gui.ConfigDialog;
 import org.lucane.client.*;
@@ -66,10 +68,15 @@ public class AudioConf extends Plugin
 
 	public void follow()
 	{
-		DialogBox.info("DEBUG: receiving audio stream from " +friend.getName());
+		System.out.println("DEBUG: receiving audio stream from " +friend.getName());
 		
-		try {
+		try {		
 			AudioConfig config = (AudioConfig)this.connection.read();
+			System.out.println("read config : " +config);
+			
+			boolean accepted = true;//DialogBox.question(getTitle(), "accept audioconf ?");
+			this.connection.write(Boolean.valueOf(accepted));
+			
 			AudioPlayer player = new AudioPlayer(config, new AudioConfInputStream(this.connection));
 			Thread thread = new Thread(player);
 			thread.start();
@@ -78,10 +85,38 @@ public class AudioConf extends Plugin
 		}
 	}	
 	
-	public void startRecorder(AudioConfig config)
+	public void askForAccept(AudioConfig config)
 	{
-		System.out.println("start");
+		System.out.println("ask for accept");
 		this.connection = Communicator.getInstance().sendMessageTo(this.friend, this.getName(), "");
+		try {
+			System.out.println("sending " +config);
+			this.connection.write(config);
+			System.out.println("sent " +config);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+				
+		try {
+			System.out.println("waiting for accept");
+			Boolean accept = (Boolean)this.connection.read();
+			if(accept.booleanValue())
+			{
+				System.out.println("accepted, recording starts");
+				this.startRecording(config);
+			}
+			else
+			{
+				System.out.println("rejected.");
+			}
+		} catch (Exception e) {
+			System.out.println("error in acceptation");
+			e.printStackTrace();
+		}		
+	}
+	
+	private void startRecording(AudioConfig config)
+	{
 		AudioRecorder recorder = new AudioRecorder(config);
 		recorder.addAudioListener(new Streamer(this.connection));
 		Thread thread = new Thread(recorder);

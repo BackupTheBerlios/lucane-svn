@@ -79,6 +79,7 @@ public class AudioPlayer implements Runnable
 	 */
 	public void run()
 	{
+		System.out.println("player started");
 		dataLine.start();
 
 		int read = 1;
@@ -91,10 +92,12 @@ public class AudioPlayer implements Runnable
 		{
 			try	{
 				read = source.read(speex, 0, speex.length);
+				System.out.println("read buffer : " + speex.length);
 				decoder.processData(speex, 0, read);				
 				
 				int length = decoder.getProcessedDataByteSize();
 				decoder.getProcessedData(pcm, 0);
+				System.out.println("decoded buffer : " + length);
 				
 				if(length >= 0)
 					dataLine.write(pcm, 0, length);

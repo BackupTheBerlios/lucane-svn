@@ -37,12 +37,7 @@ public class Streamer implements AudioRecorderListener
 	 */
 	public void audioRecordingStarted(AudioConfig config) 
 	{
-		System.out.println("Ready to record");	
-		try {
-			this.connection.write(config);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.println("Ready to record");			
 	}
 	
 	/**
@@ -54,6 +49,7 @@ public class Streamer implements AudioRecorderListener
 			byte[] buffer = new byte[length];
 			System.arraycopy(data, 0, buffer, 0, length);
 			
+			System.out.println("sending buffer : " +length);
 			this.connection.write(buffer);
 		} catch (IOException e) {
 			e.printStackTrace();

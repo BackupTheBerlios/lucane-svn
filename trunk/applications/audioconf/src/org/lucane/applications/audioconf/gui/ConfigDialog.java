@@ -22,6 +22,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import org.lucane.applications.audioconf.AcceptationThread;
 import org.lucane.applications.audioconf.AudioConf;
 import org.lucane.client.Client;
 
@@ -68,11 +69,11 @@ implements ActionListener
 	public void actionPerformed(ActionEvent e) 
 	{
 		if(e.getSource().equals(btnOk))
-			plugin.startRecorder(this.config.getAudioConfig());
+			new AcceptationThread(plugin, this.config.getAudioConfig()).start();
 		else if(e.getSource().equals(btnCancel))
 			plugin.exit();
-		
-		this.dispose();
+
+		this.dispose();		
 	}
 	
 	private String tr(String s)
