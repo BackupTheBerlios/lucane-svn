@@ -38,9 +38,6 @@ public class MainInterface
 
   private final static int NB_BUTTONS = 8;
 
-  /* initial parameters */
-  private ConnectInfo service;
-
   /* plugins... */
   private Vector buttons;
   private Vector names;
@@ -91,7 +88,7 @@ public class MainInterface
     this.commu = Communicator.getInstance();
     this.parent = Client.getInstance();
     this.ploader = PluginLoader.getInstance();
-    service = commu.getConnectInfo("org.lucane.applications.maininterface");
+
     frame = new JFrame("Lucane - " + parent.getMyInfos().getName());
     frame.getContentPane().setLayout(new BorderLayout());
     frame.addWindowListener(this);
@@ -123,138 +120,134 @@ public class MainInterface
     Vector list = parent.getUserList();
     lstUsers.setListData(list);
 
-    int[] uses = new int[ploader.getNumberOfPlugins()];
-
-    for(int i = 0; i < ploader.getNumberOfPlugins(); i++)
-    {
-      Plugin p = ploader.getPluginAt(i);
-      uses[i] = 0;
-
-      try
-      {
-        ObjectConnection oc = commu.sendMessageTo(service, service.getName(), "GET_USE " + p.getName());
-        String val = oc.readString();
-        oc.close();
-        uses[i] = Integer.parseInt(val);
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
-      }
-
-      if(! p.getCategory().equals("Invisible"))
-      {
-        int j;
-        ImageIcon iic = null;
-
-        try
-        {
-          iic = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
-		  Logging.getLogger().finer("ICON: " + p.getDirectory() + p.getIcon());
-          iic = new ImageIcon(iic.getImage().getScaledInstance(16, 16, 
-                                                               Image.SCALE_SMOOTH));
-        }
-        catch(Exception e)
-        {
-          DialogBox.error(tr("error") + e);
-        }
-
-        for(j = 0; j < mnuExtends.getMenuComponentCount(); j++)
-        {
-          JMenu jm = (JMenu)mnuExtends.getMenuComponent(j);
-
-          if(jm.getText().equals(p.getCategory()))
-          {
-            JMenuItem jmi = new JMenuItem(p.getTitle(), iic);
-            jmi.setToolTipText(p.getToolTip());
-            jmi.addActionListener(this);
-            jm.add(jmi);
-            buttons.addElement(jmi);
-            names.addElement(p.getName());
-
-            break;
-          }
-        }
-
-        if(j == mnuExtends.getMenuComponentCount())
-        {
-          JMenu jm = new JMenu(p.getCategory());
-          JMenuItem jmi = new JMenuItem(p.getTitle(), iic);
-          jmi.addActionListener(this);
-          jm.add(jmi);
-          buttons.addElement(jmi);
-          names.addElement(p.getName());
-          mnuExtends.add(jm);
-        }
-      }
-    }
-
-    int[] positions = new int[NB_BUTTONS];
-    int max;
-    int cur;
-    int i = 0;
-
-    while(i < NB_BUTTONS && i < uses.length)
-    {
-      cur = -1;
-      max = -1;
-
-      for(int j = 0; j < uses.length; j++)
-      {
-        if(uses[j] > max)
-        {
-          boolean already = false;
-
-          for(int k = 0; k < i && ! already; k++)
-          {
-            if(positions[k] == j)
-              already = true;
-          }
-
-          Plugin p = ploader.getPluginAt(j);
-
-          if(! p.getCategory().equals("Invisible") && ! already)
-          {
-            max = uses[j];
-            cur = j;
-          }
-        }
-      }
-
-      if(cur >= 0)
-      {
-        positions[i] = cur;
-        
-        Plugin p = ploader.getPluginAt(cur);
-        ImageIcon iic = null;
-
-        try
-        {
-          iic = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
-        }
-        catch(Exception e)
-        {
-          DialogBox.error(tr("error") + e);
-        }
-
-        JButton mybutton = new JButton(iic);
-        mybutton.addActionListener(this);
-        buttons.addElement(mybutton);
-        names.addElement(p.getName());
-        mybutton.setHorizontalAlignment(SwingConstants.LEFT);
-        mybutton.setText(p.getTitle());
-        mybutton.setToolTipText(p.getToolTip());
-        pnlPlugins.add(mybutton);
-      }
-
-      i++;
-    }
+    sortAndDisplayApps();
 
     parent.addUserListListener(this);
     
     frame.setIconImage(this.getImageIcon().getImage());
     frame.setSize(350, 400);
     frame.setVisible(true);
+  }
+  
+  private void sortAndDisplayApps()
+  {
+  	int[] uses = new int[ploader.getNumberOfPlugins()];
+
+  	for(int i = 0; i < ploader.getNumberOfPlugins(); i++)
+  	{
+  		Plugin p = ploader.getPluginAt(i);
+  		
+  		// how many times was this app launched ?
+  		try {
+  			uses[i] = Integer.parseInt(this.getLocalConfig().get(p.getName()));
+  		} catch(Exception e) {
+  			uses[i] = 0;
+  		}
+
+  		// add to the Applications menu
+  		if(! p.getCategory().equals("Invisible"))
+  		{
+  			int j;
+  			ImageIcon icon = null;
+
+  			//resize icon
+  			try {
+  				icon = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
+  				Logging.getLogger().finer("ICON: " + p.getDirectory() + p.getIcon());
+  				icon = new ImageIcon(icon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+  			} catch(Exception e) {
+  				DialogBox.error(tr("error") + e);
+  			}
+
+  			//add to the correct category
+  			for(j = 0; j < mnuExtends.getMenuComponentCount(); j++)
+  			{
+  				JMenu menu = (JMenu)mnuExtends.getMenuComponent(j);
+
+  				if(menu.getText().equals(p.getCategory()))
+  				{
+  					JMenuItem menuItem = new JMenuItem(p.getTitle(), icon);
+  					menuItem.setToolTipText(p.getToolTip());
+  					menuItem.addActionListener(this);
+  					menu.add(menuItem);
+  					buttons.addElement(menuItem);
+  					names.addElement(p.getName());
+  					break;
+  				}
+  			}
+
+  			//this cat doesn't exist yet, let's create it
+  			if(j == mnuExtends.getMenuComponentCount())
+  			{
+  				JMenu jm = new JMenu(p.getCategory());
+  				JMenuItem jmi = new JMenuItem(p.getTitle(), icon);
+  				jmi.addActionListener(this);
+  				jm.add(jmi);
+  				buttons.addElement(jmi);
+  				names.addElement(p.getName());
+  				mnuExtends.add(jm);
+  			}
+  		}
+  	}
+
+  	//-- sort and display apps in buttons
+  	int[] positions = new int[NB_BUTTONS];
+  	int max;
+  	int cur;
+  	int i = 0;
+
+  	while(i < NB_BUTTONS && i < uses.length)
+  	{
+  		cur = -1;
+  		max = -1;
+
+  		for(int j = 0; j < uses.length; j++)
+  		{
+  			if(uses[j] > max)
+  			{
+  				boolean already = false;
+
+  				for(int k = 0; k < i && ! already; k++)
+  				{
+  					if(positions[k] == j)
+  						already = true;
+  				}
+
+  				Plugin p = ploader.getPluginAt(j);
+
+  				if(! p.getCategory().equals("Invisible") && ! already)
+  				{
+  					max = uses[j];
+  					cur = j;
+  				}
+  			}
+  		}
+
+  		if(cur >= 0)
+  		{
+  			positions[i] = cur;
+  			
+  			Plugin p = ploader.getPluginAt(cur);
+  			ImageIcon iic = null;
+
+  			try {
+  				iic = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
+  			} catch(Exception e) {
+  				DialogBox.error(tr("error") + e);
+  			}
+
+  			JButton mybutton = new JButton(iic);
+  			mybutton.addActionListener(this);
+  			buttons.addElement(mybutton);
+  			names.addElement(p.getName());
+  			mybutton.setHorizontalAlignment(SwingConstants.LEFT);
+  			mybutton.setText(p.getTitle());
+  			mybutton.setToolTipText(p.getToolTip());
+  			pnlPlugins.add(mybutton);
+  		}
+
+  		i++;
+  	}  	
   }
 
   public void userListChanged(Vector logins)
@@ -290,15 +283,14 @@ public class MainInterface
       cis[i] = commu.getConnectInfo((String)lstv[i]);
     }
 
-    try
-    {
-      ObjectConnection oc = commu.sendMessageTo(service, "org.lucane.applications.maininterface", "INC_USE " + name);
-      oc.close();
+    //-- increment use counter
+    int currentUse = 0;
+    try {
+    	currentUse = Integer.parseInt(this.getLocalConfig().get(name));
+    } catch(Exception e) {
+    	//nothing, not yet used
     }
-    catch(Exception e)
-    {
-      //bah...
-    }
+    this.getLocalConfig().set(name, String.valueOf(currentUse+1));       
 
 	Logging.getLogger().finer("PluginToLoad: " + name);
     ploader.run(name, cis);
