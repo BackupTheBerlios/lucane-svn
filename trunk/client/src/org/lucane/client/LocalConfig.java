@@ -34,7 +34,7 @@ import org.lucane.common.Logging;
  */
 public class LocalConfig
 {
-	private static final String CONFIG_DIRECTORY = Client.APPLICATIONS_DIRECTORY + "config/"; 
+	protected static final String CONFIG_DIRECTORY = "etc/localconfig/"; 
 
 	//-- attributes
 	private String app;
@@ -50,7 +50,8 @@ public class LocalConfig
 	protected LocalConfig(String app)
 	{
 		this.app = app;
-		this.path = System.getProperty("user.dir") + '/' + CONFIG_DIRECTORY + app + ".properties";
+		this.path = System.getProperty("user.dir") + '/' + CONFIG_DIRECTORY +
+			Client.getInstance().getMyInfos().getName() + '/' + app + ".properties";
 		this.path = this.path.replace('\\', '/');
 		
 		this.properties = new Properties();

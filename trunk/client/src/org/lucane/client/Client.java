@@ -101,8 +101,7 @@ public class Client
 
 		//create application directory structure
 		String appPath = System.getProperty("user.dir") + '/' + APPLICATIONS_DIRECTORY;
-		new File(appPath).mkdirs();
-		new File(appPath + "config").mkdirs();
+		new File(appPath).mkdirs();		
     }
     
     /**
@@ -124,6 +123,11 @@ public class Client
      */
     protected void init()
     {
+		//create localconfig structure
+		String configPath = System.getProperty("user.dir") + '/' + LocalConfig.CONFIG_DIRECTORY
+			+ this.getMyInfos().getName();
+		new File(configPath).mkdirs();
+		
         this.listener.listen();
         this.pluginloader = PluginLoader.getInstance();
         this.communicator.updatePlugins();
