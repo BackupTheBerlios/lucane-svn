@@ -22,8 +22,6 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 
-import org.lucane.client.Plugin;
-
 /**
  * @author Jonathan Riboux
  *
@@ -158,22 +156,22 @@ public class ReunionMessage implements Serializable {
    * @return
    *         The HTML code to show in the reunion plugin.
    */
-  public String toString(Plugin plugin) {
+  public String toString(Reunion reunion) {
     if (type == TYPE_TEXT)
       return createHTMLTextMessage(
-        plugin,
+        reunion,
         ((String[]) data)[0],
         ((String[]) data)[1]);
     else if (type == TYPE_END)
-      return createHTMLInfoMessage(plugin, plugin.tr("endMsg"));
+      return createHTMLInfoMessage(reunion, reunion.tr("endMsg"));
     else if (type == TYPE_JOIN)
       return createHTMLInfoMessage(
-        plugin,
-        plugin.tr("joinMsg") + (String) data);
+        reunion,
+        reunion.tr("joinMsg") + (String) data);
     else if (type == TYPE_LEAVE)
       return createHTMLInfoMessage(
-        plugin,
-        plugin.tr("leaveMsg") + (String) data);
+        reunion,
+        reunion.tr("leaveMsg") + (String) data);
     return null;
   }
 
@@ -189,20 +187,21 @@ public class ReunionMessage implements Serializable {
    *         The HTML code to show in the reunion plugin.
    */
   public static String createHTMLTextMessage(
-    Plugin plugin,
+    Reunion reunion,
     String user,
     String message) {
     String res = null;
+    ReunionUserProperties rup = reunion.getUsersProperties().getUserProperties(user);
     res =
       "<DIV "
         + "STYLE=\"padding:0px;margin-bottom:2px;"
-        + "border-width:1px;border-style:solid;border-color:#eeeedd;"
-        + "background-color:#ffffee;width:100%;\">"
+        + "border-width:1px;border-style:solid;border-color:"+rup.getFgColor()+";"
+        + "background-color:"+rup.getBgColor()+";width:100%;\">"
         + "<font size=2>"
         + DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date())
-        + "</font>&nbsp;<b><font size=4>"
+        + "</font>&nbsp;<b><font size=4 color=\""+rup.getFgColor()+"\">"
         + user
-        + "&nbsp;&gt; </font></b>"
+        + "</font><font size=4>&nbsp;&gt; </font></b>"
         + "<font size=4>"
         + message
         + "</font></DIV>";
@@ -217,7 +216,7 @@ public class ReunionMessage implements Serializable {
    *         The message to display.
    * @return
    */
-  public static String createHTMLInfoMessage(Plugin plugin, String message) {
+  public static String createHTMLInfoMessage(Reunion reunion, String message) {
     String res;
     res = "<DIV><FONT SIZE=4 COLOR=#888888>" + message + "</FONT></DIV>";
     return res;

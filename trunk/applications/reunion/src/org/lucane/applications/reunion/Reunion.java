@@ -35,6 +35,8 @@ implements ActionListener, KeyListener, ObjectListener
   private ConnectInfo coordinator;
   private ConnectInfo[] friends;
   private String subject;
+
+  ReunionUsersProperties reunionUsersProperties;
  
   protected ObjectConnection ocCoordinator;
   protected ObjectConnection[] ocFriends;
@@ -45,6 +47,7 @@ implements ActionListener, KeyListener, ObjectListener
   private JButton btnDlg;
   private JFrame frame;
   private HTMLEditor txtSend;
+  private JSplitPane jsp_txtRead_lstUsers;
   private JList lstUsers;
   private DefaultListModel users;
   HTMLEditor txtRead;
@@ -156,6 +159,9 @@ implements ActionListener, KeyListener, ObjectListener
     /* hide the subject window */
     dialog.removeWindowListener(this);
     dialog.setVisible(false);
+
+    /* create the ReunionUsersProperties */
+    reunionUsersProperties = new ReunionUsersProperties();
     
     /* show the main frame */
     initMainFrame();
@@ -183,10 +189,14 @@ implements ActionListener, KeyListener, ObjectListener
           ocCoordinator.write(msg);
       } catch(Exception e) {}
     }
-  }
+      }
 
   public void windowClosing(WindowEvent we)
   {
+    /*this.getLocalConfig().set(
+      "jsp_txtRead_lstUsers_dividerLocation",
+      "" + jsp_txtRead_lstUsers.getDividerLocation());*/
+
     if(exited)
       return;
     else
@@ -243,13 +253,15 @@ implements ActionListener, KeyListener, ObjectListener
     users = new DefaultListModel();
     lstUsers.setModel(users);
 
-    JSplitPane jsp =
+    JSplitPane jsp_txtRead_lstUsers =
       new JSplitPane(
         JSplitPane.HORIZONTAL_SPLIT,
         new JScrollPane(txtRead),
         new JScrollPane(lstUsers));
-    jsp.setDividerLocation(520);
-    frame.getContentPane().add(jsp, BorderLayout.CENTER);
+    jsp_txtRead_lstUsers.setDividerLocation(
+      Integer.parseInt(
+        this.getLocalConfig().get("jsp_txtRead_lstUsers_dividerLocation", "520")));
+    frame.getContentPane().add(jsp_txtRead_lstUsers, BorderLayout.CENTER);
 
 
     txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("subjectMsg") + this.subject));
@@ -328,8 +340,9 @@ implements ActionListener, KeyListener, ObjectListener
   public void addUser(String user)
   {
     //txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("joinMsg") + user));
-  this.users.addElement(user);
-  this.lstUsers.setModel(users);
+    ReunionUserProperties userProperties = reunionUsersProperties.addUser(user);
+    this.users.addElement("<html><font color=\""+userProperties.getFgColor()+"\">"+user+"</font></html>");
+    this.lstUsers.setModel(users);
   }
 
   public void delUser(String user)
@@ -443,5 +456,8 @@ implements ActionListener, KeyListener, ObjectListener
     }
   }
 
+  protected ReunionUsersProperties getUsersProperties() {
+    return reunionUsersProperties;
+  }
 }
 
