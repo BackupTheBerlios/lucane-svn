@@ -85,8 +85,12 @@ extends Service
   	Account a = null;
 
   	Connection connex = layer.openConnection();  	
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM JMailAccounts WHERE userName='" + user + "'");
+	PreparedStatement select = connex.prepareStatement(
+			"SELECT * FROM JMailAccounts WHERE userName=?");
+	
+	select.setString(1, user);
+	
+	ResultSet rs = select.executeQuery();
 	if(rs.next())
 	{
 		user = rs.getString(1);
@@ -103,7 +107,7 @@ extends Service
 	}
 	
 	rs.close();
-	stmt.close();
+	select.close();
 	connex.close();
 	
 	if(a == null)
@@ -116,27 +120,32 @@ extends Service
   throws Exception
   {  	  	
   	Connection connex = layer.openConnection();  	  	
-  	Statement stmt = connex.createStatement();
-  	
+
+  	PreparedStatement delete = connex.prepareStatement(
+  			"DELETE FROM JMailAccounts WHERE userName = ?");
+  	delete.setString(1, a.user);
+	
   	try {
-  		stmt.execute("DELETE FROM JMailAccounts WHERE userName = "+ "'" + a.user + "'");
+  		delete.execute();
   	} catch(Exception e) {
   		//no such account yet
   	}
+  	delete.close();
   	
-	stmt.execute("INSERT INTO JMailAccounts VALUES("
-			+ "'" + a.user + "', "
-			+ "'" + a.address + "', "
-			+ "'" + a.type + "', "
-			+ "'" + a.inHost + "', "
-			+ "'" + a.inPort + "', "
-			+ "'" + a.outHost + "', "
-			+ "'" + a.outPort + "', "
-			+ "'" + a.login + "', "
-			+ "'" + BlowFish.cipher(a.login, a.password) + "')"
-		);
-	
-	stmt.close();
+  	PreparedStatement insert = connex.prepareStatement(
+  			"INSERT INTO JMailAccounts VALUES(?,?,?,?,?,?,?,?,?)");
+  	insert.setString(1, a.user);
+  	insert.setString(2, a.address);
+  	insert.setString(3, a.type);
+  	insert.setString(4, a.inHost);
+  	insert.setInt(5, a.inPort);
+  	insert.setString(6, a.outHost);
+  	insert.setInt(7, a.outPort);
+  	insert.setString(8, a.login);
+  	insert.setString(9, BlowFish.cipher(a.login, a.password));
+	insert.execute();
+	insert.close();
+  	
 	connex.close();
   }
   
