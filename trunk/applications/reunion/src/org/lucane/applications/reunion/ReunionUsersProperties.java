@@ -66,6 +66,7 @@ public class ReunionUsersProperties {
       "#ffeedd",
       "#ffddee",
       "#ddffee",
+      "#eeffdd",
       "#eeddff",
       "#ddeeff"
     };
