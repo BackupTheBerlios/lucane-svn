@@ -103,6 +103,16 @@ public abstract class Plugin
   }
 
   /**
+   * Associate a picture with a plugin for ever move userfriendliness
+   * 
+   * @return the plugin's icon name ("plugin.jpg" for example)
+   */
+  public String getIcon16()
+  {
+    return tr("icon16");
+  }
+
+  /**
    * Where to put the plugin in the MainInterface
    * 
    * @return the plugin's category
@@ -284,12 +294,27 @@ public abstract class Plugin
    */
   public ImageIcon getImageIcon()
   {
-  	try {
-  		return new ImageIcon(new URL(getDirectory() + getIcon()));
-  	} catch(Exception e) {
-  		//no image
-  		return new ImageIcon();
-  	}
+    try {
+        return new ImageIcon(new URL(getDirectory() + getIcon()));
+    } catch(Exception e) {
+        //no image
+        return new ImageIcon();
+    }
+  }
+  
+  /**
+   * Return the plugins icon
+   * 
+   * @return the plugin icon in 16x16 if available
+   */
+  public ImageIcon getImageIcon16()
+  {
+    try {
+        return new ImageIcon(new URL(getDirectory() + getIcon16()));
+    } catch(Exception e) {
+        //no image, try to return the "normal" one
+        return getImageIcon();
+    }
   }
   
   /**

@@ -127,7 +127,7 @@ public class MainInterface
 
     parent.addUserListListener(this);
     
-    frame.setIconImage(this.getImageIcon().getImage());
+    frame.setIconImage(this.getImageIcon16().getImage());
     frame.setSize(350, 400);
     
     WidgetState.restore(getLocalConfig(), frame);

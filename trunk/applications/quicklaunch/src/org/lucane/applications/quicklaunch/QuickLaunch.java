@@ -57,7 +57,7 @@ public class QuickLaunch
     QuickLaunch self = new QuickLaunch();
     
 	try	{
-		self.trayIcon = new TrayIcon(this.getImageIcon(), 
+		self.trayIcon = new TrayIcon(this.getImageIcon16(), 
 				Client.getInstance().getMyInfos().getName() + " - Lucane Groupware");
 	} catch (Throwable t) {
 		self.trayIcon = null;
