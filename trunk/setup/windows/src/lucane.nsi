@@ -2,7 +2,7 @@
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Lucane"
 !define PRODUCT_VERSION "0.7.0"
-!define PRODUCT_PUBLISHER "Lucane"
+!define PRODUCT_PUBLISHER "${PRODUCT_NAME}"
 !define PRODUCT_WEB_SITE "lucane.org"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -16,8 +16,9 @@ SetCompressor lzma
 ; MUI Settings
 !define MUI_HEADERIMAGE
 !define MUI_ABORTWARNING
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
+;!define MUI_ICON "lucane.ico"
+!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
+!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
 
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
@@ -31,7 +32,7 @@ SetCompressor lzma
 ; Start menu page
 var ICONS_GROUP
 !define MUI_STARTMENUPAGE_NODISABLE
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "Lucane"
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
@@ -42,16 +43,19 @@ var ICONS_GROUP
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
+!insertmacro MUI_UNPAGE_WELCOME
+!insertmacro MUI_UNPAGE_CONFIRM
 !insertmacro MUI_UNPAGE_INSTFILES
+!insertmacro MUI_UNPAGE_FINISH
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "French"
 
 ;Remember the installer language
-;!define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
-;!define MUI_LANGDLL_REGISTRY_KEY "Software\Lucane"
-;!define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
+!define MUI_LANGDLL_REGISTRY_ROOT "HKCU"
+!define MUI_LANGDLL_REGISTRY_KEY "Software\${PRODUCT_NAME}"
+!define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
 ; Reserve files
 !insertmacro MUI_RESERVEFILE_LANGDLL
@@ -60,21 +64,25 @@ var ICONS_GROUP
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "lucane-setup.exe"
+OutFile "${PRODUCT_NAME}-setup.exe"
 InstallDir "$PROGRAMFILES\${PRODUCT_NAME}"
 ShowInstDetails show
 ShowUnInstDetails show
-BGGradient 0000FF 000000 FFFFFF
 XPStyle on
 CRCCheck on
+
+;show the languae dialog
+Function .onInit
+  !insertmacro MUI_LANGDLL_DISPLAY
+FunctionEnd
 
 Section "Client" CLIENT
   SetOutPath "$INSTDIR\client"
   SetOverwrite ifnewer
   File /r "client\*"
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$QUICKLAUNCH\Lucane client.lnk" "$INSTDIR\client\client.bat"
-  CreateShortCut "$DESKTOP\Lucane client.lnk" "$INSTDIR\client\client.bat"
+  CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat"
+  CreateShortCut "$DESKTOP\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat"
   CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\Client.lnk" "$INSTDIR\client\client.bat"
 SectionEnd
 
@@ -114,31 +122,22 @@ SectionEnd
 ; Section descriptions
 ; TODO : add a good description of the sections
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-  !insertmacro MUI_DESCRIPTION_TEXT ${CLIENT} "Lucane client"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SERVER} "Lucane server"
-  !insertmacro MUI_DESCRIPTION_TEXT ${PROXY} "Lucane proxy"
+  !insertmacro MUI_DESCRIPTION_TEXT ${CLIENT} "${PRODUCT_NAME} client"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SERVER} "${PRODUCT_NAME} server"
+  !insertmacro MUI_DESCRIPTION_TEXT ${PROXY} "${PRODUCT_NAME} proxy"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-Function .onInit
-  !insertmacro MUI_LANGDLL_DISPLAY
-FunctionEnd
 
-; TODO : use the right language
-Function un.onUninstSuccess
-  HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "$(^Name) was successfully removed from your computer."
-FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Are you sure you want to completely remove $(^Name) and all of its components?" IDYES +2
-  Abort
+  !insertmacro MUI_UNGETLANGUAGE
 FunctionEnd
 
 Section Uninstall
   ReadRegStr $ICONS_GROUP ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "${PRODUCT_STARTMENU_REGVAL}"
 
-  Delete "$DESKTOP\client.lnk"
-  Delete "$QUICKLAUNCH\client.lnk"
+  Delete "$DESKTOP\${PRODUCT_NAME} client.lnk"
+  Delete "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk"
 
   RMDir /r "$SMPROGRAMS\$ICONS_GROUP"
   RMDir /r "$INSTDIR"

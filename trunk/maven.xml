@@ -55,8 +55,6 @@
     <condition property="nsis.present">
       <available file="${nsis.path}" />
     </condition>
-    <echo>${nsis.path}</echo>
-    <echo>${nsis.present}</echo>
     <fail unless="nsis.present">
     NSIS compiler not found at ${nsis.path}. Please correct the nsis.path property in project.properties and/or download NSIS from http://nsis.sourceforge.net .
     </fail>
@@ -64,12 +62,17 @@
     <mkdir dir="../winsetup"/>
 
     <copy file="setup/windows/src/lucane.nsi" tofile="../dist/lucane.nsi"/>
+    <copy file="setup/windows/src/lucane.ico" tofile="../dist/lucane.ico"/>
     <copy file="LICENSE.txt" tofile="../dist/licence.txt"/>
-    <exec dir="../dist/" executable="${nsis.path}" output="../winsetup/nsis.log">
-      <arg line="lucane.nsi"/>
+
+    <exec dir="../dist" executable="${nsis.path}" output="../winsetup/nsis.log">
+      <arg line="lucane.nsi" />
+      <env key="_project_name" value="Lucane"/>
+      <env key="_project_version" value="0.7.0"/>
     </exec>
 
     <delete file="../dist/lucane.nsi"/>
+    <delete file="../dist/lucane.ico"/>
     <delete file="../dist/licence.txt"/>
 
     <move file="../dist/lucane-setup.exe" tofile="../winsetup/lucane-setup.exe"/>
