@@ -23,8 +23,13 @@ import org.lucane.client.widgets.*;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 import org.lucane.common.*;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.swing.*;
 
 
@@ -33,6 +38,8 @@ public class QuickMessage
   implements ActionListener,
              KeyListener
 {
+	private static AudioClip feedback = null;
+	
   /* parameters */
   private ConnectInfo[] friends;
   private String message;
@@ -69,7 +76,7 @@ public class QuickMessage
   {
     this.friends = new ConnectInfo[1];
     this.friends[0] = who;
-    this.message = data;
+    this.message = data;    	
   }
 
 
@@ -108,6 +115,17 @@ public class QuickMessage
 
   public void follow()
   {
+  	if(feedback == null)
+  	{
+  		try {
+  			feedback = Applet.newAudioClip(new URL(getDirectory()+"feedback.wav"));
+  		} catch (MalformedURLException e) {
+  			e.printStackTrace();
+  		}
+  	}
+  	
+  	feedback.play();
+  	
     dialog = new JFrame("QuickMessage");
     dialog.addWindowListener(this);
     dialog.getContentPane().setLayout(new BorderLayout());
@@ -132,7 +150,7 @@ public class QuickMessage
 	dialog.setIconImage(this.getImageIcon().getImage());
     dialog.setVisible(true);
     jsp.setDividerLocation(0.4);
-  }
+   }
 
   public void actionPerformed(ActionEvent ae)
   {
