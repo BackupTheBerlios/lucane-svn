@@ -29,6 +29,7 @@
     </copy>
     
     <mkdir dir="${dist.logs.dir}" />
+    <chmod dir="${dist.bin.dir}" perm="a+x" includes="**/*.sh"/>    
   </goal>
   
 </project>
