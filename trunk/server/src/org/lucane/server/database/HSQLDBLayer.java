@@ -29,12 +29,7 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   
   public HSQLDBLayer(String url, String login, String passwd) 
   {
-  	//TODO call getAbsoluteUrl everytime when Server is clean
-    if (Server.lucanePath!=null) {
-      this.url = getAbsoluteUrl(url);
-    } else {
-      this.url = url;
-    }
+    this.url = getAbsoluteUrl(url);
     this.login = login;
     this.passwd = passwd;
     this.connection = null;
@@ -43,11 +38,13 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   private String getAbsoluteUrl(String url)
   {
   	String standardStart = "jdbc:hsqldb:";
-  	if(url.startsWith(standardStart))
+
+  	if(url.toLowerCase().startsWith(standardStart))
   	{
-  		String miniurl = url.substring(standardStart.length());
-  		if(! miniurl.startsWith("/"))
-  			url = standardStart + Server.lucanePath + miniurl;
+  		String miniurl = url.substring(standardStart.length()).replace('\\','/');
+  		
+  		if(! miniurl.startsWith("/") && miniurl.charAt(1)!=':')
+  			url = standardStart + Server.getWorkingDirectory() + miniurl;
   	}
   	
   	Logging.getLogger().fine("HSQLdb url : " + url);

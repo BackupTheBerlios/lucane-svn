@@ -28,16 +28,12 @@ public class FileService
   extends Service
 {
 
-  private static String DIRECTORY = "STORAGE";
+  private static final String DIRECTORY = "STORAGE";
 
   /**
    * Creates a new FileService object.
    */
-  public FileService()
-  {
-  	if (Server.lucanePath!=null)
-  		DIRECTORY = Server.lucanePath+DIRECTORY;  
-  }
+  public FileService() {}
 
   /**
    * Process a request
@@ -97,7 +93,7 @@ public class FileService
 
   public void install()
   {
-    (new File(DIRECTORY)).mkdirs();
+    (new File(Server.getWorkingDirectory()+DIRECTORY)).mkdirs();
   }
 
 
@@ -107,12 +103,12 @@ public class FileService
     String path = stk.nextToken();
     String filename = stk.nextToken();
 	Logging.getLogger().finer("FileService::setFile()");
-    (new File(DIRECTORY + path)).mkdirs();
+    (new File(Server.getWorkingDirectory()+DIRECTORY + path)).mkdirs();
 
 	DataOutputStream dos = null;
     try {
       dos = new DataOutputStream(new FileOutputStream(
-                 DIRECTORY + '/' + path + "/" + filename));
+      		Server.getWorkingDirectory()+DIRECTORY + '/' + path + "/" + filename));
       byte[] buf = (byte[])sc.read();
       dos.write(buf);
 	  Logging.getLogger().finer("FileService::setFile() OK");
@@ -140,7 +136,7 @@ public class FileService
 	DataInputStream dis = null;
     try {
        dis = new DataInputStream(new FileInputStream(
-           DIRECTORY + '/' + path + "/" + filename));
+       		Server.getWorkingDirectory()+DIRECTORY + '/' + path + "/" + filename));
 		byte[] buf = new byte[dis.available()];
 		dis.readFully(buf);
 		sc.write(buf);
@@ -160,7 +156,7 @@ public class FileService
     data = data.substring(1);
 
     try {
-        if((new File(DIRECTORY + data)).mkdirs())
+        if((new File(Server.getWorkingDirectory()+DIRECTORY + data)).mkdirs())
     	  sc.write("OK");
     	else
       		sc.write("FAILED");
@@ -172,10 +168,10 @@ public class FileService
     Vector result = new Vector();
     data = data.substring(1);
 
-	Logging.getLogger().fine("FileService: " + DIRECTORY + data);
+	Logging.getLogger().fine("FileService: " + Server.getWorkingDirectory()+DIRECTORY + data);
 
-    String[] list = (new File(DIRECTORY + data)).list();
-    File[] files = (new File(DIRECTORY + data)).listFiles();
+    String[] list = (new File(Server.getWorkingDirectory()+DIRECTORY + data)).list();
+    File[] files = (new File(Server.getWorkingDirectory()+DIRECTORY + data)).listFiles();
 
 	Logging.getLogger().fine("FileService: length=" + list.length);
 

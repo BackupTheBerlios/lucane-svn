@@ -26,6 +26,8 @@ import org.lucane.server.store.*;
 import org.lucane.common.*;
 import org.lucane.common.signature.*;
 
+import sun.util.logging.resources.logging;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -36,7 +38,7 @@ import java.util.*;
 public class Server
 {
 	
-	public static String lucanePath;
+	private static String workingDirectory;
 	
 	private static final String CONFIG_FILE = "etc/server-config.xml";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
@@ -245,12 +247,7 @@ public class Server
 		DataInputStream dis = null;
 		try
 		{
-			String path;
-			if (lucanePath!=null)
-				path = lucanePath+APPLICATIONS_DIRECTORY + data + ".jar";
-			else
-				path = APPLICATIONS_DIRECTORY + data + ".jar";
-			dis = new DataInputStream(new FileInputStream(path));
+			dis = new DataInputStream(new FileInputStream(getWorkingDirectory()+APPLICATIONS_DIRECTORY + data + ".jar"));
 			byte[] buf = new byte[dis.available()];
 			dis.readFully(buf);
 			oc.write(buf);
@@ -388,23 +385,22 @@ public class Server
 	{
 		if (args.length > 1) {
 			System.out.println("USAGE :\nserver.(bat|sh) [server path]");
+			System.exit(1);
 		}
 		if (args.length==1) {
-			lucanePath=args[0];
-			lucanePath=lucanePath.replace('\\','/');
-			if (lucanePath.startsWith("\""))
-				lucanePath=lucanePath.substring(1, lucanePath.length()-2);
-			if (!lucanePath.endsWith("/"))
-				lucanePath+="/";
+			workingDirectory=args[0];
+		} else {
+			workingDirectory=System.getProperty("user.dir");
 		}
+		workingDirectory=workingDirectory.replace('\\','/');
+		if (workingDirectory.startsWith("\""))
+			workingDirectory=workingDirectory.substring(1, workingDirectory.length()-2);
+		if (!workingDirectory.endsWith("/"))
+			workingDirectory+="/";
+
 		//init logging
 		try {
-			String logpath;
-			if (lucanePath!=null)
-				logpath=lucanePath+"lucane.log";
-			else
-				logpath="lucane.log";
-			Logging.init(logpath, "ALL");
+			Logging.init(getWorkingDirectory()+"lucane.log", "ALL");
 		} catch(IOException ioe) {
 			System.err.println("Unable to init logging, exiting.");
 			System.exit(1);
@@ -428,5 +424,10 @@ public class Server
 		ServiceManager.getInstance().startAllServices();		
 		Logging.getLogger().info("Server is ready.");
 		server.acceptConnections();		
+	}
+	
+	public static String getWorkingDirectory() {
+		Logging.getLogger().fine(workingDirectory);
+		return workingDirectory;
 	}
 }

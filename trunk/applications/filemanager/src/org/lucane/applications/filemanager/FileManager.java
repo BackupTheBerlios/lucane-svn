@@ -19,7 +19,6 @@
 package org.lucane.applications.filemanager;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 

@@ -46,16 +46,8 @@ public abstract class Service
   public String getDirectory()
   {
   	String pack = this.getClass().getPackage().getName();
-
-	String url;
-	String dbDescription;
-	if (Server.lucanePath!=null)
-		url = "jar:file:///" + Server.lucanePath
-					+ Server.APPLICATIONS_DIRECTORY + pack + ".jar!/";
-	else
-		url = "jar:file:///" + System.getProperty("user.dir") + "/"
-					+ Server.APPLICATIONS_DIRECTORY + pack + ".jar!/";
-
+	String url = "jar:file:///" + Server.getWorkingDirectory()
+				+ Server.APPLICATIONS_DIRECTORY + pack + ".jar!/";
   	return url.replace('\\', '/');
   }
 

@@ -49,7 +49,7 @@ public class ServerConfig
 	{
 		  DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		  
-		  String fileToParse = Server.lucanePath!=null?Server.lucanePath+filename:filename;
+		  String fileToParse = Server.getWorkingDirectory()+filename;
 		  Document document = builder.parse(fileToParse);
                                                                   
 		  //-- root element
