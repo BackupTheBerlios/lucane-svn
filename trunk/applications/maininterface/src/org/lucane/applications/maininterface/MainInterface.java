@@ -156,7 +156,9 @@ public class MainInterface
   private void displayAppsInMenu()
   {
 	Iterator plugins = ploader.getAvailablePlugins();
-  	for(int i=0;plugins.hasNext();i++)
+	plugins = PluginComparator.sortPlugins(plugins);
+	
+	for(int i=0;plugins.hasNext();i++)
   	{
   		Plugin p = (Plugin)plugins.next();
   		
@@ -245,7 +247,7 @@ public class MainInterface
 		else
 			nbButtons++;
 	}
-  }  
+  }    
 
   public void userListChanged(Vector logins)
   {
