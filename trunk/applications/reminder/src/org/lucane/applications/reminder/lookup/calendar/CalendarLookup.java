@@ -28,6 +28,7 @@ import org.lucane.common.Logging;
 import org.lucane.common.ObjectConnection;
 import org.lucane.applications.reminder.*;
 import org.lucane.applications.reminder.lookup.Lookup;
+import org.lucane.server.ConnectInfoManager;
 import org.lucane.server.Server;
 
 public class CalendarLookup implements Lookup
@@ -75,7 +76,7 @@ public class CalendarLookup implements Lookup
 			
 			//send reminder to organizer
 			try {
-				ConnectInfo ci = Server.getInstance().getConnectInfo(event.getOrganizer());
+				ConnectInfo ci = ConnectInfoManager.getInstance().getConnectInfo(event.getOrganizer());
 				if(ci != null)
 				{	
 					ObjectConnection oc = Server.getInstance().sendMessageTo(ci, "org.lucane.applications.reminder", "");
@@ -93,7 +94,7 @@ public class CalendarLookup implements Lookup
 			{
 				Attendee a = (Attendee)attendees.next();
 				try {
-					ConnectInfo ci = Server.getInstance().getConnectInfo(a.getUser());
+					ConnectInfo ci = ConnectInfoManager.getInstance().getConnectInfo(a.getUser());
 					if(ci != null)
 					{	
 						ObjectConnection oc = Server.getInstance().sendMessageTo(ci, "org.lucane.applications.reminder", "");

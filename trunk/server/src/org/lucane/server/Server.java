@@ -23,6 +23,7 @@ import org.lucane.server.database.*;
 import org.lucane.server.store.*;
 import org.lucane.common.*;
 import org.lucane.common.signature.*;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -44,12 +45,10 @@ public class Server implements Runnable
 	}
 	
 	//-- attributes
-	ArrayList connections;
 	ServerSocket socket;
 	Store store;
 	Authenticator authenticator;
 	DatabaseAbstractionLayer dbLayer;
-	ConnectInfo myConnectInfo;
 	String serverIp;
 	int port;
 	Signer signer;
@@ -65,7 +64,6 @@ public class Server implements Runnable
 	private Server(ServerConfig config)
 	{
 		Server.instance = this;
-		this.connections = new ArrayList();        
 		this.port = config.getPort();
 		this.socket = null;
 		this.dbLayer = null;
@@ -107,10 +105,11 @@ public class Server implements Runnable
 		
 		try {
 			String[] pair = KeyGenerator.generateKeyPair();
-			myConnectInfo = new ConnectInfo("server",
+			ConnectInfo myConnectInfo = new ConnectInfo("server",
 					this.serverIp, this.serverIp,
 					this.port, pair[1], "Server");
-			this.connections.add(myConnectInfo);
+			ConnectInfoManager.getInstance().setMyInfos(myConnectInfo);
+			ConnectInfoManager.getInstance().addConnectInfo(myConnectInfo);
 			this.signer = new Signer(pair[0]);
 		} catch (SignatureException e) {
 			Logging.getLogger().severe("Unable to generate keypair : " + e);
@@ -177,7 +176,7 @@ public class Server implements Runnable
 		}
 		
 		// check wether a user is known or not
-		alreadyConnected = isAlreadyKnown(message.getSender());
+		alreadyConnected = ConnectInfoManager.getInstance().isConnected(message.getSender());
 		
 		//check if command is authentication
 		isAuthentication = message.getApplication().equals("Server") 
@@ -191,7 +190,7 @@ public class Server implements Runnable
 			{
 				ConnectInfo ci = message.getSender();
 				if (ci.verifier == null)
-					ci = this.getCompleteConnectInfo(ci);
+					ci = ConnectInfoManager.getInstance().getCompleteConnectInfo(ci);
 				sigok = ci.verifier.verify(message, signature);
 			}
 			catch (Exception e)
@@ -349,7 +348,7 @@ public class Server implements Runnable
 		oc.close();
 	}
 	
-
+	
 	
 	/**
 	 * Handle internal commands
@@ -369,7 +368,7 @@ public class Server implements Runnable
 			catch (Exception e)
 			{
 			}
-			this.removeConnectInfo(message.getSender());
+			ConnectInfoManager.getInstance().removeConnectInfo(message.getSender());
 		}
 		else if (command.equals("CONNECT_GET"))
 		{
@@ -438,34 +437,6 @@ public class Server implements Runnable
 		}
 	}
 	
-	/**
-	 * Remove a ConnectionInfo
-	 * 
-	 * @param ci the connect info
-	 */
-	protected void removeConnectInfo(ConnectInfo ci)
-	{
-		removeConnectInfo(ci.getName());
-	}
-	
-	/**
-	 * Remove a ConnectionInfo
-	 * 
-	 * @param user the user name
-	 */
-	private void removeConnectInfo(String user)
-	{
-		for (int i = 0; i < this.connections.size(); i++)
-		{
-			ConnectInfo ci = (ConnectInfo)this.connections.get(i);
-			if (ci.getName().equals(user))
-			{
-				this.connections.remove(ci);
-				break;
-			}
-		}
-		sendUserList();
-	}
 	
 	/**
 	 * Send the ConnectInfo associated with this name
@@ -474,7 +445,7 @@ public class Server implements Runnable
 	 */
 	private void getConnectInfo(String name, ObjectConnection oc)
 	{
-		ConnectInfo ci = getConnectInfo(name);
+		ConnectInfo ci = ConnectInfoManager.getInstance().getConnectInfo(name);
 		if(ci != null)
 		{
 			try  {
@@ -494,22 +465,16 @@ public class Server implements Runnable
 	 */
 	private void getUserList(ObjectConnection oc)
 	{
-		Vector v = new Vector();
-		for (int i = 0; i < this.connections.size(); i++)
-		{
-			if (((ConnectInfo)this.connections.get(i))
-					.type
-					.equalsIgnoreCase("Client"))
-				v.addElement(this.connections.get(i));
-		}
+		//get into vector
+		Vector v = new Vector();		
+		Iterator i = ConnectInfoManager.getInstance().getClientConnectInfos();
+		while(i.hasNext())
+			v.addElement(i.next());
 		
-		try
-		{
+		//send
+		try	{
 			oc.write(v);
-		}
-		catch (Exception e)
-		{
-		}
+		} catch (Exception e) {}
 	}
 	
 	/**
@@ -597,110 +562,30 @@ public class Server implements Runnable
 	 */
 	public void sendUserList()
 	{
-		String data = "";
-		Socket sock = null;
-		ObjectConnection oc = null;
-		byte[] signature = {};
-		
-		/* receiver list */
-		for (int i = 0; i < this.connections.size(); i++)
+		//create user list as string
+		StringBuffer userList = new StringBuffer("USER_LIST");
+		Iterator users = ConnectInfoManager.getInstance().getClientConnectInfos();
+		while(users.hasNext())
 		{
-			if (((ConnectInfo)this.connections.get(i))
-					.type
-					.equalsIgnoreCase("Client"))
-			{
-				data = "";
-				
-				/* users list */
-				for (int j = 0; j < this.connections.size(); j++)
-				{
-					if (((ConnectInfo)this.connections.get(j))
-							.type
-							.equalsIgnoreCase("Client"))
-						data =
-							data
-							+ " "
-							+ ((ConnectInfo)this.connections.get(j))
-							.getName();
-				}
-				
-				try
-				{
-					sock =
-						new Socket(
-								(
-										(ConnectInfo)this.connections.get(
-												i)).hostname,
-												((ConnectInfo)this.connections.get(i)).port);
-					oc = new ObjectConnection(sock);
-					Message msg =
-						new Message(
-								myConnectInfo,
-								(ConnectInfo)this.connections.get(i),
-								"Client",
-								"USER_LIST " + data);
-					
-					try
-					{
-						signature = this.signer.sign(msg);
-					}
-					catch (SignatureException e)
-					{
-						Logging.getLogger().warning("Unable to sign: " + e);
-					}
-					
-					oc.write(msg);
-					oc.write(signature);
-					oc.close();
-				}
-				catch (IOException ex)
-				{
-					Logging.getLogger().warning("Unable to connect to host");
-					continue;
-				}
+			ConnectInfo user = (ConnectInfo)users.next();
+			userList.append(" ");
+			userList.append(user.getName());
+		}
+		
+		// send to everyone
+		Iterator clients = ConnectInfoManager.getInstance().getClientConnectInfos();
+		while(clients.hasNext())
+		{
+			ConnectInfo client = (ConnectInfo)clients.next();
+			try {
+				ObjectConnection oc = sendMessageTo(client, "Client", userList.toString());
+				oc.close();
+			} catch (IOException e) {
+				Logging.getLogger().warning("unable to send user list to " + client);
 			}
 		}
 	}
 	
-	/**
-	 * Check if a user is already known
-	 * 
-	 * @param ConnectInfo the user
-	 * @return true or false
-	 */
-	protected boolean isAlreadyKnown(ConnectInfo ci)
-	{
-		boolean result = false;
-		Iterator i = this.connections.iterator();
-		
-		while (i.hasNext() && !result)
-		{
-			ConnectInfo tmp = (ConnectInfo)i.next();
-			result = ci.getName().equals(tmp.getName());
-		}
-		
-		return result;
-	}
-	
-	/**
-	 * Get the complete ConnectInfo
-	 * 
-	 * @param ConnectInfo the user
-	 * @return the complete ConnectInfo
-	 */
-	protected ConnectInfo getCompleteConnectInfo(ConnectInfo ci)
-	{
-		Iterator i = this.connections.iterator();
-		
-		while (i.hasNext())
-		{
-			ConnectInfo tmp = (ConnectInfo)i.next();
-			if (ci.getName().equals(tmp.getName()))
-				return tmp;
-		}
-		
-		return ci;
-	}
 	
 	/**
 	 * Send a message through the network
@@ -714,7 +599,7 @@ public class Server implements Runnable
 	{
 		Socket sock = new Socket(dest.hostname, dest.port);
 		ObjectConnection oc = new ObjectConnection(sock);
-		Message msg = new Message(myConnectInfo, dest, app, data);
+		Message msg = new Message(ConnectInfoManager.getInstance().getMyInfos(), dest, app, data);
 		byte[] signature = null;
 		
 		try {
@@ -748,33 +633,6 @@ public class Server implements Runnable
 		return store;
 	}
 	
-	/**
-	 * Get the server connection infos
-	 * 
-	 * @return the server ConnectInfo
-	 */
-	public ConnectInfo getMyInfos() 
-	{
-		return this.myConnectInfo;
-	}
-	
-	/**
-	 * Get a user connection infos
-	 * 
-	 * @param userName the user
-	 * @return the ConnectInfo
-	 */
-	public ConnectInfo getConnectInfo(String userName) 
-	{
-		for (int i=0;  i<this.connections.size(); i++)
-		{
-			ConnectInfo ci = (ConnectInfo)this.connections.get(i);
-			if(ci.getName().equals(userName))
-				return ci;
-		}
-		
-		return null;
-	}
 	
 	/**
 	 * Main Method

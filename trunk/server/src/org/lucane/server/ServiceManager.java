@@ -115,7 +115,7 @@ public class ServiceManager
 				}
 				
 				//TODO clean the connectinfo creation
-				Server.getInstance().connections.add(
+				ConnectInfoManager.getInstance().addConnectInfo(
 						new ConnectInfo(
 								serv.getName(),
 								Server.getInstance().serverIp,

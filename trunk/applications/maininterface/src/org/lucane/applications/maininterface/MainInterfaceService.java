@@ -92,7 +92,7 @@ extends Service
   		while(i.hasNext())
   		{	
   			UserConcept user = (UserConcept)i.next();
-  			if(Server.getInstance().getConnectInfo(user.getName()) != null)
+  			if(ConnectInfoManager.getInstance().isConnected(user.getName()))
   				users.add(user.getName());
   		}
   	} catch(Exception e) {

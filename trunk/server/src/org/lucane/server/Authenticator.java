@@ -74,21 +74,21 @@ public class Authenticator
 		if(user != null && store.getUserStore().checkUserPassword(user,  passwd))
 		{
 			//disconnect already connected user
-			if(Server.getInstance().isAlreadyKnown(message.getSender()))
+			if(ConnectInfoManager.getInstance().isConnected(message.getSender()))
 			{
-				ConnectInfo oldUser = Server.getInstance().getCompleteConnectInfo(message.getSender());
+				ConnectInfo oldUser = ConnectInfoManager.getInstance().getCompleteConnectInfo(message.getSender());
 				try {
 					ObjectConnection myoc = Server.getInstance().sendMessageTo(oldUser, "Client", "DISCONNECT");
 					myoc.close();
 				} catch (Exception e) {
 					//we can't do much here, the client might have crashed
 				}
-				Server.getInstance().removeConnectInfo(oldUser);
+				ConnectInfoManager.getInstance().removeConnectInfo(oldUser);
 			}
 			
 			//add the connect info
 			String authenticationServer = message.getSender().getAuthenticationServer();
-			Server.getInstance().connections.add(new ConnectInfo(name, authenticationServer, hostname,
+			ConnectInfoManager.getInstance().addConnectInfo(new ConnectInfo(name, authenticationServer, hostname,
 					port, user.getPublicKey(), "Client"));
 			try	{
 				oc.write("AUTH_ACCEPTED " + user.getPrivateKey());
