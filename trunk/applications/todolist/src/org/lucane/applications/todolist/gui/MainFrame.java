@@ -22,9 +22,12 @@ package org.lucane.applications.todolist.gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -129,7 +132,48 @@ public class MainFrame extends JFrame {
 
 		jtbToolBar = new JToolBar();
 
-		JButton jbCreateTodolist = new JButton(plugin.tr("MainInterface.createList"));
+		JButton jbCreateTodolist = new JButton();
+		jbCreateTodolist.setToolTipText(plugin.tr("MainInterface.createList"));
+		try {
+			jbCreateTodolist.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "create_list.png")));
+		} catch (MalformedURLException e) {
+		}
+
+		JButton jbDeleteTodolist = new JButton();
+		jbDeleteTodolist.setToolTipText(plugin.tr("MainInterface.deleteList"));
+		try {
+			jbDeleteTodolist.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "delete_list.png")));
+		} catch (MalformedURLException e) {
+		}
+
+		JButton jbEditTodolist = new JButton();
+		jbEditTodolist.setToolTipText(plugin.tr("MainInterface.editList"));
+		try {
+			jbEditTodolist.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "edit_list.png")));
+		} catch (MalformedURLException e) {
+		}
+
+		JButton jbCreateItem = new JButton();
+		jbCreateItem.setToolTipText(plugin.tr("MainInterface.createItem"));
+		try {
+			jbCreateItem.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "create_item.png")));
+		} catch (MalformedURLException e) {
+		}
+
+		JButton jbDeleteItem = new JButton();
+		jbDeleteItem.setToolTipText(plugin.tr("MainInterface.deleteItem"));
+		try {
+			jbDeleteItem.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "delete_item.png")));
+		} catch (MalformedURLException e) {
+		}
+
+		JButton jbEditItem = new JButton();
+		jbEditItem.setToolTipText(plugin.tr("MainInterface.editItem"));
+		try {
+			jbEditItem.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "edit_item.png")));
+		} catch (MalformedURLException e) {
+		}
+
 		jbCreateTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
@@ -138,7 +182,17 @@ public class MainFrame extends JFrame {
 		});
 		jtbToolBar.add(jbCreateTodolist);
 		
-		JButton jbEditTodolist = new JButton(plugin.tr("MainInterface.editList"));
+		jbDeleteTodolist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				Todolist tl = jtTodolists.getSelectedTodolist();
+				if (tl!=null) {
+					if (DialogBox.question(plugin.tr("MainInterface.confirmDeleteListDialog.title"), plugin.tr("MainInterface.confirmDeleteListDialog.question")))
+						mainFrame.deleteTodolist(tl);
+				}
+			}
+		});
+		jtbToolBar.add(jbDeleteTodolist);
+
 		jbEditTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
@@ -150,19 +204,8 @@ public class MainFrame extends JFrame {
 		});
 		jtbToolBar.add(jbEditTodolist);
 		
-		JButton jbDeleteTodolist = new JButton(plugin.tr("MainInterface.deleteList"));
-		jbDeleteTodolist.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				Todolist tl = jtTodolists.getSelectedTodolist();
-				if (tl!=null) {
-					if (DialogBox.question(plugin.tr("MainInterface.confirmDeleteListDialog.title"), plugin.tr("MainInterface.confirmDeleteListDialog.question")))
-						mainFrame.deleteTodolist(tl);
-				}
-			}
-		});
-		jtbToolBar.add(jbDeleteTodolist);
+		jtbToolBar.add(new JToolBar.Separator());
 		
-		JButton jbCreateItem = new JButton(plugin.tr("MainInterface.createItem"));
 		jbCreateItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
@@ -174,7 +217,17 @@ public class MainFrame extends JFrame {
 		});
 		jtbToolBar.add(jbCreateItem);
 		
-		JButton jbEditItem = new JButton(plugin.tr("MainInterface.editItem"));
+		jbDeleteItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				TodolistItem tli = jtTodolistItems.getSelectedTodolistItem(); 
+				if (tli!=null) {
+					if (DialogBox.question(plugin.tr("MainInterface.confirmDeleteItemDialog.title"), plugin.tr("MainInterface.confirmDeleteItemDialog.question")))
+						mainFrame.deleteTodolistItem(tli);
+				}
+			}
+		});
+		jtbToolBar.add(jbDeleteItem);
+		
 		jbEditItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
@@ -187,18 +240,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 		jtbToolBar.add(jbEditItem);
-		
-		JButton jbDeleteItem = new JButton(plugin.tr("MainInterface.deleteItem"));
-		jbDeleteItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent ae) {
-				TodolistItem tli = jtTodolistItems.getSelectedTodolistItem(); 
-				if (tli!=null) {
-					if (DialogBox.question(plugin.tr("MainInterface.confirmDeleteItemDialog.title"), plugin.tr("MainInterface.confirmDeleteItemDialog.question")))
-						mainFrame.deleteTodolistItem(tli);
-				}
-			}
-		});
-		jtbToolBar.add(jbDeleteItem);
 		
 		getContentPane().add(jtbToolBar, BorderLayout.NORTH);
 		
