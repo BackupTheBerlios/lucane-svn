@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Lucane Groupware - Documentation</title>
+<link type='text/css' rel='stylesheet' href='../common/style.css' />
+</head>
+<body>
+
+<h1>Guide de démarrage</h1>
+
+Lucane est fait de plusieurs modules&nbsp;:
+<ul>
+  <li>un client</li>
+  <li>un serveur</li>
+  <li>un proxy</li>
+</ul>
+
+
+<h2>Mise en place du client</h2>
+<p>Il n'y a qu'un seul fichier de configuration</p>
+<ul>
+  <li>client-config.xml</li>
+</ul>
+<p>C'est un fichier xml auto-décrit. Si vous voulez seulement tester lucane avec
+le client et le serveur sur le même hôte, aucune modification n'est nécessaire.</p>
+
+<p>Voici une description de tous les paramètres&nbsp;: (un champ en gras signifie qu'il est obligatoire)</p>
+
+<ul>
+  <li><strong>server</strong> : le serveur à utiliser (hôte et port)</li>
+  <li>login : le login par défaut à afficher dans la boîte de connexion</li>
+  <li>language : la locale à utiliser (en, fr, ..)</li>
+  <li>proxy : seulement utile si vous n'êtes pas sur le même réseau que le serveur</li>
+  <li>public-ip : seulement utile pour positionner l'interface réseau à utiliser si vous en avez
+  plus qu'une</li>
+</ul>
+
+<p>Une fois que le fichier de configuration est personnalisé, vous pouvez démarrer le client
+avec client.sh ou client.bat en fonction de votre envirronnement.
+Le serveur doit évidemment être connecté.</p>
+
+<p>Le client téléchargera automatiquement les applications que vous pouvez utiliser.
+Elles seront mises à jour à chaque fois que ce sera nécessaire sans aucune
+intervention au niveau du client.</p>
+
+
+<h2>Mise en place du serveur</h2>
+Le serveur est aussi simple à installer, le fichier de configuration principal est&nbsp;:
+<ul>
+  <li>etc/server-config.xml</li>
+</ul>
+
+<p>Voici une description de tous les paramètres&nbsp;: (un champ en gras signifie qu'il est obligatoire)</p>
+<ul>
+  <li><strong>database</strong>
+    <ul>
+      <li><strong>jdbc</strong>&nbsp;: le driver à utiliser</li>
+      <li><strong>dblayer</strong>&nbsp;: la couche d'abstraction de la base de données à utiliser</li>
+    </ul>
+  </li>
+  <li><strong>store</strong>&nbsp;: le backend à utiliser pour sauvegarder les utilisateurs, les groupes,
+  les plugins et les services</li>
+</ul>
+
+<p>Les moteurs de base de données testés sont HSQLdb, MySQL et Postgres. Les autres n'ont pas
+été testés et ne sont pas activés dans la distribution par défaut.<br />
+Si vous ne voulez pas utiliser une base de données particulière, laissez le fichier de config tel quel
+pour utiliser HSQLdb.</p>
+
+<p>La sauvegarde peut utiliser la base de données ou un serveur LDAP.
+Pour utiliser ldap, regardezle guide de <a href="ldap_store.html">sauvegarde ldap</a>.
+</p>
+
+<p>Vous pouvez démarrer le serveur par server.sh ou server.bat</p>
+
+<h2>Mise en place du proxy</h2>
+<p>Vous aurez besoin du proxy seulement si vous avez plusieurs réseaux qui
+ne sont pas directement visibles.
+C'est le cas si vous utilisez le NAT par exemple.
+Le proxy ne nécessite aucune configuration.</p>
+
+<h2>Configuration du système</h2>
+<p>Pour administrer le système nouvellement installé, vous devrez vous connecter
+avec le nom d'utilisateur <code>admin</code> et le mot de passe <code>admin</code>.
+La première chose à faire sera de changer ce mot de passe.
+Vous pourrez démarrer l'interface d'administration et créer des utilisateurs, des groupes,
+et leur donner les droits qu'ils nécessitent. Regardez, svp, l'aide de l'interface d'administration
+pour plus d'information. C'est plutôt simple.</p>
+
+<h2>Comptes utilisateur par défaut</h2>
+<p>Plusieurs comptes sont disponibles afin de pouvoir tester&nbsp;:</p>
+<ul>
+  <li>admin : admin</li>
+  <li>granted : granted</li>
+  <li>guest : guest</li>
+</ul>
+
+</body>
+</html>
+
+

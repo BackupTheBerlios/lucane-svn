@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Compiler Lucane Groupware</title>
+<link type='text/css' rel='stylesheet' href='../common/style.css' />
+</head>
+<body>
+
+<p>Lucane est compilé avec <a href="http://maven.apache.org">maven</a>.</p>
+
+<h2>Versions testées</h2>
+<ul>
+  <li>maven 1.0rc1</li>
+</ul>
+<p>(les versions plus récentes devraient aussi marcher)</p>
+
+<h2>Installer maven</h2>
+<ul>
+  <li>Décompresser maven. Un répertoire 'maven-1.0-rc1' devrait etre crée.
+    <ul><li>Nous allons appeler ce répertoire $MAVEN_HOME</li></ul>
+  </li>
+</ul>
+<p>C'est tout !</p>
+
+<h2>Compiler Lucane</h2>
+<ul>
+  <li>Si $MAVEN_HOME/bin est dans votre path, tapez simplement 'maven' dans le répertoire des sources.</li>
+  <li>Un répertoire 'dist' contenant server, client et proxy devrait (normalement) être crée</li>
+</ul>
+<p>Les "goals" maven disponibles sont :</p>
+<ul>
+  <li>clean-lucane : supprimer les classe générées</li>
+  <li>build-lucane : compiler lucane</li>
+  <li>mkdist-lucane (par defaut) : génerer le répertoire dist</li>
+  <li>mkwinsetup-lucane : créer un installeur windows</li>
+  <li>site-lucane : créer un site avec différents rapports</li>
+</ul>
+
+</body>
+</html>
