@@ -181,10 +181,14 @@ public class Store
                 
         //maininterface application
         PluginConcept maininterfacePlugin = new PluginConcept("org.lucane.applications.maininterface", "0.7");
+        ServiceConcept maininterfaceService = new ServiceConcept("org.lucane.applications.maininterface", false);
         allUsers.addPlugin(maininterfacePlugin);
-		admins.addPlugin(maininterfacePlugin);
+        allUsers.addService(maininterfaceService);
+        admins.addPlugin(maininterfacePlugin);
+        admins.addService(maininterfaceService);
         getPluginStore().storePlugin(maininterfacePlugin);
-
+        getServiceStore().storeService(maininterfaceService);
+        
 		//quicklaunch application
 		PluginConcept quicklaunchPlugin = new PluginConcept("org.lucane.applications.quicklaunch", "0.7");
 		allUsers.addPlugin(quicklaunchPlugin);

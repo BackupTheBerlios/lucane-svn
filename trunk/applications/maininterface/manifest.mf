@@ -1,1 +1,2 @@
 Plugin-Class: org.lucane.applications.maininterface.MainInterface
+Service-Class: org.lucane.applications.maininterface.MainInterfaceService

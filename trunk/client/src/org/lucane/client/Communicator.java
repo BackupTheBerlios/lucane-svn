@@ -323,7 +323,7 @@ public class Communicator
   {
     try
     {
-      ObjectConnection oc = this.sendMessageTo(this.ci_server, "Server", "CONNECT_GETLIST");
+      ObjectConnection oc = this.sendMessageTo(this.ci_server, "Server", "CONNECT_LIST");
       Vector userList = (Vector)oc.read();
       oc.close();
 

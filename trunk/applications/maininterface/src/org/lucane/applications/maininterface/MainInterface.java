@@ -26,6 +26,7 @@ import org.lucane.common.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.net.*;
 import java.util.*;
 import javax.swing.*;
@@ -38,6 +39,8 @@ public class MainInterface
 {
   private final int NB_BUTTONS = 8;
 
+  private ConnectInfo service;
+  
   /* plugins... */
   private Vector buttons;
   private Vector names;
@@ -82,13 +85,15 @@ public class MainInterface
    * Show a dialog asking for the friend name
    */
   public void start()
-  {
+  {  	
     this.names = new Vector();
     this.buttons = new Vector();
     this.commu = Communicator.getInstance();
     this.parent = Client.getInstance();
     this.ploader = PluginLoader.getInstance();
 
+    this.service = commu.getConnectInfo(this.getName());
+	
     frame = new JFrame("Lucane - " + parent.getMyInfos().getName());
     frame.setName("maininterface");
     
@@ -117,7 +122,9 @@ public class MainInterface
     lstUsers = new JList();
     pnlUsers.add(cmbGroups, BorderLayout.NORTH);
     pnlUsers.add(new JScrollPane(lstUsers), BorderLayout.CENTER);
-    cmbGroups.addItem(tr("everyone"));
+    
+    initGroupCombo();
+    
 
     Vector list = parent.getUserList();
     lstUsers.setListData(list);
@@ -136,6 +143,19 @@ public class MainInterface
 			frame.show();
 		}	
     });
+  }
+  
+  private void initGroupCombo()
+  {
+  	cmbGroups.addItem(tr("everyone"));
+	try {
+		Iterator i = getMyGroups().iterator();
+		while(i.hasNext())
+			cmbGroups.addItem(i.next());
+	} catch (Exception e) {
+		DialogBox.error(tr("err.unableToFetchGroups"));
+	}
+	cmbGroups.addActionListener(this);
   }
   
   private void displayAppsInMenu()
@@ -230,17 +250,39 @@ public class MainInterface
 		else
 			nbButtons++;
 	}
-  }
+  }  
 
   public void userListChanged(Vector logins)
   {
-    lstUsers.setListData(logins);
+    refreshUserList();
+  }
+  
+  private void refreshUserList()
+  {
+  	if(cmbGroups.getSelectedIndex() <= 0)
+  		lstUsers.setListData(parent.getUserList());
+  	else
+  	{
+  		try {
+  			ArrayList groups = getUsersForGroup(cmbGroups.getSelectedItem().toString());
+  			lstUsers.setListData(groups.toArray());
+  		} catch(Exception e) {
+  			DialogBox.error(tr("err.unableToFetchUsersForGroup"));
+  			lstUsers.setListData(parent.getUserList());
+  		}
+  	}
   }
 
 
   public void actionPerformed(ActionEvent ae)
   {
-    if(ae.getSource() == mnuExit)
+  	if(ae.getSource() == cmbGroups)
+  	{
+  		refreshUserList();
+  		return;
+  	}
+
+  	if(ae.getSource() == mnuExit)
     {
       this.frame.dispose();
       cleanExit();
@@ -279,7 +321,30 @@ public class MainInterface
 	Logging.getLogger().finer("PluginToLoad: " + name);
     ploader.run(name, cis);
   }
-
+  
+  private ArrayList getMyGroups() 
+  throws IOException, ClassNotFoundException
+  {
+  	MainInterfaceAction action = new MainInterfaceAction(MainInterfaceAction.GET_MY_GROUPS);
+  	ObjectConnection oc = commu.sendMessageTo(service, service.getName(), action);
+  	ArrayList groups = (ArrayList)oc.read();
+  	oc.close();
+  	
+  	return groups;
+  }
+  
+  private ArrayList getUsersForGroup(String group) 
+  throws IOException, ClassNotFoundException
+  {
+  	MainInterfaceAction action = new MainInterfaceAction(
+  			MainInterfaceAction.GET_CONNECTED_USERS_FOR_GROUP, group);
+  	ObjectConnection oc = commu.sendMessageTo(service, service.getName(), action);
+  	ArrayList users = (ArrayList)oc.read();
+  	oc.close();
+  	
+  	return users;
+  }
+  
   public void windowClosing(WindowEvent we)
   {
     cleanExit();
