@@ -20,6 +20,8 @@
 package org.lucane.applications.calendar.widget;
 
 import java.awt.*;
+import java.awt.event.MouseListener;
+
 import javax.swing.*;
 
 
@@ -74,9 +76,11 @@ public class DayItem extends JPanel
 	 * 
 	 * @param text the event text to be displayed
 	 */
-	public void addEvent(BasicEvent event)
+	public void addEvent(BasicEvent event, MouseListener listener)
 	{
-		this.add(new EventLabel(event));
+		EventLabel label = new EventLabel(event);
+		label.addMouseListener(listener);
+		this.add(label);
 	}
 
 	/**

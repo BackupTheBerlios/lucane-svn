@@ -23,6 +23,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -113,6 +115,7 @@ class AttendeeTableModel extends AbstractTableModel
 	public AttendeeTableModel(Plugin plugin, ArrayList concepts)
 	{		
 		this.attendees = concepts;
+		Collections.sort(attendees, new AttendeeComparator());
 		
 		try {
 			this.acceptedIcon = new ImageIcon(new URL(plugin.getDirectory() + "accepted.png"));
@@ -126,12 +129,14 @@ class AttendeeTableModel extends AbstractTableModel
 	public void setAttendees(ArrayList attendees)
 	{
 		this.attendees = attendees;
+		Collections.sort(attendees, new AttendeeComparator());
 		this.fireTableDataChanged();
 	}
 
 	public void addAttendee(Attendee attendee)
 	{
 		this.attendees.add(attendee);
+		Collections.sort(attendees, new AttendeeComparator());
 		this.fireTableDataChanged();
 	}
 	
@@ -159,7 +164,12 @@ class AttendeeTableModel extends AbstractTableModel
 		Attendee a = (Attendee)attendees.get(x);
 		
 		if(y == 1)
+		{
+			if(a.isMandatory())
+				return "<html><b>" + a.getUser() + "</b></html>";
+			
 			return a.getUser();
+		}
 		
 		if(a.getStatus() == Attendee.STATUS_ACCEPTED)
 			return acceptedIcon;
@@ -184,5 +194,21 @@ class AttendeeTableModel extends AbstractTableModel
 	public int getRowCount()
 	{
 		return attendees.size();
+	}
+}
+
+class AttendeeComparator implements Comparator
+{
+	public int compare(Object o1, Object o2) 
+	{
+		Attendee a1 = (Attendee)o1;
+		Attendee a2 = (Attendee)o2;
+		
+		if(a1.isMandatory() && !a2.isMandatory())
+			return -1;
+		if(!a1.isMandatory() && a2.isMandatory())
+			return 1;
+		
+		return a1.getUser().compareTo(a2.getUser());
 	}
 }

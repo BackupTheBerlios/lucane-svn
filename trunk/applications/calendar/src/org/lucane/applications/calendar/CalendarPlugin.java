@@ -24,13 +24,11 @@ import java.awt.Dimension;
 import java.util.*;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.common.*;
 import org.lucane.applications.calendar.gui.CalendarFrame;
 
 //TODO activate event recurence
 //TODO activate resources
-//TODO activate optional attendees
 
 public class CalendarPlugin extends StandalonePlugin
 {

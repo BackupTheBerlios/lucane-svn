@@ -180,35 +180,25 @@ implements ActionListener
 		}
 		
 		//-- accept & refuse
-		//TODO add refresh to attendee tab
-		else if(ae.getSource() == btnAccept)
+		else if(ae.getSource() == btnAccept || ae.getSource() == btnReject)
 		{
 			Attendee a = event.getAttendee(Client.getInstance().getMyInfos().getName());
-			a.setStatus(Attendee.STATUS_ACCEPTED);
+			if(ae.getSource() == btnAccept)
+				a.setStatus(Attendee.STATUS_ACCEPTED);
+			else if(ae.getSource() == btnReject)
+				a.setStatus(Attendee.STATUS_REFUSED);
+			
 			try {
 				plugin.storeEvent(event);
 				btnAccept.setEnabled(a.getStatus() != Attendee.STATUS_ACCEPTED);
-				btnReject.setEnabled(a.getStatus() != Attendee.STATUS_REFUSED);				
+				btnReject.setEnabled(a.getStatus() != Attendee.STATUS_REFUSED);	
+				attendees.refreshAttendees();
 				DialogBox.info(tr("msg.statusChanged"));					
 			} catch(Exception e) {
 				DialogBox.error(tr("err.unableToChangeStatus"));
 				e.printStackTrace();
 			}
 		}
-		else if(ae.getSource() == btnReject)
-		{
-			Attendee a = event.getAttendee(Client.getInstance().getMyInfos().getName());
-			a.setStatus(Attendee.STATUS_REFUSED);
-			try {
-				plugin.storeEvent(event);
-				btnAccept.setEnabled(a.getStatus() != Attendee.STATUS_ACCEPTED);
-				btnReject.setEnabled(a.getStatus() != Attendee.STATUS_REFUSED);			
-				DialogBox.info(tr("msg.statusChanged"));	
-			} catch(Exception e) {
-				DialogBox.error(tr("err.unableToChangeStatus"));
-				e.printStackTrace();
-			}
-		}	
 	}
 	
 	public String tr(String s)

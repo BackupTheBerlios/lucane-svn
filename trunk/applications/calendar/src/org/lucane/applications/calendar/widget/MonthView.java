@@ -137,7 +137,7 @@ implements MouseListener
 
 	public void addEvent(int dayOfMonth, BasicEvent event)
 	{
-		getDayItem(dayOfMonth + getFirstDayOfDisplayedMonth()-1).addEvent(event);
+		getDayItem(dayOfMonth + getFirstDayOfDisplayedMonth()-1).addEvent(event, this);
 	}
 	
 	/**
@@ -209,7 +209,14 @@ implements MouseListener
 	public void mouseExited(MouseEvent me) {}
 	public void mouseClicked(MouseEvent me)
 	{
-		DayItem day = (DayItem)me.getSource();
+		if(me.getSource() instanceof DayItem)
+			doDayClick((DayItem)me.getSource());
+		else if(me.getSource() instanceof EventLabel)
+			doEventClick((EventLabel)me.getSource());
+	}
+	
+	private void doDayClick(DayItem day)
+	{
 		if(day.getDayOfMonth() < 0)
 			return;
 		
@@ -218,6 +225,16 @@ implements MouseListener
 		{
 			CalendarListener listener = (CalendarListener)i.next();
 			listener.onDayClick(day);
+		}
+	}
+	
+	private void doEventClick(EventLabel event)
+	{
+		Iterator i = listeners.iterator();
+		while(i.hasNext())
+		{
+			CalendarListener listener = (CalendarListener)i.next();
+			listener.onEventClick(event);
 		}
 	}
 }

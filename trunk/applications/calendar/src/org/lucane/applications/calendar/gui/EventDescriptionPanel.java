@@ -177,7 +177,8 @@ implements ActionListener
 		description = new HTMLEditor();		
 		description.setText(event.getDescription());
 		description.setBorder(BorderFactory.createTitledBorder(tr("event.description")));
-		description.setEnabled(isOrganizer);
+		description.setEditable(isOrganizer);
+		description.setToolbarVisible(isOrganizer);
 	}
 	
 	private void initDateCombos()

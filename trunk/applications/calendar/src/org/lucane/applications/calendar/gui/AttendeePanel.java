@@ -38,7 +38,8 @@ implements ActionListener
 	private Event event;
 	
 	private AttendeeTable attendees;
-	private JButton btnAdd;
+	private JButton btnAddMandatory;
+	private JButton btnAddOptional;
 	private JButton btnRemove;
 	
 	public AttendeePanel(CalendarPlugin plugin, Event event)
@@ -48,13 +49,16 @@ implements ActionListener
 		this.event = event;
 		
 		this.attendees = new AttendeeTable(plugin, tr("event.attendees"), event.getAttendeeList());
-		this.btnAdd = new JButton(tr("btn.addAttendee"));
+		this.btnAddMandatory = new JButton(tr("btn.addMandatoryAttendee"));
+		this.btnAddOptional = new JButton(tr("btn.addOptionalAttendee"));
 		this.btnRemove = new JButton(tr("btn.removeAttendee"));
-		this.btnAdd.addActionListener(this);
+		this.btnAddMandatory.addActionListener(this);
+		this.btnAddOptional.addActionListener(this);
 		this.btnRemove.addActionListener(this);
 		
-		JPanel buttons = new JPanel(new GridLayout(2, 1));
-		buttons.add(this.btnAdd);
+		JPanel buttons = new JPanel(new GridLayout(3, 1));
+		buttons.add(this.btnAddMandatory);
+		buttons.add(this.btnAddOptional);
 		buttons.add(this.btnRemove);
 		JPanel container = new JPanel(new BorderLayout());
 		container.add(buttons, BorderLayout.NORTH);
@@ -71,11 +75,15 @@ implements ActionListener
 		return attendees.getAttendeeList();
 	}
 	
+	public void refreshAttendees()
+	{
+		attendees.setAttendees(event.getAttendeeList());
+	}
+	
 	public void actionPerformed(ActionEvent ae)
 	{
-		if(ae.getSource() == btnAdd)
+		if(ae.getSource() == btnAddMandatory || ae.getSource() == btnAddOptional)
 		{
-			//TODO selection frame instead of listbox
 			try {
 				ArrayList users = plugin.getUsers();
 				int index = DialogBox.list(null, tr("userSelection"), tr("msg.selectUser"), new Vector(users));
@@ -83,7 +91,8 @@ implements ActionListener
 					return;
 				
 				UserConcept user = (UserConcept)users.get(index);
-				attendees.addAttendee(new Attendee(user.getName(), true));
+				boolean isMandatory = (ae.getSource() == btnAddMandatory);
+				attendees.addAttendee(new Attendee(user.getName(), isMandatory));
 			} catch(Exception e) {
 				DialogBox.error(tr("err.unableToFetchUserList"));
 				e.printStackTrace();
