@@ -8,34 +8,34 @@
 </head>
 <body>
 
-<p>Lucane is build with <a href="http://ant.apache.org">ant</a>. 
-It needs js.jar and bsf.jar to compile plugins.</p>
+<p>Lucane is build with <a href="http://maven.apache.org">maven</a>.</p>
 
 <h2>Tested versions</h2>
 <ul>
-  <li>ant : <a href="http://ant.apache.org/bindownload.cgi">Ant 1.6.1</a></li>
-  <li>js.jar : <a href="http://ftp.mozilla.org/pub/mozilla.org/js/">Rhino 1.5R3</a></li>
-  <li>bsf.jar : <a href="http://cvs.apache.org/dist/jakarta/bsf/v2.3.0rc1/bin/">Apache BSF 2.3.0</a></li>
+  <li>maven 1.0rc1</li>
 </ul>
 <p>(more recent should also work)</p>
 
-<h2>Installing ant</h2>
+<h2>Installing maven</h2>
 <ul>
-  <li>Untar ant. It should create a 'apache-ant-1.6.1' directory.
-    <ul><li>We will call this directory $ANT_HOME</li></ul>
-  </li>
-  <li>Unzip Rhino. It should create a 'rhino1_5R3' directory, with a js.jar file in it.
-    <ul><li>Copy this js.jar into $ANT_HOME/lib</li></ul>
-  </li>
-  <li>Untar bsf. It should create a 'bsf-2.3.0' directory.
-    <ul><li>Copy lib/bsf.jar to $ANT_HOME/lib</li></ul>
+  <li>Untar maven. It should create a 'maven-1.0-rc1' directory.
+    <ul><li>We will call this directory $MAVEN_HOME</li></ul>
   </li>
 </ul>
+<p>That's all !</p>
 
 <h2>Compiling Lucane</h2>
 <ul>
-  <li>If $ANT_HOME is in your path, simply type 'ant' in Lucane directory.</li>
-  <li>It will (hopefully) generate a lucane.tgz file in a 'build' directory</li>
+  <li>If $MAVEN_HOME/bin is in your path, simply type 'maven' in the Lucane directory.</li>
+  <li>It will (hopefully) generate a 'dist' directory containing server, client and proxy</li>
+</ul>
+<p>The available of maven goals are :</p>
+<ul>
+  <li>clean-lucane : remove generated classes</li>
+  <li>build-lucane : compile lucane</li>
+  <li>mkdist-lucane (default) : generate the dist directory</li>
+  <li>mkwinsetup-lucane : generate a windows installer</li>
+  <li>site-lucane : create a simple site with various reports</li>
 </ul>
 
 </body>

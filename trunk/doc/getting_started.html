@@ -19,9 +19,9 @@ Lucane is made of several modules :
 
 
 <h2>Client setup</h2>
-There is now only on configuration file 
+There is only one configuration file 
 <ul>
-  <li>client-config.xml</li>
+  <li>etc/client-config.xml</li>
 </ul>
 <p>This is a self-described xml file. If you only want to test lucane with
 the client and
@@ -38,8 +38,7 @@ have more than one</li>
 </ul>
 
 <p>Once the configuration file is customized, you can start the client
-by typing "<tt>java -jar lucane-client.jar</tt>"
-or simply by clicking on this file depending on your environment.
+by "<tt>client.sh</tt>" or "<tt>client.bat</tt>".
 The server should of course be connected.</p>
 
 <p>The client will automatically download the applications you can use.
@@ -65,8 +64,9 @@ The server is also easy to install, the main configuration file is :
 services</li>
 </ul>
 
-<p>The databases engines tested are HSQLdb, MySQL and Postgres. The others
-haven't been tested
+<p>The databases engines tested are HSQLdb, MySQL and Postgres. 
+SQL Server has been reported to work.
+The others haven't been tested
 and aren't activated in the default distribution.<br/>
 If you don't want to use a custom database, leave the config file as
 it is to use HSQLdb.</p>
@@ -76,16 +76,14 @@ To use ldap, see the <a href="ldap_store.html">ldap store</a> guide.
 </p>
 
 <p>You can start the server
-by typing "<tt>java -jar lucane-server.jar</tt>"
-or simply by clicking on this file depending on your environment.</p>
+by "<tt>server.sh</tt>" or "<tt>server.bat</tt>".</p>
 
 <h2>Proxy setup</h2>
 <p>You will only need the proxy if you have several networks that aren't
 directly visible.
 This is the case if you are using NAT for example.
 The proxy does not need any configuration. Simply start it on the gateway
-by typing "<tt>java -jar lucane-proxy.jar</tt>"
-or simply by clicking on this file depending on your environment.</p>
+by typing "<tt>proxy.sh</tt>" or "<tt>proxy.bat</tt>".
 </p>
 
 
