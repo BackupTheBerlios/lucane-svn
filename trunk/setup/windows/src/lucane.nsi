@@ -58,7 +58,7 @@ var ICONS_GROUP
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "${PRODUCT_STARTMENU_REGVAL}"
-!insertmacro MUI_PAGE_STARTMENU Application $ICONS_GROUP
+!insertmacro MUI_PAGE_STARTMENU "Startmenu" $ICONS_GROUP
 # Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 # Finish page
@@ -93,7 +93,7 @@ ShowUnInstDetails show
 XPStyle on
 CRCCheck on
 
-#show the languae dialog
+#show the language dialog
 #Function .onInit
 #  !insertmacro MUI_LANGDLL_DISPLAY
 #FunctionEnd
@@ -175,7 +175,7 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function SetCustom
-  #Display the InstallOptions dialog
+  !insertmacro MUI_HEADER_TEXT "Choose shortcuts" "Choose the shortcuts you want to create"
   Push ${TEMP1}
     InstallOptions::dialog "$PLUGINSDIR\lucane_shortcuts.ini"
     Pop ${TEMP1}
@@ -213,7 +213,7 @@ Function ValidateCustom
         !insertmacro SelectSection ${ADDITIONAL_ICONS}
     end1:
 
-#----- Quick launch icons
+  #----- Quick launch icons
   ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 3" "State"
 
   StrCmp ${TEMP1} 1 yes2
@@ -228,7 +228,7 @@ Function ValidateCustom
         client_end2:
     end2:
 
-#----- Desktop icons
+  #----- Desktop icons
   ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 4" "State"
 
   StrCmp ${TEMP1} 1 yes3
@@ -244,8 +244,6 @@ Function ValidateCustom
     end3:
 
 FunctionEnd
-
-
 
 
 #Function un.onInit
