@@ -298,6 +298,14 @@ public class Store
 		getPluginStore().storePlugin(jmailadminPlugin);
 		getServiceStore().storeService(jmailadminService);
 		
+        //forum application
+        PluginConcept todolistPlugin = new PluginConcept("org.lucane.applications.todolist", "0.7");
+        ServiceConcept todolistService = new ServiceConcept("org.lucane.applications.todolist", false);
+        allUsers.addPlugin(todolistPlugin);
+        allUsers.addService(todolistService);
+        getPluginStore().storePlugin(todolistPlugin);
+        getServiceStore().storeService(todolistService);
+        
         getGroupStore().storeGroup(allUsers);
         getGroupStore().storeGroup(grantedUsers);
         getGroupStore().storeGroup(admins);
