@@ -92,7 +92,13 @@ public class Server
 			System.exit(1);
 		}
 		
-		this.authenticator = Authenticator.getInstance();
+		try	{
+			this.authenticator = Authenticator.getInstance(config);
+		} catch (Exception e) {
+			Logging.getLogger().severe("Unable to get Authenticator instance.");
+			e.printStackTrace();
+			System.exit(1);
+		}	
 	}
 	
 	/**

@@ -20,15 +20,22 @@
 package org.lucane.server.auth;
 
 import java.util.StringTokenizer;
+
+import org.lucane.common.Logging;
 import org.lucane.common.Message;
 import org.lucane.common.ObjectConnection;
 import org.lucane.server.Server;
+import org.lucane.server.ServerConfig;
 
 public abstract class Authenticator
 {
-	public static Authenticator getInstance()
+	public static Authenticator getInstance(ServerConfig config) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-		return new DefaultAuthenticator();
+		Logging.getLogger().info("Authenticator used : " + config.getAuthenticatorClass());
+		
+		Class authClass = Class.forName(config.getAuthenticatorClass());
+		return (Authenticator)authClass.newInstance();
 	}
 	
 	public abstract AuthResponse authenticate(AuthRequest request);

@@ -38,5 +38,10 @@
   -->
   <store backend="database" />    
   
+  <!-- 
+  	  Authenticator to use
+  -->
+  <authenticator class="org.lucane.server.auth.DefaultAuthenticator" />    
+  
 </lucane-server>
 

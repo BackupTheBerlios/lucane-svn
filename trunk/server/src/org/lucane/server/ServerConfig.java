@@ -37,6 +37,7 @@ public class ServerConfig
 	private String dbPassword = "";
 	private String dbLayer = null;
 	private String storeBackend = "database";
+	private String authenticatorClass = "org.lucane.server.auth.DefaultAuthenticator";
 	
 	/**
 	 * Constructor
@@ -68,6 +69,8 @@ public class ServerConfig
 					handleDatabase(node);
 				else if(node.getNodeName().equals("store"))
 					handleStore(node);
+				else if(node.getNodeName().equals("authenticator"))
+					handleAuthenticator(node);
 				else
 				  Logging.getLogger().warning("unexepected node : " + node.getNodeName());
 			}
@@ -111,6 +114,16 @@ public class ServerConfig
 	private void handleStore(Node node)
 	{
 		this.storeBackend = node.getAttributes().getNamedItem("backend").getNodeValue();
+	}
+	
+	/**
+	 * Parse authenticator node
+	 * 
+	 * @param node the authenticator node
+	 */
+	private void handleAuthenticator(Node node)
+	{
+		this.authenticatorClass = node.getAttributes().getNamedItem("class").getNodeValue();
 	}
 	
 	//-- getters
@@ -184,5 +197,15 @@ public class ServerConfig
 	public String getStoreBackend()
 	{
 		return this.storeBackend;
+	}
+	
+	/**
+	 * Get the authenticator class to use
+	 *
+	 * @return the class
+	 */
+	public String getAuthenticatorClass()
+	{
+		return this.authenticatorClass;
 	}
 }
