@@ -33,7 +33,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
 import org.lucane.applications.todolist.Todolist;
-import org.lucane.applications.todolist.TodolistItem;
 
 public class TodolistTable extends JTable {
 	ActionListener columnHeaderActionListener;
@@ -53,6 +52,7 @@ public class TodolistTable extends JTable {
 			    }
 			}
 		});
+		
 	}
 	
 	public void addListSelectionListener(ListSelectionListener lsl) {

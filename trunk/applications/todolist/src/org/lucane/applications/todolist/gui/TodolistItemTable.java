@@ -43,9 +43,11 @@ public class TodolistItemTable extends JTable {
 		setModel(new TodolistItemTableModel());
 		setSelectionModel(new DefaultListSelectionModel());
 		
-		getColumnModel().getColumn(2).setWidth(50);
-		getColumnModel().getColumn(1).setWidth(50);
-		
+		getColumnModel().getColumn(1).setMaxWidth(90);
+		getColumnModel().getColumn(1).setMinWidth(90);
+		getColumnModel().getColumn(2).setMaxWidth(90);
+		getColumnModel().getColumn(2).setMinWidth(90);
+
 		getTableHeader().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 			    TableColumnModel columnModel = getColumnModel();   

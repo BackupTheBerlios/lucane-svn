@@ -239,8 +239,20 @@ public class TodolistService extends Service {
 	}
 
 	private void addTodolistItem(ObjectConnection oc, TodolistItem newTodolistItem) {
-		// TODO test if the list exists before adding an item
 		try {
+			st = conn.prepareStatement(
+			"SELECT count(*) FROM todolists WHERE id=?");
+			st.setInt(1, newTodolistItem.getParentTodolistId());
+			res = st.executeQuery();
+			if (!res.next()||res.getInt(1)!=1) {
+				oc.write("FAILED");
+				res.close();
+				st.close();
+				return;
+			}
+			res.close();
+			st.close();
+
 			st = conn.prepareStatement(
 					"SELECT MAX(id) FROM todolistItems");
 			res = st.executeQuery();
