@@ -26,5 +26,6 @@
     </resources>
 
     <sourceDirectory>src/</sourceDirectory>
+    <unitTestSourceDirectory>tests/</unitTestSourceDirectory>
   </build>
 </project>

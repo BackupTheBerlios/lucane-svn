@@ -27,6 +27,9 @@ public class BlowFish
 	public static String cipher(String key, String str)
 	throws CryptoException
 	{
+		if(key.length() > 16)
+			key = key.substring(0, 16);
+		
 		SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "BlowFish");
 		Cipher cipher;
 		byte[] encrypted;
@@ -45,6 +48,9 @@ public class BlowFish
 	public static String decipher(String key, String str)
 	throws CryptoException
 	{
+		if(key.length() > 16)
+			key = key.substring(0, 16);
+		
 		SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "BlowFish");
 		Cipher cipher;
 		byte[] decrypted;
