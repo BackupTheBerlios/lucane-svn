@@ -35,9 +35,9 @@ public class DefaultWindowManager implements WindowManager
 {
 	private HashMap windows = new HashMap();
 	
-	public void show(ManagedWindow window)
+	private void init(ManagedWindow window)
 	{
-		final JFrame f = new JFrame();
+		JFrame f = new JFrame();
 		windows.put(window, f);
 		f.addWindowListener(new ManagedWindowListener(window));
 		
@@ -58,8 +58,15 @@ public class DefaultWindowManager implements WindowManager
 		
 		Iterator listeners = window.getWindowListeners();
 		while(listeners.hasNext())
-			f.addWindowListener((WindowListener)listeners.next());
+			f.addWindowListener((WindowListener)listeners.next());		
+	}
+	
+	public void show(ManagedWindow window)
+	{
+		if(!windows.containsKey(window))
+			init(window);
 		
+		final JFrame f = (JFrame)windows.get(window); 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				f.show();

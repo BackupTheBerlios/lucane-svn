@@ -19,7 +19,10 @@
 
 package org.lucane.applications.maininterface;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.swing.JMenu;
@@ -32,11 +35,20 @@ import org.lucane.client.Plugin;
 import org.lucane.client.widgets.ManagedWindow;
 
 public class WindowMenu extends JMenu
-implements MenuListener
+implements MenuListener, ActionListener
 {
-	public WindowMenu()
+	private Plugin plugin;
+	private HashMap toggleButtons;
+	private ArrayList hiddenPlugins;
+	
+	public WindowMenu(Plugin plugin)
 	{
-		super("Windows");
+		super(plugin.tr("mnu.windows"));
+		this.plugin = plugin;
+		
+		this.toggleButtons = new HashMap();
+		this.hiddenPlugins = new ArrayList();
+		
 		this.addMenuListener(this);
 	}
 	
@@ -56,14 +68,27 @@ implements MenuListener
 		}
 		
 		//create the menu
+		toggleButtons.clear();
 		this.removeAll();
 		Iterator plugins = pluginList.iterator();
 		while(plugins.hasNext())
 		{
 			Plugin plugin = (Plugin)plugins.next();
+			
+			//zap startup plugin
+			if(plugin.getName().equals(Client.getInstance().getStartupPlugin()))
+				continue;
+			
 			JMenu menu = new JMenu(plugin.getTitle());
 			
-			//TODO add showAll/hideAll
+			//showAll/hideAll
+			JMenuItem toggle = new JMenuItem(tr("mnu.hide"));
+			toggleButtons.put(toggle, plugin);
+			if(hiddenPlugins.contains(plugin))
+				toggle.setText(tr("mnu.show"));
+			toggle.addActionListener(this);						
+			menu.add(toggle);
+			menu.addSeparator();
 			
 			windows = Client.getInstance().getWindowManager().getWindowsFor(plugin);
 			while(windows.hasNext())
@@ -76,5 +101,55 @@ implements MenuListener
 			
 			this.add(menu);
 		}
+		
+		//if no window, show a dumb item
+		if(this.getItemCount() == 0)
+		{
+			JMenuItem dumb = new JMenuItem(tr("mnu.none"));
+			dumb.setEnabled(false);
+			this.add(dumb);				
+		}
+	}
+
+	public void actionPerformed(ActionEvent ae) 
+	{
+		JMenuItem toggle = (JMenuItem)ae.getSource();
+		if(toggle.getText().equals(tr("mnu.hide")))
+		{
+			Plugin plugin = (Plugin)toggleButtons.get(toggle);
+			hiddenPlugins.add(plugin);
+			hideWindowsFor(plugin);
+		}
+		else
+		{
+			Plugin plugin = (Plugin)toggleButtons.get(toggle);
+			hiddenPlugins.remove(plugin);
+			showWindowsFor(plugin);
+		}
+	}
+
+	private void hideWindowsFor(Plugin plugin) 
+	{
+		Iterator windows = Client.getInstance().getWindowManager().getWindowsFor(plugin);
+		while(windows.hasNext())
+		{
+			ManagedWindow window = (ManagedWindow)windows.next();
+			window.hide();	
+		}
+	}
+	
+	private void showWindowsFor(Plugin plugin) 
+	{
+		Iterator windows = Client.getInstance().getWindowManager().getWindowsFor(plugin);
+		while(windows.hasNext())
+		{
+			ManagedWindow window = (ManagedWindow)windows.next();
+			window.show();	
+		}
+	}	
+	
+	private String tr(String s)
+	{
+		return plugin.tr(s);
 	}
 }

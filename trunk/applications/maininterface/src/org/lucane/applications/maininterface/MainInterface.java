@@ -103,7 +103,7 @@ public class MainInterface
     mnuExtends = new JMenu(tr("applications"));
     mnuBar.add(mnuMain);
     mnuBar.add(mnuExtends);
-    mnuBar.add(new WindowMenu());
+    mnuBar.add(new WindowMenu(this));
     window.setJMenuBar(mnuBar);
     mnuExit = new JMenuItem(tr("quit"));
     mnuExit.addActionListener(this);
