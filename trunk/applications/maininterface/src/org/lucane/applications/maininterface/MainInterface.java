@@ -74,7 +74,7 @@ public class MainInterface
    *        called instead of follow()
    * @return a new instance of the Plugin.
    */
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     return new MainInterface();
   }
@@ -155,7 +155,7 @@ public class MainInterface
   
   private void displayAppsInMenu()
   {
-	Iterator plugins = ploader.getPluginIterator();
+	Iterator plugins = ploader.getAvailablePlugins();
   	for(int i=0;plugins.hasNext();i++)
   	{
   		Plugin p = (Plugin)plugins.next();
@@ -210,7 +210,7 @@ public class MainInterface
   private void displayAppsAsButtons()
   {
 	//-- sort and display apps in buttons
-	Iterator plugins = ploader.getPluginIterator();
+	Iterator plugins = ploader.getAvailablePlugins();
 	ArrayList pluginUse = new ArrayList();
 	while(plugins.hasNext())
 	{

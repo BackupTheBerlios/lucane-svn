@@ -16,7 +16,7 @@ public class WhiteBoard extends Plugin
   }
 
 
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     Plugin p = new WhiteBoard(friends, starter);
     return p;

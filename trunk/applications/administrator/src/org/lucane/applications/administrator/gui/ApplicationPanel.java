@@ -35,7 +35,7 @@ public class ApplicationPanel extends JPanel
 		JPanel content = new JPanel(new GridLayout(0, 2));
 		PluginLoader ploader = PluginLoader.getInstance();
 	
-		Iterator plugins = PluginLoader.getInstance().getPluginIterator();
+		Iterator plugins = PluginLoader.getInstance().getAvailablePlugins();
 		while(plugins.hasNext())
 		{
 			Plugin p = (Plugin)plugins.next();

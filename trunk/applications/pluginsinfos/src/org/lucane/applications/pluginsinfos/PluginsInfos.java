@@ -51,7 +51,7 @@ public class PluginsInfos
     this.starter = true;
   }
 
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     return new PluginsInfos();
   }
@@ -102,7 +102,7 @@ public class PluginsInfos
     infos.add(lblIcon, BorderLayout.EAST);
     jpmain.add(infos, BorderLayout.CENTER);
 
-    Iterator i = PluginLoader.getInstance().getPluginIterator();
+    Iterator i = PluginLoader.getInstance().getAvailablePlugins();
     while(i.hasNext())
     {
     	Plugin p = (Plugin)i.next();   

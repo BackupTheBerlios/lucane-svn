@@ -56,7 +56,7 @@ public class PasswdChanger
    *        called instead of follow()
    * @return a new instance of the Plugin.
    */
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     return new PasswdChanger();
   }

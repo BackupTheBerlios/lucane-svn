@@ -32,7 +32,7 @@ public class Kick
   }
 
 
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     if(friends.length > 0)
       return new Kick(friends, starter);

@@ -32,7 +32,9 @@ import java.util.jar.*;
 public class PluginLoader
 {
 	private static PluginLoader instance = null;
-	private HashMap plugins;
+	
+	//stores available plugins in a (name, plugin) map
+	private HashMap availablePlugins;
 	
 	//stores running plugins
 	private ArrayList runningPlugins;
@@ -55,75 +57,26 @@ public class PluginLoader
 	 */
 	private PluginLoader()
 	{
-		this.plugins = new HashMap();
+		this.availablePlugins = new HashMap();
 		this.runningPlugins = new ArrayList();
 	}
 	
-	/**
-	 * Check if a Plugin is available
-	 * 
-	 * @param name the Plugin to check
-	 * @return true if the client has this Plugin
-	 */
-	public boolean hasPlugin(String name)
-	{
-		return this.hasPlugin(name, "", false);
-	}
+	//-- plugin initialization & run
 	
 	/**
-	 * Check if a Plugin is available
+	 * Get a new plugin instance
 	 * 
-	 * @param name the Plugin to check
-	 * @param version the version to check
-	 * @return true if the Client has this version of the Plugin
+	 * @param name the plugin name
+	 * @param friends the connectinfos
+	 * @param starter true if the plugin is starter
+	 * @return a new plugin instance
 	 */
-	public boolean hasPlugin(String name, String version)
+	public Plugin newPluginInstance(String name, ConnectInfo[] friends, boolean starter)
 	{
-		return hasPlugin(name, version, false);
-	}
-	
-	/**
-	 * Check if a Plugin is available
-	 * 
-	 * @param name the Plugin to check
-	 * @param version the version to check
-	 * @param load trus if the PluginLoader has to load the Plugin
-	 * @return true if the Client has this version of the Plugin
-	 */
-	protected boolean hasPlugin(String name, String version, boolean load)
-	{
-		Plugin plugin;
-		if(load == true)
-		{
-			try
-			{
-				LucaneClassLoader loader = LucaneClassLoader.getInstance();
-				String baseURL = System.getProperty("user.dir") + "/" + Client.APPLICATIONS_DIRECTORY;
-				URL url = new URL("jar:file:///" + baseURL + name + ".jar!/");
-				loader.addUrl(url);
-				Logging.getLogger().fine("plugin URL: " + url);
-				
-				//we have to set our ClassLoader to reload the plugin.
-				Logging.getLogger().finer("classname: " + baseURL + name + ".jar");
-				String className = (new JarFile(baseURL + name + ".jar")).getManifest()
-				.getMainAttributes().getValue("Plugin-Class");
-				
-				plugin = (Plugin)Class.forName(className, true, loader).newInstance();
-				plugin.setLocale(Client.getInstance().getConfig().getLanguage());
-				this.plugins.put(plugin.getName(), plugin);
-				Logging.getLogger().info("Loaded plugin " + plugin.getName() + " v. " + 
-						plugin.getVersion());
-			}
-			catch(Exception e)
-			{
-				return false;
-			}
-		}
-		
-		
-		plugin = (Plugin)this.plugins.get(name);
-		return plugin != null && (plugin.getVersion().equals(version) || version.length() == 0);
-	}
+		Plugin p = ((Plugin)this.availablePlugins.get(name)).newInstance(friends, starter);
+		p.setLocale(Client.getInstance().getConfig().getLanguage());
+		return p;
+	}	
 	
 	/**
 	 * Loads a Plugin.
@@ -162,31 +115,82 @@ public class PluginLoader
 		return p;
 	}
 	
-	public Plugin newPluginInstance(String name, ConnectInfo[] friends, boolean starter)
-	{
-		Plugin p = ((Plugin)this.plugins.get(name)).init(friends, starter);
-		p.setLocale(Client.getInstance().getConfig().getLanguage());
-		return p;
-	}
+	//-- available plugins
 	
 	/**
-	 * Get the number of available plugins
+	 * Check if a Plugin is available
 	 * 
-	 * @return the number of plugins
+	 * @param name the Plugin to check
+	 * @return true if the client has this Plugin
 	 */
-	public int getNumberOfPlugins()
+	public boolean isAvailable(String name)
 	{
-		return this.plugins.size();
+		return this.isAvailable(name, "", false);
 	}
 	
 	/**
-	 * Get the list of plugins
+	 * Check if a Plugin is available
+	 * 
+	 * @param name the Plugin to check
+	 * @param version the version to check
+	 * @return true if the Client has this version of the Plugin
+	 */
+	public boolean isAvailable(String name, String version)
+	{
+		return isAvailable(name, version, false);
+	}
+	
+	/**
+	 * Check if a Plugin is available
+	 * 
+	 * @param name the Plugin to check
+	 * @param version the version to check
+	 * @param load trus if the PluginLoader has to load the Plugin
+	 * @return true if the Client has this version of the Plugin
+	 */
+	protected boolean isAvailable(String name, String version, boolean load)
+	{
+		Plugin plugin;
+		if(load == true)
+		{
+			try
+			{
+				LucaneClassLoader loader = LucaneClassLoader.getInstance();
+				String baseURL = System.getProperty("user.dir") + "/" + Client.APPLICATIONS_DIRECTORY;
+				URL url = new URL("jar:file:///" + baseURL + name + ".jar!/");
+				loader.addUrl(url);
+				Logging.getLogger().fine("plugin URL: " + url);
+				
+				//we have to set our ClassLoader to reload the plugin.
+				Logging.getLogger().finer("classname: " + baseURL + name + ".jar");
+				String className = (new JarFile(baseURL + name + ".jar")).getManifest()
+				.getMainAttributes().getValue("Plugin-Class");
+				
+				plugin = (Plugin)Class.forName(className, true, loader).newInstance();
+				plugin.setLocale(Client.getInstance().getConfig().getLanguage());
+				this.availablePlugins.put(plugin.getName(), plugin);
+				Logging.getLogger().info("Loaded plugin " + plugin.getName() + " v. " + 
+						plugin.getVersion());
+			}
+			catch(Exception e)
+			{
+				return false;
+			}
+		}
+		
+		
+		plugin = (Plugin)this.availablePlugins.get(name);
+		return plugin != null && (plugin.getVersion().equals(version) || version.length() == 0);
+	}	
+	
+	/**
+	 * Get all available plugins
 	 * 
 	 * @return an iterator
 	 */
-	public Iterator getPluginIterator()
+	public Iterator getAvailablePlugins()
 	{
-		return this.plugins.values().iterator();
+		return this.availablePlugins.values().iterator();
 	}
 	
 	/**
@@ -197,11 +201,11 @@ public class PluginLoader
 	 */
 	public Plugin getPlugin(String name)
 	{
-		return (Plugin)this.plugins.get(name);
+		return (Plugin)this.availablePlugins.get(name);
 	}
 	
 	
-	//-- code for running plugins
+	//-- running plugins
 	
 	/**
 	 * Tells the client that a plugin has been launched.

@@ -153,7 +153,7 @@ public class Client
     
     protected void startMainPlugin()
     {
-		if(this.pluginloader.hasPlugin(startupPlugin))
+		if(this.pluginloader.isAvailable(startupPlugin))
 			this.pluginloader.run(startupPlugin, new ConnectInfo[0]);
 		else
 		{

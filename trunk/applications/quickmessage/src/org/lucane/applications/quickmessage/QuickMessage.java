@@ -59,7 +59,7 @@ public class QuickMessage
   }
 
 
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     Plugin p = new QuickMessage(friends, starter);
     return p;

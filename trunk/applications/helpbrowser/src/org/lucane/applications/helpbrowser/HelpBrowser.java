@@ -55,7 +55,7 @@ implements TreeSelectionListener, ActionListener
 	/**
 	 * Init for plugin loader
 	 */
-	public Plugin init(ConnectInfo[] friends, boolean starter)
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter)
 	{
 		return new HelpBrowser();
 	}
@@ -90,7 +90,7 @@ implements TreeSelectionListener, ActionListener
 		plugins = new JComboBox();
 		plugins.addActionListener(this);
 		
-		Iterator i = PluginLoader.getInstance().getPluginIterator();
+		Iterator i = PluginLoader.getInstance().getAvailablePlugins();
 		while(i.hasNext())
 			plugins.addItem(i.next());
 		

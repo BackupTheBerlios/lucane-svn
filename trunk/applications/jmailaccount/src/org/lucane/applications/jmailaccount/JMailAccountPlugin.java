@@ -36,7 +36,7 @@ public class JMailAccountPlugin
 		this.starter = true;
 	}
 	
-	public Plugin init(ConnectInfo[] friends, boolean starter) 
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter) 
 	{
 		return new JMailAccountPlugin();
 	}

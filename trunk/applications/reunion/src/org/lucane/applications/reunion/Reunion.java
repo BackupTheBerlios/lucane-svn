@@ -59,7 +59,7 @@ implements ActionListener, KeyListener, ObjectListener
   }
 
 
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     return new Reunion(friends, starter);
   }

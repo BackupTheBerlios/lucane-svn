@@ -43,7 +43,7 @@ public class JMailPlugin
 		this.starter = true;
 	}
 	
-	public Plugin init(ConnectInfo[] friends, boolean starter) 
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter) 
 	{
 		return new JMailPlugin();
 	}
@@ -61,7 +61,7 @@ public class JMailPlugin
 
 			splash.dispose();
 		} catch(Exception e) {
-			if(PluginLoader.getInstance().hasPlugin(ACCOUNT_APP))
+			if(PluginLoader.getInstance().isAvailable(ACCOUNT_APP))
 			{	
 				if(DialogBox.question("JMail", tr("msg.accountCreation")))
 					PluginLoader.getInstance().run(ACCOUNT_APP, new ConnectInfo[0]);

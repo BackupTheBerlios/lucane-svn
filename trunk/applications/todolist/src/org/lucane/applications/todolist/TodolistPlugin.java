@@ -31,7 +31,7 @@ public class TodolistPlugin extends StandalonePlugin {
 		this.starter = true;
 	}
 
-	public Plugin init(ConnectInfo[] friends, boolean starter) {
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter) {
 		return new TodolistPlugin();
 	}
 

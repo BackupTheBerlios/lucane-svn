@@ -50,7 +50,7 @@ public class SendFile
   }
 
 
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
 	Logging.getLogger().finer("SendFile:init() starter=" + starter);
     if(friends.length > 0)

@@ -38,7 +38,7 @@ public class SqlPlugin extends StandalonePlugin
 	}
 	
 	
-	public Plugin init(ConnectInfo[] friends, boolean starter)
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter)
 	{
 		return new SqlPlugin();
 	}

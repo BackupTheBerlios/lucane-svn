@@ -34,7 +34,7 @@ public class ReminderPlugin extends StandalonePlugin
 		this.infos = null;
 	}	
 		
-	public Plugin init(ConnectInfo[] friends, boolean starter)
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter)
 	{
 		return new ReminderPlugin();
 	}

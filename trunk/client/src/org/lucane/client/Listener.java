@@ -170,7 +170,7 @@ class Listener
       else
       {
 
-        if(PluginLoader.getInstance().hasPlugin(message.getApplication()))
+        if(PluginLoader.getInstance().isAvailable(message.getApplication()))
         {
 		try {
 			oc.write("OK");

@@ -148,7 +148,7 @@ public abstract class Plugin
    * @param starter true if the start() method has to be called
    * @return a new plugin's instance
    */
-  public abstract Plugin init(ConnectInfo[] friends, boolean starter);
+  public abstract Plugin newInstance(ConnectInfo[] friends, boolean starter);
 
   /**
    * Used by the PluginLoader to load a plugin previously initialized

@@ -52,7 +52,7 @@ public class QuickLaunch
    *        called instead of follow()
    * @return a new instance of the Plugin.
    */
-  public Plugin init(ConnectInfo[] friends, boolean starter)
+  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
   {
     QuickLaunch self = new QuickLaunch();
     
@@ -126,7 +126,7 @@ public class QuickLaunch
   	HashMap categories = new HashMap();
   	
   	//create menu list	
-	Iterator plugins = PluginLoader.getInstance().getPluginIterator();
+	Iterator plugins = PluginLoader.getInstance().getAvailablePlugins();
 	while(plugins.hasNext())
 	{
 		Plugin p = (Plugin)plugins.next();
