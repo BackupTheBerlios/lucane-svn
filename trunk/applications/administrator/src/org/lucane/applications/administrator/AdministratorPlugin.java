@@ -212,33 +212,39 @@ public class AdministratorPlugin extends StandalonePlugin
 	
 	public void updateConcept(Concept concept)
 	{
-		try {
-			AdminAction action = new AdminAction(AdminAction.UPDATE, concept);
-			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
-			String ack = oc.readString();
-			if(ack.startsWith("FAILED"))
-				DialogBox.error(tr("err.updateConcept") + concept);
-			else
-				DialogBox.info(tr("msg.conceptUpdated") + concept);
-
-			oc.close();
-		} catch(Exception e) {
-			DialogBox.error(tr("err") + e);
+		if(updateIsSafe(concept))
+		{
+			try {
+				AdminAction action = new AdminAction(AdminAction.UPDATE, concept);
+				ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
+				String ack = oc.readString();
+				if(ack.startsWith("FAILED"))
+					DialogBox.error(tr("err.updateConcept") + concept);
+				else
+					DialogBox.info(tr("msg.conceptUpdated") + concept);
+	
+				oc.close();
+			} catch(Exception e) {
+				DialogBox.error(tr("err") + e);
+			}
 		}		
 	}
 	
 	public void removeConcept(Concept concept)
 	{
-		try {
-			AdminAction action = new AdminAction(AdminAction.REMOVE, concept);
-			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
-			String ack = oc.readString();
-			if(ack.startsWith("FAILED"))
-				DialogBox.error(tr("err.removeConcept") + concept);
-
-			oc.close();				
-		} catch(Exception e) {
-			DialogBox.error(tr("err") + e);
+		if(removeIsSafe(concept))
+		{
+			try {
+				AdminAction action = new AdminAction(AdminAction.REMOVE, concept);
+				ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
+				String ack = oc.readString();
+				if(ack.startsWith("FAILED"))
+					DialogBox.error(tr("err.removeConcept") + concept);
+	
+				oc.close();				
+			} catch(Exception e) {
+				DialogBox.error(tr("err") + e);
+			}
 		}				
 	}
 
@@ -291,5 +297,67 @@ public class AdministratorPlugin extends StandalonePlugin
 	{
 		Vector v = Client.getInstance().getUserList();
 		return v.contains(user.getName());
+	}
+	
+	/**
+	 * Removing plugins or users from admin concept is dangerous
+	 */
+	private boolean updateIsSafe(Concept concept)
+	{
+		//admin group
+		if(concept.getName().equals("Admins") && concept instanceof GroupConcept)
+		{
+			GroupConcept group = (GroupConcept)concept;
+			
+			//basic applications
+			if(!group.hasPlugin(new PluginConcept("org.lucane.application.quicklaunch", "version")))
+				return askForConfirmation(tr("dangerous.update"));
+			if(!group.hasPlugin(new PluginConcept("org.lucane.application.maininterface", "version")))
+				return askForConfirmation(tr("dangerous.update"));
+			if(!group.hasPlugin(new PluginConcept("org.lucane.application.administrator", "version")))
+				return askForConfirmation(tr("dangerous.update"));
+			if(!group.hasService(new ServiceConcept("org.lucane.application.administrator", false)))
+				return askForConfirmation(tr("dangerous.update"));
+				
+			//at least one user
+			if(!group.getUsers().hasNext())
+				return askForConfirmation(tr("dangerous.update"));
+		}
+
+		//admin user
+		if(concept.getName().equals("admin") && concept instanceof UserConcept)
+			return askForConfirmation(tr("dangerous.update"));
+			
+		return true;
+	}
+	
+	/**
+	 * Removing a plugin might break everything
+	 */
+	private boolean removeIsSafe(Concept concept)
+	{
+		String[] dangerous = {
+			"Admins", //group
+			"admin",  //user
+			"org.lucane.applications.maininterface",
+			"org.lucane.applications.quicklaunch",
+			"org.lucane.applications.administrator",
+		};
+		
+		for(int i=0;i<dangerous.length;i++)
+		{
+			if(dangerous[i].equals(concept.getName()))
+				return askForConfirmation(tr("dangerous.remove"));
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Ask the user before screwing everything
+	 */
+	private boolean askForConfirmation(String message)
+	{
+		return DialogBox.question(getTitle(), message);
 	}
 }
