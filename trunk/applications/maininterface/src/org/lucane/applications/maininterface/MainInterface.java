@@ -20,6 +20,7 @@
 package org.lucane.applications.maininterface;
 
 import org.lucane.client.*;
+import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -89,6 +90,8 @@ public class MainInterface
     this.ploader = PluginLoader.getInstance();
 
     frame = new JFrame("Lucane - " + parent.getMyInfos().getName());
+    frame.setName("maininterface");
+    
     frame.getContentPane().setLayout(new BorderLayout());
     frame.addWindowListener(this);
     mnuBar = new JMenuBar();
@@ -127,6 +130,7 @@ public class MainInterface
     frame.setIconImage(this.getImageIcon().getImage());
     frame.setSize(350, 400);
     
+    WidgetState.restore(getLocalConfig(), frame);
     SwingUtilities.invokeLater(new Runnable() {
     	public void run() {
 			frame.show();
@@ -284,6 +288,7 @@ public class MainInterface
   private void cleanExit()
   {
 	Logging.getLogger().finer("MainInterface::cleanExit()");
+	WidgetState.save(getLocalConfig(), frame);
     parent.removeUserListListener(this);
     exit();    
   }
