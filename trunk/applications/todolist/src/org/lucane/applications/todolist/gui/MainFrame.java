@@ -1,3 +1,22 @@
+/*
+ * Lucane - a collaborative platform
+ * Copyright (C) 2004  Jonathan Riboux <jonathan.riboux@wanadoo.Fr>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package org.lucane.applications.todolist.gui;
 
 import java.awt.BorderLayout;
@@ -112,12 +131,19 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent ae) {
 				// TODO check if a selection is available
 				// I use the mainFrame object because in that case this is the action listener
-				new TodolistItemCreationDialog(mainFrame, (String)jlTodolists.getSelectedValue()).show();
+				new TodolistItemDialog(mainFrame, (String)jlTodolists.getSelectedValue()).show();
 			}
 		});
 		jtbToolBar.add(jbCreateItem);
 		
 		JButton jbEditItem = new JButton("Edit item");
+		jbEditItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				// TODO check if a selection is available
+				// I use the mainFrame object because in that case this is the action listener
+				new TodolistItemDialog(mainFrame, (TodolistItem) todolistItemsByName.get((String) jlTodolistItems.getSelectedValue())).show();
+			}
+		});
 		jtbToolBar.add(jbEditItem);
 		
 		JButton jbDeleteItem = new JButton("Remove item");
@@ -181,6 +207,14 @@ public class MainFrame extends JFrame {
 	protected void addTodolistItem(TodolistItem newTodolistItem) {
 		if (!IO.getInstance().addTodolistItem(newTodolistItem))
 			return;
+		todolistItemsByName.put(newTodolistItem.getName(), newTodolistItem);
+		jlTodolistItems.setListData(new Vector(todolistItemsByName.keySet()));
+	}
+
+	protected void modifyTodolistItem(TodolistItem oldTodolistItem, TodolistItem newTodolistItem) {
+		if (!IO.getInstance().modifyTodolistItem(oldTodolistItem, newTodolistItem))
+			return;
+		todolistItemsByName.remove(oldTodolistItem.getName());
 		todolistItemsByName.put(newTodolistItem.getName(), newTodolistItem);
 		jlTodolistItems.setListData(new Vector(todolistItemsByName.keySet()));
 	}

@@ -16,6 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.lucane.applications.todolist;
 
 import java.sql.PreparedStatement;
@@ -93,6 +94,10 @@ public class TodolistService extends Service {
             		addTodolistItem(oc, (TodolistItem)tla.getParam());
                     break;
             	case TodolistAction.MOD_TODOLISTITEM :
+	        		{
+	        			Object[] tmpobj = (Object[])tla.getParam();
+	        			modifyTodolistItem(oc, (String)tmpobj[0], (String)tmpobj[1], (String)tmpobj[2], (TodolistItem)tmpobj[3]);
+	        		}
                     break;
             	case TodolistAction.DEL_TODOLISTITEM :
 	            	{
@@ -219,6 +224,30 @@ public class TodolistService extends Service {
 		} catch (Exception e) {
 			Logging.getLogger().warning(
 				"Error in TodolistService::addTodolistItem : " + e);
+		}
+	}
+
+	private void modifyTodolistItem(ObjectConnection oc, String oldTodolistItemUser, String oldTodolistItemListName, String oldTodolistItemName, TodolistItem newTodolistItem) {
+		try {
+			st = conn.prepareStatement(
+					"UPDATE todolistitems SET user_name=?, name=?, description=?, list_name=?, priority=?, complete=? WHERE user_name=? AND list_name=? AND name=?");
+			st.setString(1, newTodolistItem.getUserName());
+			st.setString(2, newTodolistItem.getName());
+			st.setString(3, newTodolistItem.getDescription());
+			st.setString(4, newTodolistItem.getParentTodolistName());
+			st.setInt(5, newTodolistItem.getPriority());
+			st.setInt(6, newTodolistItem.isComplete()?1:0);
+			st.setString(7, oldTodolistItemUser);
+			st.setString(8, oldTodolistItemListName);
+			st.setString(9, oldTodolistItemName);
+			st.executeUpdate();
+			st.close();
+
+			oc.write("OK");
+
+		} catch (Exception e) {
+			Logging.getLogger().warning(
+				"Error in TodolistService::modifyTodolistItem : " + e);
 		}
 	}
 

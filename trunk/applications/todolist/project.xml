@@ -7,12 +7,4 @@
 
   <shortDescription>Lucane todo list</shortDescription>
 
-  <dependencies>
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>1.4-dev-8</version>
-    </dependency>
-  </dependencies>
-
 </project>
