@@ -1,29 +1,54 @@
+/*
+ * Lucane - a collaborative platform
+ * Copyright (C) 2004  Vincent Fiack <vfiack@mail15.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 package org.lucane.applications.audioconf.audio;
+
 import java.util.*;
 import java.io.*;
 
 import javax.sound.sampled.*;
 import org.xiph.speex.spi.*;
 
+/**
+ * Audio recorder that encodes directly in Speex
+ */
 public class AudioRecorder implements Runnable
 {
-	public static final int AUDIO_FREQUENCY = 8000;
-	
+	//-- attributes
 	private AudioInputStream audioStream;
 	private TargetDataLine dataLine;
 	private AudioFormat audioFormat;
+	private AudioConfig audioConfig;
 	
 	private ArrayList listeners;
 	
-	public AudioRecorder()
+	/**
+	 * Constructor
+	 * 
+	 * @param config the audio configuration to use to encode
+	 */
+	public AudioRecorder(AudioConfig config)
 	{
 		this.listeners = new ArrayList();
 		
-		this.audioFormat = new AudioFormat(
-				AudioFormat.Encoding.PCM_SIGNED,
-				AUDIO_FREQUENCY, 16, 2, 4, AUDIO_FREQUENCY, false);
-
-		DataLine.Info	info = new DataLine.Info(TargetDataLine.class, audioFormat);
+		this.audioConfig = config;
+		this.audioFormat = config.createAudioFormat(AudioFormat.Encoding.PCM_SIGNED);
+		DataLine.Info info = new DataLine.Info(TargetDataLine.class, audioFormat);
 		try {
 			dataLine = (TargetDataLine) AudioSystem.getLine(info);
 		} catch (LineUnavailableException lue) {
@@ -34,19 +59,31 @@ public class AudioRecorder implements Runnable
 				AudioSystem.NOT_SPECIFIED);
 	}
 	
+	/**
+	 * Add a listener that will be notified of recording status
+	 * 
+	 * @param listener the listener to add
+	 */
 	public void addAudioListener(AudioRecorderListener listener)
 	{
 		this.listeners.add(listener);
 	}
 	
+	/**
+	 * Remove a listener
+	 * 
+	 * @param listener the listener to remove
+	 */
 	public void removeAudioListener(AudioRecorderListener listener)
 	{
 		this.listeners.remove(listener);
 	}
 
+	/**
+	 * Stop recording
+	 */
 	public void stop()
-	{
-		
+	{		
 		try {
 			dataLine.stop();
 			dataLine.close();
@@ -55,11 +92,15 @@ public class AudioRecorder implements Runnable
 			e.printStackTrace();
 		}
 		
+		//notify listeners
 		Iterator listeners = this.listeners.iterator();
 		while(listeners.hasNext())
 			((AudioRecorderListener)listeners.next()).audioRecordingEnded();
 	}
 	
+	/**
+	 * Run recording as a thread
+	 */
 	public void run()
 	{
 		try {
@@ -68,26 +109,26 @@ public class AudioRecorder implements Runnable
 		} catch(LineUnavailableException lue) {
 			lue.printStackTrace();
 		}
-
+		
+		//notify listeners
 		Iterator listeners = this.listeners.iterator();
 		while(listeners.hasNext())
-			((AudioRecorderListener)listeners.next()).audioRecordingStarted();
+			((AudioRecorderListener)listeners.next()).audioRecordingStarted(audioConfig);
 		
 		
-		try
-		{
-			byte[] data = new byte[1024];
+		//do the real recording
+		try	{
+			byte[] buffer = new byte[1024];
 			while(dataLine.isOpen())
 			{	
-				audioStream.read(data);
+				int length = audioStream.read(buffer);
 				
 				listeners = this.listeners.iterator();
 				while(listeners.hasNext())
-					((AudioRecorderListener)listeners.next()).audioRecorded(data);				
+					((AudioRecorderListener)listeners.next()).audioRecorded(buffer, length);				
 			}
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e)	{
+			//TODO hande this error
 			e.printStackTrace();
 		}
 	}
