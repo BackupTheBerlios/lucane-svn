@@ -156,36 +156,39 @@ Section "Client" CLIENT
   SetOutPath "$INSTDIR\client"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\client\*"
+  File /oname="client.ico" "trunk\setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" CLIENT_STARTMENU
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
-    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Client.lnk" "$INSTDIR\client\client.bat" ""
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Client.lnk" "$INSTDIR\client\client.bat" "" "$INSTDIR\client\client.ico"
   SectionEnd
   Section "-Quick launch icon" CLIENT_QUICKLAUNCH
-    CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" ""
+    CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" "" "$INSTDIR\client\client.ico"
   SectionEnd
   Section "-Desktop icon" CLIENT_DESKTOP
-    CreateShortCut "$DESKTOP\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" ""
+    CreateShortCut "$DESKTOP\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" "" "$INSTDIR\client\client.ico"
   SectionEnd
 
 Section "Server" SERVER
   SetOutPath "$INSTDIR\server"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\server\*"
+  File /oname="server.ico" "trunk\setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" SERVER_STARTMENU
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
-    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Server.lnk" "$INSTDIR\server\server.bat"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Server.lnk" "$INSTDIR\server\server.bat" "" "$INSTDIR\server\server.ico"
   SectionEnd
 
 Section "Proxy" PROXY
   SetOutPath "$INSTDIR\proxy"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\proxy\*"
+  File /oname="proxy.ico" "trunk\setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" PROXY_STARTMENU
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
-    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Proxy.lnk" "$INSTDIR\proxy\proxy.bat"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Proxy.lnk" "$INSTDIR\proxy\proxy.bat" "" "$INSTDIR\proxy\proxy.ico"
   SectionEnd
 
 Section "-AdditionalIcons" ADDITIONAL_ICONS
