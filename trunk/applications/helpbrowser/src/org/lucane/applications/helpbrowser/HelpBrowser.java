@@ -147,6 +147,11 @@ implements TreeSelectionListener, ActionListener
 		minihelp.setText("");
 	}
 	
+	public void hidePluginList()
+	{
+		this.plugins.setVisible(false);
+	}
+	
 	/**
 	 * Go to a particular section
      */	

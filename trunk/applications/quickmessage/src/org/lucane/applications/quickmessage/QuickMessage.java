@@ -191,7 +191,8 @@ public class QuickMessage
     				"org.lucane.applications.helpbrowser", new ConnectInfo[0], true);
     		help.start();
     		help.invoke("showHelp", new Class[]{Plugin.class}, new Object[]{this});
-		} catch (Exception ex) {
+    		help.invoke("hidePluginList", new Class[0], new Object[0]);
+    	} catch (Exception ex) {
 			ex.printStackTrace();
 			ex.getCause().printStackTrace();
 		}
