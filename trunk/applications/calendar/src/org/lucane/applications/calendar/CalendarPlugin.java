@@ -19,6 +19,7 @@
 
 package org.lucane.applications.calendar;
 
+import java.awt.Color;
 import java.util.*;
 
 import org.lucane.client.*;
@@ -197,5 +198,17 @@ public class CalendarPlugin extends StandalonePlugin
 		oc.close();
 		
 		return resources;
+	}
+	
+	public Color getColor(String name, Color defaultColor)
+	{
+		String r = getLocalConfig().get(name + ".r");
+		String g = getLocalConfig().get(name + ".g");
+		String b = getLocalConfig().get(name + ".b");
+		
+		if(r != null && g != null && b != null)
+			return new Color(Integer.parseInt(r), Integer.parseInt(g), Integer.parseInt(b));
+		
+		return defaultColor;	
 	}
 }

@@ -32,9 +32,11 @@ import javax.swing.*;
 public class DayView extends JScrollPane
 implements MouseListener
 {
-	//-- constants
-	private static Color UNWORKED_HOUR = new Color(160, 155, 150);
-	private static Color WORKED_HOUR = new Color(255, 255, 222);
+	//-- colors
+	private Color unworkedHour;
+	private Color workedHour;
+	private int workStart;
+	private int workEnd;
 	
 	//-- attributes
 	private JPanel contentPanel;
@@ -49,10 +51,16 @@ implements MouseListener
 	 * Constructor.
 	 * Creates an empty day view
 	 */
-	public DayView()
+	public DayView(Color unworkedHour, Color workedHour, int workStart, int workEnd)
 	{
 		//-- init 		
 		this.listeners = new ArrayList();	
+		
+		this.unworkedHour = unworkedHour;
+		this.workedHour = workedHour;
+		this.workStart = workStart;
+		this.workEnd = workEnd;
+		
 		this.contentPanel = new JPanel(new GridBagLayout());
 		this.setViewportView(contentPanel);
 		this.background = new JPanel[48];
@@ -115,10 +123,10 @@ implements MouseListener
 			this.background[i] = back; 
 			back.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
-			if(i<8*2 || i >= 18*2)
-				back.setBackground(DayView.UNWORKED_HOUR);
+			if(i<workStart*2 || i >= (workEnd+1)*2)
+				back.setBackground(this.unworkedHour);
 			else
-				back.setBackground(DayView.WORKED_HOUR);
+				back.setBackground(this.workedHour);
 
 			contentPanel.add(back, constraints); 
 		}		

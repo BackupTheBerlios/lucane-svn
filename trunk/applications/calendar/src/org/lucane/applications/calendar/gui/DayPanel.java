@@ -46,6 +46,11 @@ implements ActionListener
 	private JButton nextMonth;
 	private JButton nextDay;
 	
+	private Color unworkedHour = new Color(160, 155, 150);
+	private Color workedHour = new Color(255, 255, 222);
+	private int workStart = 8;
+	private int workEnd = 17;
+	
 	private Calendar calendar;
 	private transient CalendarPlugin plugin;
 	private CalendarListener listener;
@@ -59,6 +64,11 @@ implements ActionListener
 		this.plugin = plugin;
 		this.listener = listener;
 		this.userName = userName;
+		
+		unworkedHour = plugin.getColor("unworked", unworkedHour);
+		workedHour = plugin.getColor("worked", workedHour);
+		workStart = plugin.getLocalConfig().getInt("workStart", workStart);
+		workEnd = plugin.getLocalConfig().getInt("workEnd", workEnd);
 		
 		try {
 			previousMonth = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "pprevious.png")));
@@ -209,9 +219,9 @@ implements ActionListener
 		
 		if(view != null)
 			remove(view);
-		view = new DayView();
+		view = new DayView(unworkedHour, workedHour, workStart, workEnd);
 		view.addCalendarListener(listener);
-		view.scrollToHour(7);
+		view.scrollToHour(workStart);
 
 		//-- get day interval (in milliseconds)
 		long start, end;
