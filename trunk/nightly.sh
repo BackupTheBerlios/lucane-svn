@@ -1,0 +1,29 @@
+#!/bin/sh
+
+SVN_URL=svn://svn.berlios.de/lucane/trunk
+SCP_URL=vfiack@shell.berlios.de:/home/groups/lucane/htdocs/groupware/download/nightly
+
+DATE=`date +%Y%m%d`
+SRC_DIR=lucane-$DATE-src
+BIN_DIR=lucane-$DATE-bin
+
+# fetch sources
+mkdir /tmp/$SRC_DIR
+cd /tmp/$SRC_DIR
+svn --force export $SVN_URL .
+cd ..
+
+# create source archive
+tar zcvf $SRC_DIR.tgz $SRC_DIR
+
+# compile
+cd /tmp/$SRC_DIR
+maven
+cd ..
+
+# create bin archive
+mv dist $BIN_DIR
+tar zcvf $BIN_DIR.tgz $BIN_DIR
+
+scp $SRC_DIR.tgz $BIN_DIR.tgz $SCP_URL
+
