@@ -7,6 +7,8 @@ elif [ -e "server.sh" ]; then
   cd ..;
 elif [ -e "bin/server.sh" ]; then
   cd .;
+elif [ -e "server/bin/server.sh" ]; then
+  cd server;
 else
   echo "unable to find server, set $LUCANE_HOME or $LUCANE_SERVER !"
   exit 1;
