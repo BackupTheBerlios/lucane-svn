@@ -218,18 +218,21 @@ class TodolistItemsSorter implements Comparator {
 					res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
 				if (res == 0)
 					res = direction*(tli2.getPriority()-tli1.getPriority());
+				break;
 			case PRIORITY :
-				res = direction*(tli2.getPriority()-tli1.getPriority());
+				res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
 				if (res == 0)
-					res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
+					res = direction*(tli2.getPriority()-tli1.getPriority());
 				if (res == 0)
 					res = direction*(tli1.getName().compareTo(tli2.getName()));
+				break;
 			case COMPLETED :
 				res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
 				if (res == 0)
 					res = direction*(tli1.getName().compareTo(tli2.getName()));
 				if (res == 0)
 					res = direction*(tli2.getPriority()-tli1.getPriority());
+				break;
 		}
 		return res;
 	}
