@@ -38,16 +38,49 @@ public class AudioConfInputStream extends InputStream
 	public int read() throws IOException 
 	{
 		if(index >= buffer.length)
-		{
-			try {
-				buffer = (byte[])connection.read();
-			} catch(ClassNotFoundException e) {
-				//hum, if byte[] doesn't exist, we are bad !
-				e.printStackTrace();
-			}
-			index = 0;
-		}			
-		
+			readNextBuffer();
+			
 		return buffer[index++];
+	}
+	
+	public int read(byte[] array, int offset, int length)
+	throws IOException
+	{
+		int bytes = 0;
+		
+		while(offset < array.length && bytes < length)
+		{
+			if(index >= buffer.length)
+				readNextBuffer();
+			
+			array[offset++] = buffer[index++];
+			bytes++;
+		}		
+		
+		return bytes;
+	}
+	
+	public int available()
+	{
+		return this.buffer.length - index;
+	}
+	
+	public void close()
+	throws IOException
+	{
+		this.connection.close();
+		super.close();
+	}
+	
+	
+	private synchronized void readNextBuffer()
+	throws IOException
+	{
+		this.index = 0;
+		try	{
+			this.buffer = (byte[])connection.read();
+		} catch (ClassNotFoundException e)	{
+			e.printStackTrace();
+		}
 	}
 }
