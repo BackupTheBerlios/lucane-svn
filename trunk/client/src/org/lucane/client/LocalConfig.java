@@ -103,11 +103,27 @@ public class LocalConfig
 	 * Get a value from the localconfig
 	 * 
 	 * @param key the key
+	 * @param defaultValue the value returned if the key has no value
+	 * @return the value
+	 */
+	public int getInt(String key, int value)
+	{
+		try {
+			return Integer.parseInt(get(key));
+		} catch(Exception e) {}
+		
+		return value;
+	}
+	
+	/**
+	 * Get a value from the localconfig
+	 * 
+	 * @param key the key
 	 * @return the value
 	 */
 	public int getInt(String key)
 	{
-		return Integer.parseInt(get(key));
+		return getInt(key, 0);
 	}
 	
 	/**
