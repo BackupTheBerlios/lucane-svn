@@ -179,7 +179,7 @@ implements MouseListener
 		c.set(Calendar.YEAR, this.displayedYear);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		
-		return c.getMaximum(Calendar.DAY_OF_MONTH);
+		return c.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 	
 	/**

@@ -102,10 +102,10 @@ public class MonthExporter
 			table.addCell("");
 
 		table.getDefaultCell().setBackgroundColor(Color.WHITE);
-		for(int i=1;i<max;i++)
+		for(int i=0;i<max;i++)
 		{
 			PdfPCell cell = new PdfPCell(table.getDefaultCell());
-			Chunk dayLabel = new Chunk("" + i);			
+			Chunk dayLabel = new Chunk("" + (i+1));			
 			dayLabel.setFont(h10b);
 			
 			Phrase phrase = new Phrase();
@@ -215,6 +215,6 @@ public class MonthExporter
 	private int getDaysOfDisplayedMonth()
 	{	
 		calendar.set(Calendar.DAY_OF_MONTH, 1);
-		return calendar.getMaximum(Calendar.DAY_OF_MONTH);
+		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 }
