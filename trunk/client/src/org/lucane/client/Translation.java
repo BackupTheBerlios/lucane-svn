@@ -80,10 +80,9 @@ public class Translation
      */
     private static String getDirectory()
     {        
-    	//TODO !! abstract version for here !!
         String url = "jar:file:///"
             + System.getProperty("user.dir")
-            + "/lib/lucane-client-0.6.3.jar!/";
+            + "/lib/lucane-client-" + Client.VERSION +".jar!/";
         
         return url.replace('\\', '/');
     }

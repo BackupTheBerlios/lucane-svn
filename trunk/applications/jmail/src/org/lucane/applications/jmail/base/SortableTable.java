@@ -287,7 +287,7 @@ final class SortableTable extends JTable
     }
 
     /** Really performs the shuttlesort
-     *  TODO : check the params comment
+     *
      *  @param from *low* indexes
      *  @param to *high* indexes
      *  @param low start index

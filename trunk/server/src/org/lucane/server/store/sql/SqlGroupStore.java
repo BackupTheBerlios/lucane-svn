@@ -45,10 +45,9 @@ public class SqlGroupStore extends GroupStore
         
         if(!layer.hasTable(TABLENAME))
         {
-        	//TODO !! make version as a constant !!
         	String dbDescription = "jar:file:///"
         			+ System.getProperty("user.dir").replace('\\', '/')
-					+ "/lib/lucane-server-0.6.3.jar!/"
+					+ "/lib/lucane-server-" +Server.VERSION+ ".jar!/"
 					+ "db-sqlstore.xml";
 
         	layer.getTableCreator().createFromXml(dbDescription);

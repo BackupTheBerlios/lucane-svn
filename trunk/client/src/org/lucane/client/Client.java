@@ -34,6 +34,7 @@ public class Client
 {   
 	private static final String CONFIG_FILE = "etc/client-config.xml";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
+	public static final String VERSION = "0.6.3";
 	
     private ConnectInfo myinfos;    //can be masked by the proxy
     private ConnectInfo realinfos;  //has the real infos
@@ -434,11 +435,10 @@ public class Client
 	{
 		URL url=null;
 		try {
-			//TODO !! make version as a constant !!
 			/* create the default url */
 			url=new URL("jar:file:///"
 				+ System.getProperty("user.dir").replace('\\', '/')
-				+ "/lib/lucane-client-0.6.3.jar!/icons/"
+				+ "/lib/lucane-client-" + Client.VERSION + ".jar!/icons/"
 				+ icon);
 			
 			return new ImageIcon(url);
