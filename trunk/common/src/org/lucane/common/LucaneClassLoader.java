@@ -59,4 +59,15 @@ public class LucaneClassLoader extends URLClassLoader
   {
     this.addURL(url);
   }
+  
+  /**
+   * Add an url to use in class lookup
+   * 
+   * @param url the url
+   */
+  public void addUrl(String url) 
+  throws MalformedURLException
+  {
+    this.addUrl(new URL(url));
+  }
 }
