@@ -1,0 +1,21 @@
+<database>
+
+  <table name="todolists">
+    <column name="id" type="int" notnull="true" />
+    <column name="user_name" type="smalltext" />
+    <column name="name" type="smalltext" />
+    <column name="comment" type="text" />
+    <primary-key columns="id" />
+  </table>
+
+  <table name="todolistitems">
+    <column name="id" type="int" notnull="true" />
+    <column name="id_list" type="int" /> <!-- references TodoLists -->
+    <column name="name" type="smalltext" />
+    <column name="comment" type="text" />
+    <column name="priority" type="smallint" />
+    <column name="completed" type="smallint" />
+    <primary-key columns="id" />
+  </table>
+
+</database>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Pool de connexions à la base de données</title>
+<link type='text/css' rel='stylesheet' href='../common/style.css' />
+</head>
+<body>
+
+<h1>Configurer le pool de connexions a la base de données</h1>
+
+<h2>Qu'est-ce qu'un pool de connexions ?</h2>
+<p>Ouvrir une connexion est une opération très coûteuse. Cela prend beaucoup de temps,
+et on l'utilise souvent. L'idée est de partager les connexions entre les différents composants,
+et de les laisser ouvertes, afin que l'on n'ait plus besoin d'attendre à l'ouverture plus
+que nécéssaire.</p>
+<p>Lucane utilise <a href="http://jakarta.apache.org/commons/dbcp/">dbcp de Jakarta-commons</a>
+pour gérer le pool de connexions.</p>
+
+<h2>Comment configurer le pool de connexions ?</h2>
+<p>Le pool de connexions est toujours activé, vous n'avez pas besoin de le faire 
+explicitement</p>
+<p>Les différentes options sont disponibles dans le fichier etc/server-config.xml, 
+à l'intérieur de la section 'database'</p>
+<pre>
+  &lt;pool initialSize="0" maxActive="8" maxIdle="8" minIdle="0" maxWait="-1" /&gt;
+</pre>
+
+<h2>Quelles sont les options disponibles ?</h2>
+<p>Vous pouvez configurer le pool pour correspondre à vos besoins et ressources.
+Les différents attributs pour la balise 'pool' sont :</p>
+<dl>
+  <dt><b>initialSize</b> (defaut: 0)</dt>
+  <dd>Le nombre initial de connexions crées au démarrage du pool.</dd>
+
+  <dt><b>maxActive</b> (defaut: 8)</dt>
+  <dd>Le nombre maximum de connexions actives qui peuvent être alloués a partie de ce pool
+  au même moment, ou 0 pour ne pas le limiter.</dd>
+
+  <dt><b>maxIdle</b> (defaut: 8)</dt>
+  <dd>Le nombre maximun de connexions active qui peuvent rester en attente d'utilisation
+  dans le pool, sans que celles en trop soient libérées, ou 0 pour ne pas le limiter.</dd>
+
+  <dt><b>minIdle</b> (defaut: 0)</dt>
+  <dd>Le nombre minimun de connections actives qui peuvent rester en attente d'utilisation
+  dans le pool, sans que d'autres soient crées, ou 0 pour ne pas en créer.</dd>
+  
+  <dt><b>maxWait</b> (defaut: -1)</dt>
+  <dd>Le temps d'attente maximum (en millisecondes) pour ce pool (lorsqu'aucune connexion
+  n'est disponible) pour retourner une connexion avant de lancer une exception, ou
+  -1 pour attendre indéfiniment.</dd>  
+</dl>
+
+</body>
+</html>

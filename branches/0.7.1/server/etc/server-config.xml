@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+
+<lucane-server port="9115">
+
+  <!--
+      database used by applications 
+  -->
+  <database>
+    <!-- HSQLdb (bundled) -->
+    <jdbc driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:hsqldb/lucane" 
+		login="sa" password="" />
+	<dblayer class="org.lucane.server.database.HSQLDBLayer" />
+
+    <!-- PostgreSQL -->
+    <!--
+    <jdbc driver="org.postgresql.Driver" url="jdbc:postgresql://localhost:5432/lucane" 
+		login="login" password="pass" />
+	<dblayer class="org.lucane.server.database.PostgresLayer" />
+    -->
+    
+	<!-- MySQL -->
+	<!--
+	<jdbc driver="org.gjt.mm.mysql.Driver" url="jdbc:mysql://localhost/lucane" 
+			login="login" password="pass" />
+	<dblayer class="org.lucane.server.database.MySQLLayer" />
+	-->
+	
+	<!-- MS SqlServer 2000 -->
+	<!--
+	<jdbc driver="com.jnetdirect.jsql.JSQLDriver"
+              url="jdbc:JSQLConnect://host:port/db_name" login="your_login_name"
+              password="******" />
+        <dblayer class="org.lucane.server.database.SQLServerLayer" />
+	-->
+	
+	<pool initialSize="0" maxActive="8" maxIdle="8" minIdle="0" maxWait="-1" />
+  </database>
+  
+  <!-- 
+      store with user, groups, plugins, service 
+      backend must be 'database' or 'ldap'.
+  -->
+  <store backend="database" />    
+  
+  <!-- 
+  	  Authenticator to use
+  -->
+  <authenticator class="org.lucane.server.auth.DefaultAuthenticator" />    
+  
+</lucane-server>
+

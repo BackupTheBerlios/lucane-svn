@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-shutdown</id>
+  <name>Lucane Groupware - Shutdown</name>
+  <package>org.lucane.applications.shutdown</package>
+
+  <shortDescription>Lucane Shutdown</shortDescription>
+
+</project>

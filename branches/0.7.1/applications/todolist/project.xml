@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-todolist</id>
+  <name>Lucane Groupware - Todo list</name>
+  <package>org.lucane.applications.todolist</package>
+
+  <shortDescription>Lucane todo list</shortDescription>
+
+</project>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-Type' content='text/html; charset=iso-8859-15' />
+<title>Lucane Groupware - Documentation</title>
+<link type='text/css' rel='stylesheet' href='../common/style.css' />
+</head>
+<body>
+
+
+<h1>Foire Aux Questions</h1>
+
+<a id="intro"></a>
+<h2>Introduction and informations générale</h2>
+
+<ul><li>Qu'est ce que Lucane ?</li></ul>
+<p>
+Lucane est une plate-forme collaborative. Cela signifie que ses utilisateurs ne sont
+pas strictement définis. Cette plate-forme devrait être utile pour tout groupe
+de travail, avec des petites choses à ajouter pour l'adapter à un domaine spécifique.</p>
+
+<ul><li>Qu'est ce qu'une plate-forme collaborative&nbsp;?</li></ul>
+<p>Pour faire court, c'est un groupware qui peut être agrandi avec de nouvelles applications
+développées pour des domaines spécifiques.</p>
+
+<ul><li>Pourquoi utiliser Lucane&nbsp;?</li></ul>
+<p>La motivation pouvant mener à son utilisation est la volonté de travailler
+en équipe avec quelque chose de plus puissant qu'une simple messagerie. 
+Cela peut être utile à tout groupe qui désire travailler en collaboration.</p>
+
+<ul><li>Où est ce que je commence&nbsp;?</li></ul>
+<p>Vous pouvez commencer par installer Lucane sur votre ordinateur et l'utiliser avec vos
+amis et co-travailleurs.
+Vous pourrez utiliser la messagerie instantanée, le partage de fichiers, les forums et plus encore.
+Quand vous vous sentirez prêt, vous pourrez utiliser le système de workflow
+pour gérer votre projet, et même écrire vos propres applications.</p>
+
+<ul><li>Lucane fonctionnera-t-il sur mon ordinateur&nbsp;?</li></ul>
+<p>Probablement. La plate-forme est écrite entièrement en Java, donc si votre ordinateur
+utilise des applications Java, Lucane s'exécutera sans aucun problème.
+Pour être plus précis, tout ordinateur récent avec une
+<acronym title="Java Virtual Machine - Machine Virtuelle Java">JVM</acronym> devrait aller.</p>
+
+<ul><li>Est ce un logiciel libre&nbsp;?</li></ul>
+<p>Oui. Lucane est protégé par la licence GNU LGPL. Pour être bref, celle-ci vous permet d'utiliser Lucane,
+de le redistribuer, de le modifier et de partager vos modifications. La seule restriction is que si vous modifiez la
+plate-forme elle-même, vous devrez placer vos modifications sous la même licence.</p>
+
+
+<a id="internet"></a>
+<h2>Ressources Internet</h2>
+<ul><li>Où est situé Lucane ?</li></ul>
+<p>Une seule adresse&nbsp;: <a href="http://lucane.org">http://lucane.org</a></p>
+
+
+<a id="getting"></a>
+<h2>Récupérer Lucane</h2>
+
+<ul><li>De quoi ai-je besoin&nbsp;?</li></ul>
+<p>Vous n'avez besoin que de Java et d'une base de données. Lucane est testé avec MySQL (<a href="http://www.mysql.com">http://www.mysql.com</a>) et Postgres (<a href="http://www.postgres.org">http://www.postgres.org</a>).
+Si vous ne voulez pas installer une base de données,  Lucane est livré avec HSQLdb qui ne requiert pas d'installation.</p>
+
+<ul><li>Comment est ce que je le compile&nbsp;?</li></ul>
+
+<p>Vous aurez besoin de Ant (<a href="http://ant.apache.org">http://ant.apache.org</a>) avec bsf.jar et js.jar pour compiler Lucane. Récupérer les sources à partir du site web et lancez simplement ant</p>
+
+<ul><li>Je ne veux rien compiler. Y a-t-il des binaires&nbsp;?</li></ul>
+<p>Évidemment.
+Vous les trouvez à côté des sources la <a href="/lucane/groupware/download">section Téléchargement</a> du site web.</p>
+
+<a id="using"></a>
+<h2>Utiliser Lucane</h2>
+
+<ul><li>Qu'est ce qu'un plugin&nbsp;?</li></ul>
+<p>Un plugin est un composant client développé pour notre plate-forme.
+Quelques plugins sont livrés avec Lucane, comme le système de messagerie et le partage de fichier.</p>
+  
+  <ul><li>Qu'est ce qu'un service&nbsp;?</li></ul>
+  <p>Un service est la partie serveur d'une application Lucane.
+  Quelques applications marche en peer to peer, d'autres utilisent un style client/serveur plus classique.
+  Ce dernier utilise un service pour accéder au ressources du serveur. Un exemple est le forum, qui utilise
+  un service pour récupérer les messages depuis la base de données du serveur.</p>
+
+  <ul><li>Comment cela fonctionne-t-il&nbsp;?</li></ul>
+  <p>Plutôt bien. Le système de plugin/service est comme le systèmeapplet/servlet system
+  utilisé dans un environnement web, avec moins de limitations, puisqu'un plugin ne peut être
+  chargé contre votre volonté, nous n'avons pas besoin de resteindre ses capacités, contrairement
+  aux applets.</p>
+
+  <ul><li>Où puis-je trouver des applications supplémentaires&nbsp;?</li></ul>
+  <p>Nous espérons que ceux qui écrivent des applications aimeront
+  les partager avec la communauté. Dans ce cas, nous les rendrons disponibles sur
+  notre site web.</p>
+
+  <a id="developing"></a>
+  <h2>Développer avec Lucane</h2>
+
+  <ul><li>Puis je écrire de nouvelles applications ?</li></ul>
+  <p>Bien sûr ! Lucane a été conçu avec cette idée en tête, alors pourquoi ne pas l'utiliser&nbsp;?</p>
+
+  <ul><li>Où puis je héberger mes applications&nbsp;?</li></ul>
+  <p>Pour le moment, il n'y a pas de page du genre de freshmeat pour vos applications. Vous pouvez nous les
+  envoyer et nous les hébergerons.
+  Si vous préférez les héberger vous-même, envoyez nous simplement une url et nous ferons un lien.</p>
+
+  <ul><li>Y a-t-il une documentation sur l'écriture d'extensions ?</li></ul>
+  <p>Oui. Et ce n'est ni long ni compliqué. Vous pouvez la lire <a href="/lucane/groupware/devcorner/extending/">ici</a>,
+  and use the <a href="http://lucane.org/groupware/devcorner/">api</a> documentation to use Lucane at its best.</p>
+
+  <a id="help"></a>
+
+  <h2>Comment trouver plus d'aide&nbsp;?</h2>
+
+  <ul><li>Vous n'avez pas répondu à ma question...</li></ul>
+  <p>Argh.
+  Il semble que nous n'y ayions pas pensé. Envoyez nous votre question, nous ferons de notre mieux pour y répondre.</p>
+
+  <ul><li>Que dois-je expliquer lorsque je demande de l'aider&nbsp;?</li></ul>
+  <p>Une description claire de votre problème, l'application que vous utilisez et sa version.
+  Essayez de donner le maximum de détails possible.</p>
+
+  <ul><li>Comment est ce ce que je signales les bugs&nbsp;?</li></ul>
+
+  <p>En utilisant le système de
+  <a href="http://developer.berlios.de/bugs/?group_id=1547" hreflang="en">suivi de bug</a>
+  de Berlios.</p>
+
+  <ul><li>Comment puis-je contacter les auteurs&nbsp;?</li></ul>
+  <p>Vous les trouverez sur la liste de diffusion lucane-devel</p>
+
+</body>
+</html>

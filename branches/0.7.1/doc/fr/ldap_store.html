@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Configuration du Store LDAP</title>
+<link type='text/css' rel='stylesheet' href='../common/style.css' />
+</head>
+<body>
+
+<h1>Utiliser LDAP comme backend pour le Store</h1>
+
+<h2>Qu'est ce que le Store ?</h2>
+<p>Lucane gère des utilisateurs, des groupes, des plugins et des services.
+Ces éléments sont appelés des 'concepts'. La gestion d'accès est représentée
+comme des liens entre des groupes et d'autres concepts.<br/>
+Ces concepts sont et ces liens sont utilisés en interne comme des objets
+qui doivent être stockés quelque part&nbsp;: base de données, ldap, ...<br/>
+Pour résumer, le Store est la couche de persistance pour les concepts Lucane.</p>
+
+<h2>Pourquoi utiliser LDAP pour le store ?</h2>
+
+<p>Si vous voulez utiilser le même compte utilisateur pour plusieurs programmes,
+LDAP est probablement une bonne idée. si vous voulez seulement utiliser Lucane,
+vous feriez alors mieux d'utiliser le backend de la base de données.</p>
+
+<h2>Comment configurer le backend LDAP ?</h2>
+<p>Premièrement, positionnez le backend à 'ldap' dans server-config.xml.<br/>
+Le fichier de configuration pour le backend LDAP est ldap-store.xml</p>
+<p>Indiquez votre serveur ldap dans l'attribut 'url'.<br/>
+Vous devez modifier les attributs bind-dn et password de la balise authentication.</p>
+<p>Chaque concept a la même structure de configuration&nbsp;:</p>
+
+<ul>
+  <li>dn : le chemin ldap pour accéder la racine du concept</li>
+  <li>attributes : les attributs statiques à indiqer pour les nouveaux concepts créés</li>
+  <li>mapping : le mapping entre un attribut de concept dans Lucane et un champ dans LDAP</li>
+</ul>
+<p>En utilisant ce mapping, nous n'avons pas besoin d'un schema particulier.</p>
+
+<h2>Générer la structure initiale</h2>
+<p>Un ldif par défaut est disponible&nbsp;: <a href="../common/init-ldap.ldif">init-ldap.ldif</a></p>
+<p>Vous aurez surement a éditer ce fichier selon la structure de votre annuaire.</p>
+
+</body>
+</html>

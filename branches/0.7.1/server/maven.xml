@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project
+  xmlns:deploy="deploy">
+
+  <property name="dist.dir" value="../../dist/server" />
+  <property name="dist.lib.dir" value="${dist.dir}/lib" />
+  <property name="dist.bin.dir" value="${dist.dir}/bin" />
+  <property name="dist.etc.dir" value="${dist.dir}/etc" />
+  <property name="dist.logs.dir" value="${dist.dir}/logs" />
+
+  <goal name="mkdist">
+    <deploy:copy-deps todir="${dist.lib.dir}" />
+    <copy todir="${dist.lib.dir}">
+      <fileset dir="target">
+        <include name="*.jar" />
+      </fileset>
+    </copy>
+
+    <copy todir="${dist.etc.dir}">
+      <fileset dir="etc">
+        <include name="*.xml" />
+      </fileset>
+    </copy>
+
+    <copy todir="${dist.bin.dir}">
+      <fileset dir="bin">
+        <exclude name="**/.svn" />
+      </fileset>
+    </copy>
+    
+    <mkdir dir="${dist.logs.dir}" />
+    
+    <chmod dir="${dist.bin.dir}" perm="a+x" includes="**/*.sh"/>
+  </goal>
+  
+</project>

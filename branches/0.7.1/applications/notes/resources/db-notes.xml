@@ -1,0 +1,25 @@
+<database>
+
+  <table name="notes">
+    <column name="id" type="int" notnull="true" />
+    <column name="author" type="smalltext" />
+    <column name="title" type="smalltext" />
+    <column name="content" type="text" />
+    <column name="creationDate" type="bigint" />
+    <column name="editionDate" type="bigint" />
+    <column name="isPublic" type="smallint" />
+    <column name="commentable" type="smallint" />
+    <primary-key columns="id" />
+  </table>
+
+  <table name="notes_comments">
+    <column name="id" type="int" notnull="true" />
+    <column name="idnote" type="int" />
+    <column name="author" type="smalltext" />
+    <column name="title" type="smalltext" />
+    <column name="content" type="text" />
+    <column name="creationDate" type="bigint" />
+    <primary-key columns="id" />
+  </table>
+  
+</database>

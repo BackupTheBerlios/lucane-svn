@@ -1,0 +1,16 @@
+<database>
+
+  <table name="JMailAccounts">
+    <column name="userName" type="smalltext" notnull="true" />
+    <column name="address" type="smalltext" />
+    <column name="type" type="smalltext" />
+    <column name="inHost" type="smalltext" />
+    <column name="inPort" type="int" />
+    <column name="outHost" type="smalltext" />
+    <column name="outPort" type="int" />
+    <column name="login" type="smalltext" />
+    <column name="password" type="smalltext" />
+    <primary-key columns="userName" />
+  </table>
+
+</database>

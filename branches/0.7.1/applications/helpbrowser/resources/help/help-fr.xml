@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+
+<help>
+
+<section name="utilisation">
+L'interface est découpée en 4 zones. 
+En haut, vous pouvez sélectionner le projet dont vous recherchez l'aide.
+A gauche, l'arborescence de l'aide est affichée. Vous pouvez l'utiliser pour aller directement à une section particulière.
+Au centre est le contenu de la section courante.
+Enfin, vous avez des information sur les liens en bas de la fenêtre.
+
+<section name="liens">
+Les liens sont de deux sortes :
+ - liens entre sections
+ - liens d'information
+
+Les liens entre sections permettent de naviguer entre les différentes section.
+Les liens d'informations ne sont pas cliquables, mais une information complémentaire s'affiche en bas de la fenêtre lorsque la souris passe dessus. <info text="voila l'information complémentaire">Essayez donc !</info>
+</section>
+
+En haut et en bas de la zone principale, le chemin est rappelé. Vous pouvez vous en servir pour revenir à une section parente.
+</section>
+
+
+<section name="fonctionnement">
+Cette application recherche un fichier 'help.xml' situé à la base de l'archive <info text="Java Archive">JAR</info> de l'application séléctionnée. Veillez donc à créer ce fichier si vous développez une application eQuinoxe.
+Ce fichier doit respecter une certaine <info text="Document Type Definition">DTD</info>.
+
+<section name="DTD">
+&amp;lt;?xml version="1.0" encoding="ISO-8859-1"?&amp;gt;
+
+&amp;lt;!ELEMENT help (section+) &amp;gt;
+
+  &amp;lt;!ELEMENT section (section|info|b|i|tt|colored|table|image)* &amp;gt; 
+    &amp;lt;!ATTLIST section name CDATA #REQUIRED&amp;gt;
+
+  &amp;lt;!ELEMENT info (b|i|tt|colored|table|image)* &amp;gt;
+    &amp;lt;!ATTLIST info text CDATA #REQUIRED&amp;gt;
+
+  &amp;lt;!ELEMENT b (info|i|tt|colored|table|image)* &amp;gt;
+
+  &amp;lt;!ELEMENT i (info|b|tt|colored|table|image)* &amp;gt;
+
+  &amp;lt;!ELEMENT tt (info|b|i|colored|table|image)* &amp;gt;
+
+  &amp;lt;!ELEMENT colored (info|b|i|tt|table|image)* &amp;gt;
+    &amp;lt;!ATTLIST colored color CDATA #REQUIRED&amp;gt;
+
+  &amp;lt;!ELEMENT table (tr)* &amp;gt;
+    &amp;lt;!ATTLIST table border (yes|no) #DEFAULT yes&amp;gt;
+    &amp;lt;!ELEMENT tr (td)* &amp;gt;
+      &amp;lt;!ELEMENT td (info|b|i|tt|colored|table|image) &amp;gt;
+
+  &amp;lt;!ELEMENT image (EMPTY) &amp;gt;
+    &amp;lt;!ATTLIST image file CDATA #REQUIRED&amp;gt;
+</section>
+
+Le fichier est transformé en document <info text="Hyper Text Markup Language">HTML</info> avant d'être affiché dans la zone centrale.
+Ainsi, vous pouvez utiliser différents type d'écritures, des couleurs, des tableaux et des images. Elle n'est pas belle la vie ?
+</section>
+
+</help>

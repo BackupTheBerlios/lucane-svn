@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>lucane-common</id>
+  <name>Lucane Groupware - Common classes</name>
+  <package>org.lucane.common</package>
+
+  <shortDescription>Common classes</shortDescription>
+</project>
