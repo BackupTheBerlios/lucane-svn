@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-Type' content='text/html; charset=iso-8859-15' />
+<title>Lucane Groupware - Documentation</title>
+<link type='text/css' rel='stylesheet' href='style.css' />
+</head>
+<body>
+
+<h1>Frequently Asked Questions</h1>
+
+
+<h2>Introduction and general informations</h2>
+
+<h3>What is Lucane ?</h3>
+<p>Lucane is a collaborative platform. It means that its users aren't strictly defined.
+This platform should be useful for ever workgroup, with little things to add to
+adapt it to a specific domain.</p>
+
+<h3>What is a collaborative platform ?</h3>
+<p>To stay short, it is a groupware that can be enhanced with new applications
+developped for specific domains.</p>
+
+<h3>Why use Lucane ?</h3>
+<p>Some motivations that can bring to its use is the will to work in team
+with something more powerful than only messenging. It can be useful to
+every group that want to work in collaboration.</p>
+
+<h3>Where do I start ?</h3>
+<p>You can start by installing Lucane on your computer and using it with your friends and coworkers.
+You will be able to use instant messenging, file sharing, forums, and much more.
+When you'll feel ready, you could use the workflow system to manage your project,
+and even write your own applications.</p>
+
+<h3>Will Lucane work on my computer ?</h3>
+<p>Probably. The platform is written in Java only, so if your computer can
+use Java applications, Lucane will run without any problem.
+To be more precise, every recent computer with a JVM shoud be fine.</p>
+
+<h3>Is it a free software ?</h3>
+<p>Yes. It is protected by the GNU LGPL license. To be brief, it allows you to use Lucane, to redistribute it, modify it and share your modifications.The only restrictions is that if you modify the platform itself, you'll have to place your modifications under the same license.</p>
+
+
+<h2>Internet Resources</h2>
+
+<h3>Where is located Lucane ?</h3>
+<p>Only one address: <a href="http://lucane.org">http://lucane.org</a></p>
+
+<h3>Is there any mailing list ?</h3>
+<p>Yes, check them <a href="http://sf.net/projects/lucane">here</a>.</p>
+
+<h2>Getting Lucane</h2>
+
+<h3>What do I need ?</h3>
+<p>You need only Java and a database. Lucane is tested with MySQL (<a href="http://www.mysql.com">http://www.mysql.com</a>) and Postgres (<a href="http://www.postgres.org">http://www.postgres.org</a>). If you don't want to install a database,  Lucane is bundled with HSQLdb and requires no installation.<p>
+
+<h3>How to compile it ?</h3>
+<p>You will need Ant (<a href="http://ant.apache.org">http://ant.apache.org</a>) with bsf.jar and js.jar to compile Lucane. Fetch the sources from the web site and simply run ant</p>
+
+<h3>I don't want to compile anything. Are there some binaries ?</h3>
+<p>Of course.
+You'll find them near the sources in the <a href="http://lucane.org/groupware/download">Download section</a> of the website.</p>
+
+<h2>Using Lucane</h2>
+
+<h3>What is a plugin ?</h3>
+<p>A plugin is a client component developed for our platform.
+A few plugins are bundled with Lucane, such as messenging and file sharing.</p>
+  
+<h3>What is a service ?</h3>
+<p>A service is the server part of a Lucane application.
+Some applications work in peer to peer, other use a more classical client/server style.
+The latter use a service to access to the server resources. An exemple is the forum,
+which uses a service to fetch messages from the server's database.</p>
+
+<h3>How does it work ?</h3>
+<p>Rather well. The plugin/service system is like the applet/servlet system used in
+a web environment, with less limitations. 
+Since a plugin can't be loaded against your will, we do not need to restrict its capabilities,
+contrary to applets.</p>
+
+<h3>Where can I find additional applications ?</h3>
+<p>We hope that those who write new applications will like to 
+ share them with the community. In that case, we'll make them visible
+ on our website.</p>
+
+<h2>Developing with Lucane</h2>
+
+<h3>Can I write new applications ?</h3>
+<p>Of course ! Lucane was designed with that idea in mind, so why not use it ?</p>
+
+<h3>Where can I host my applications ?</h3>
+<p>For the moment, there is no freshmeat-like page for your applications. You can
+ send them to us and we will host them. 
+ If you prefer hosting them yourself, simply send us a url and we will make a link.</p>
+  
+<h3>Is there any documentation about writing extentions ?</h3>
+<p>Yes. And it isn't very long nor complicated. You can read it <a href="http://lucane.org/groupware/devcorner/extending/">here</a>,
+and use the <a href="http://lucane.org/groupware/devcorner/">api</a> documentation to use Lucane at its best.</p>
+
+<h2>How to find more help</h2>
+
+<h3>You haven't answered my question...</h3>
+<p>Argh.
+It seems that we haven't thought about it. Send us your question, we will do our best to answer it.</p>
+
+<h3>What do I have to explain when I ask for help ?</h3>
+<p>A clear description of your problem, the application your using and its version.
+Please try to be the more comprehensive possible.</p>
+
+<h3>How to report bugs ?</h3>
+<p>By using the sourceforge 
+<a href="http://sourceforge.net/tracker/?group_id=95945">bug tracker</a> system.</p>
+
+<h3>How can I contact the authors ?</h3>
+<p>You will find them on the <a href="http://sourceforge.net/mail/?group_id=95945">Lucane-devel</a> mailing list</p>
+
+
+
+</body>
+</html>

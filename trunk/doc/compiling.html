@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Compiling Lucane Groupware</title>
+<link type='text/css' rel='stylesheet' href='style.css' />
+</head>
+<body>
+
+<p>Lucane is build with <a href="http://ant.apache.org">ant</a>. 
+It needs js.jar and bsf.jar to compile plugins.</p>
+
+<h2>Tested versions</h2>
+<ul>
+  <li>ant : <a href="http://ant.apache.org/bindownload.cgi">Ant 1.6.1</a></li>
+  <li>js.jar : <a href="http://ftp.mozilla.org/pub/mozilla.org/js/">Rhino 1.5R3</a></li>
+  <li>bsf.jar : <a href="http://cvs.apache.org/dist/jakarta/bsf/v2.3.0rc1/bin/">Apache BSF 2.3.0</a></li>
+</ul>
+<p>(more recent should also work)</p>
+
+<h2>Installing ant</h2>
+<ul>
+  <li>Untar ant. It should create a 'apache-ant-1.6.1' directory.
+    <ul><li>We will call this directory $ANT_HOME</li></ul>
+  </li>
+  <li>Unzip Rhino. It should create a 'rhino1_5R3' directory, with a js.jar file in it.
+    <ul><li>Copy this js.jar into $ANT_HOME/lib</li></ul>
+  </li>
+  <li>Untar bsf. It should create a 'bsf-2.3.0' directory.
+    <ul><li>Copy lib/bsf.jar to $ANT_HOME/lib</li></ul>
+  </li>
+</ul>
+
+<h2>Compiling Lucane</h2>
+<ul>
+  <li>If $ANT_HOME is in your path, simply type 'ant' in Lucane directory.</li>
+  <li>It will (hopefully) generate a lucane.tgz file in a 'build' directory</li>
+</ul>
+
+</body>
+</html>
