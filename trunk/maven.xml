@@ -3,7 +3,6 @@
   xmlns:j="jelly:core"
   xmlns:maven="jelly:maven">
 
-
   <goal
     name="clean-lucane"
     description="Clean lucane">
@@ -50,8 +49,12 @@
   <goal
     name="mkwinsetup-lucane"
     description="Create a windows installer"
-    prereqs="mkdist-lucane">
+><!--    prereqs="mkdist-lucane">-->
     
+    <echo message="Creating the windows installer:"/>
+
+    <echo message="Checking if nsis is installed..."/>
+
     <condition property="nsis.present">
       <available file="${nsis.path}" />
     </condition>
@@ -59,24 +62,28 @@
     NSIS compiler not found at ${nsis.path}. Please correct the nsis.path property in project.properties and/or download NSIS from http://nsis.sourceforge.net .
     </fail>
 
+    <echo message="OK"/>
+
+    <echo message="Compiling the NSIS script..."/>
+
     <mkdir dir="../winsetup"/>
 
-    <copy file="setup/windows/src/lucane.nsi" tofile="../dist/lucane.nsi"/>
-    <copy file="setup/windows/src/lucane.ico" tofile="../dist/lucane.ico"/>
-    <copy file="LICENSE.txt" tofile="../dist/licence.txt"/>
+    <exec executable="${nsis.path}">
 
-    <exec dir="../dist" executable="${nsis.path}" output="../winsetup/nsis.log">
-      <arg line="lucane.nsi" />
-      <env key="_project_name" value="Lucane"/>
-      <env key="_project_version" value="0.7.0"/>
+      <arg line="setup\windows\src\lucane.nsi"/>
+
+      <env key="_PRODUCT_NAME" value="${pom.groupId}"/>
+      <env key="_PRODUCT_VERSION" value="${pom.currentVersion}"/>
+      <env key="_PRODUCT_PUBLISHER" value="${pom.organization.name}"/>
+      <env key="_PRODUCT_WEB_SITE" value="${pom.url}"/>
+
+      <env key="_BASE_DIR" value="../../../../"/>
+      <env key="_DIST_DIR" value="dist"/>
+      <env key="_OUT_DIR" value="winsetup"/>
+      <env key="_LICENCE_FILE" value="trunk/LICENSE.txt"/>
+
     </exec>
 
-    <delete file="../dist/lucane.nsi"/>
-    <delete file="../dist/lucane.ico"/>
-    <delete file="../dist/licence.txt"/>
-
-    <move file="../dist/lucane-setup.exe" tofile="../winsetup/lucane-setup.exe"/>
-    
   </goal>
 
   <goal
