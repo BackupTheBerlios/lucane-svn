@@ -139,7 +139,7 @@ public class PluginLoader
     Plugin p = ((Plugin)this.plugins.get(name)).init(new ConnectInfo[0], false);
     p.setLocale(Client.getInstance().getConfig().getLanguage());
     p.load(oc, message.getSender(), (String)message.getData());
-    (new Thread(p)).start();
+    (new Thread(p, p.getName())).start();
 	Logging.getLogger().info("Plugin " + name + " loaded.");
   }
 
@@ -154,7 +154,7 @@ public class PluginLoader
 	Logging.getLogger().fine("Trying to run plugin " + name);
 	Plugin p = ((Plugin)this.plugins.get(name)).init(friends, true);
     p.setLocale(Client.getInstance().getConfig().getLanguage());
-    (new Thread(p)).start();
+    (new Thread(p, p.getName())).start();
     Logging.getLogger().fine("Plugin " + name + " started.");
   }
 
