@@ -69,8 +69,8 @@ SetCompressor lzma
 !define MUI_WELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Wizard\orange-NSIS.bmp"
 !define MUI_UNWELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Wizard\orange-uninstall-NSIS.bmp"
 !define MUI_ABORTWARNING
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\win-install.ico"
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\win-uninstall.ico"
+!define MUI_ICON "trunk\setup\windows\resources\Orange-Full-MoNKi\Icons\orange-install-NSIS.ico"
+!define MUI_UNICON "trunk\setup\windows\resources\Orange-Full-MoNKi\Icons\orange-uninstall-NSIS.ico"
 
 # Welcome page
 !insertmacro MUI_PAGE_WELCOME
