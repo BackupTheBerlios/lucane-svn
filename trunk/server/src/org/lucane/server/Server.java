@@ -20,6 +20,7 @@
 package org.lucane.server;
 
 import org.lucane.common.concepts.*;
+import org.lucane.server.auth.Authenticator;
 import org.lucane.server.database.*;
 import org.lucane.server.store.*;
 import org.lucane.common.*;
@@ -91,7 +92,7 @@ public class Server
 			System.exit(1);
 		}
 		
-		this.authenticator = new Authenticator();		
+		this.authenticator = Authenticator.getInstance();
 	}
 	
 	/**

@@ -115,6 +115,25 @@ public class ConnectInfo implements Serializable
   }
   
   /**
+   * Set the public key
+   * 
+   * @param key the public key
+   */
+  public void setPublicKey(String key)
+  {
+  	this.key = key;
+
+    try
+    {
+      this.verifier = new Verifier(key);
+    }
+    catch(SignatureException e)
+    {
+      this.verifier = null;
+    }
+  }
+  
+  /**
    * Is the object pointed by this ConnectInfo a service ?
    * 
    * @return true if it is a service
