@@ -1,2 +1,0 @@
-Plugin-Class: org.lucane.applications.filemanager.FileManager
-Service-Class: org.lucane.applications.filemanager.FileService

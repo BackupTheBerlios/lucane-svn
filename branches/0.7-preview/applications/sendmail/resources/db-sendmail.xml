@@ -1,7 +1,0 @@
-<database>
-
-  <table name="smtphost">
-    <column name="hostname" type="smalltext" />
-  </table>
-  
-</database>

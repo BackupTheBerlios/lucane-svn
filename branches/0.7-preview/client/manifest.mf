@@ -1,2 +1,0 @@
-Main-Class: org.lucane.client.Client
-Class-Path: lib/plaf/kunststoff.jar lib/mail/activation.jar lib/mail/mail.jar

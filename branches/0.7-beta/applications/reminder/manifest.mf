@@ -1,2 +1,0 @@
-Plugin-Class: org.lucane.applications.reminder.ReminderPlugin
-Service-Class: org.lucane.applications.reminder.ReminderService

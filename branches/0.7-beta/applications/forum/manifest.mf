@@ -1,2 +1,0 @@
-Plugin-Class: org.lucane.applications.forum.Forum
-Service-Class: org.lucane.applications.forum.ForumService

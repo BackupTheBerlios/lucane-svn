@@ -1,2 +1,0 @@
-Main-Class: org.lucane.server.Server
-Class-Path: lib/jdbc/hsqldb.jar lib/jdbc/mysql-connector-java-2.0.14-bin.jar lib/jdbc/pg73jdbc3.jar lib/mail/activation.jar lib/mail/mail.jar lib/jce/ISNetworksProvider.jar

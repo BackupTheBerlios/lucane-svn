@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<project>
-  <extend>${basedir}/../project.xml</extend>
-  <id>app-jmailadmin</id>
-  <name>Lucane Groupware - JMailAdmin</name>
-  <package>org.lucane.applications.jmailadmin</package>
-
-  <shortDescription>Lucane JMail Admin</shortDescription>
-</project>
