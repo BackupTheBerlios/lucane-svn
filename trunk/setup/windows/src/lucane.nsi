@@ -34,6 +34,32 @@ SetCompressor lzma
   Goto "${JUMPIFSEL}"
 !macroend
 
+!macro setLanguage LANGUAGE
+  ClearErrors
+  FileOpen $0 "$INSTDIR\client\etc\client-config.xml" "r"
+  GetTempFileName $R0
+  FileOpen $1 $R0 "w"
+  loop${LANGUAGE}:
+    FileRead $0 $2
+    IfErrors done${LANGUAGE}
+    StrCmp $2 "  <language value=$\"en$\" />$\n" 0 +3
+      FileWrite $1 "  <language value=$\"${LANGUAGE}$\" />$\n"
+      Goto loop${LANGUAGE}
+    StrCmp $2 "  <language value=$\"en$\" />" 0 +3
+      FileWrite $1 "  <language value=$\"${LANGUAGE}$\" />"
+      Goto loop${LANGUAGE}
+    FileWrite $1 $2
+    Goto loop${LANGUAGE}
+
+  done${LANGUAGE}:
+    FileClose $0
+    FileClose $1
+    Delete "$INSTDIR\client\etc\client-config.xml"
+    CopyFiles /SILENT $R0 "$INSTDIR\client\etc\client-config.xml"
+    Delete $R0
+!macroend
+
+
 # MUI Settings
 !define MUI_HEADERIMAGE
 !define MUI_ABORTWARNING
@@ -44,15 +70,16 @@ SetCompressor lzma
 !insertmacro MUI_PAGE_WELCOME
 # License page
 !define MUI_LICENSEPAGE_CHECKBOX
-#!insertmacro MUI_PAGE_LICENSE "${LICENCE_FILE}"
+!insertmacro MUI_PAGE_LICENSE "${LICENCE_FILE}"
 # Components page
 !insertmacro MUI_PAGE_COMPONENTS
 # Directory page
 !insertmacro MUI_PAGE_DIRECTORY
-# custom page
-Page custom SetCustom ValidateCustom
+# Shortcuts selection
+Page custom SetShortcuts ValidateShortcuts
 # Start menu page
 var ICONS_GROUP
+# TODO fix the no startmenu shortcuts bug
 !define MUI_STARTMENUPAGE_NODISABLE
 !define MUI_STARTMENUPAGE_DEFAULTFOLDER "${PRODUCT_NAME}"
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -61,6 +88,8 @@ var ICONS_GROUP
 !insertmacro MUI_PAGE_STARTMENU "Startmenu" $ICONS_GROUP
 # Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
+# Language selection
+Page custom SetLanguage ValidateLanguage
 # Finish page
 !insertmacro MUI_PAGE_FINISH
 
@@ -102,7 +131,8 @@ Function .onInit
   #Extract InstallOptions files
   #$PLUGINSDIR will automatically be removed when the installer closes
   InitPluginsDir
-  File /oname=$PLUGINSDIR\lucane_shortcuts.ini "${NSIS_FILE_DIR}\lucane_shortcuts.ini"
+  File /oname=$PLUGINSDIR\shortcuts.ini "${NSIS_FILE_DIR}\shortcuts.ini"
+  File /oname=$PLUGINSDIR\language.ini "${NSIS_FILE_DIR}\language.ini"
 FunctionEnd
 
 
@@ -151,9 +181,16 @@ SectionEnd
 
 Section "-Shortcuts" shortcuts
   #Get Install Options dialog user input
-  ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 2" "State"
-  ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 3" "State"
-  ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 4" "State"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\shortcuts.ini" "Field 2" "state"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\shortcuts.ini" "Field 3" "state"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\shortcuts.ini" "Field 4" "state"
+SectionEnd
+
+Section "-Language" language
+  #Get Install Options dialog user input
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 2" "state"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 3" "state"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 4" "state"
 SectionEnd
 
 Section "-Post"
@@ -174,18 +211,20 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${PROXY} "${PRODUCT_NAME} proxy"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
-Function SetCustom
+
+# Shortcuts dialog
+Function SetShortcuts
   !insertmacro MUI_HEADER_TEXT "Choose shortcuts" "Choose the shortcuts you want to create"
   Push ${TEMP1}
-    InstallOptions::dialog "$PLUGINSDIR\lucane_shortcuts.ini"
+    InstallOptions::dialog "$PLUGINSDIR\shortcuts.ini"
     Pop ${TEMP1}
   Pop ${TEMP1}
 FunctionEnd
 
-Function ValidateCustom
+Function ValidateShortcuts
 
   #----- Start menu icons -----
-  ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 2" "State"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\shortcuts.ini" "Field 2" "state"
 
   StrCmp ${TEMP1} 1 yes1
     no1:
@@ -214,7 +253,7 @@ Function ValidateCustom
     end1:
 
   #----- Quick launch icons
-  ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 3" "State"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\shortcuts.ini" "Field 3" "state"
 
   StrCmp ${TEMP1} 1 yes2
     no2:
@@ -229,7 +268,7 @@ Function ValidateCustom
     end2:
 
   #----- Desktop icons
-  ReadINIStr ${TEMP1} "$PLUGINSDIR\lucane_shortcuts.ini" "Field 4" "State"
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\shortcuts.ini" "Field 4" "state"
 
   StrCmp ${TEMP1} 1 yes3
     no3:
@@ -244,6 +283,50 @@ Function ValidateCustom
     end3:
 
 FunctionEnd
+
+
+
+# Language dialog
+Function SetLanguage
+  !insertmacro MUI_HEADER_TEXT "Choose language" "Choose the language of the ${PRODUCT_NAME} client interface"
+  Push ${TEMP1}
+    InstallOptions::dialog "$PLUGINSDIR\language.ini"
+    Pop ${TEMP1}
+  Pop ${TEMP1}
+FunctionEnd
+
+Function ValidateLanguage
+
+  #----- English -----
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 2" "state"
+
+  StrCmp ${TEMP1} 0 no1
+    !insertmacro setLanguage "en"
+    goto end
+    no1:
+
+  #----- French -----
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 3" "state"
+
+  StrCmp ${TEMP1} 0 no2
+    !insertmacro setLanguage "fr"
+    goto end
+    no2:
+
+  #----- Dutch -----
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 4" "state"
+
+  StrCmp ${TEMP1} 0 no3
+    !insertmacro setLanguage "nl"
+    goto end
+    no3:
+
+  end:
+
+FunctionEnd
+
+
+
 
 
 #Function un.onInit
