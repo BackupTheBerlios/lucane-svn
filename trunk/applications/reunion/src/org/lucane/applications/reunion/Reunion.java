@@ -25,7 +25,6 @@ import org.lucane.common.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.text.DateFormat;
 import java.util.*;
 import javax.swing.*;
 
@@ -75,9 +74,10 @@ implements ActionListener, KeyListener, ObjectListener
     ocCoordinator = oc;
   }
 
-
+  /* if the user started the reunion */
   public void start()
   {
+    /* quit if no friends has been selected */
     if(friends.length == 0)
     {
       DialogBox.info(tr("noselect"));
@@ -85,37 +85,46 @@ implements ActionListener, KeyListener, ObjectListener
       return;
     }
 
+    /* creation of the frame */
     dialog = new JFrame(getTitle());
-    dialog.addWindowListener(this);
-    dialog.getContentPane().setLayout(new BorderLayout());
+	dialog.setIconImage(this.getImageIcon().getImage());
+	dialog.addWindowListener(this);
+	dialog.addKeyListener(this);
+	dialog.getContentPane().setLayout(new BorderLayout());
+	/* the subject */
     lblInfo = new JLabel(tr("subject"));
+	dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
     txtSubject = new JTextField(50);
     txtSubject.addKeyListener(this);
-    dialog.addKeyListener(this);
+	dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
+	/* send button */
     btnDlg = new JButton(tr("send"));
     btnDlg.addActionListener(this);
-    dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
-    dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
     dialog.getContentPane().add(btnDlg, BorderLayout.EAST);
+
     dialog.pack();
-	dialog.setIconImage(this.getImageIcon().getImage());
     dialog.setVisible(true);
   }
 
+  /* if the user joined the reunion */
   public void follow()
   {
+	/* creation of the frame */
     dialog = new JFrame(getTitle());
     dialog.addWindowListener(this);
     dialog.getContentPane().setLayout(new BorderLayout());
+	/* the subject */
     lblInfo = new JLabel("[" + this.coordinator.getName() + "]");
+	dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
     txtSubject = new JTextField(50);
     txtSubject.setText(this.subject);
     txtSubject.setEditable(false);
+	dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
+	/* accept button */
     btnDlg = new JButton(tr("accept"));
     btnDlg.addActionListener(this);
-    dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
-    dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
     dialog.getContentPane().add(btnDlg, BorderLayout.EAST);
+
     dialog.pack();
     dialog.setVisible(true);
   }
@@ -123,6 +132,7 @@ implements ActionListener, KeyListener, ObjectListener
 
   public void actionPerformed(ActionEvent ae)
   {
+	/* if the user started the reunion, get the friends */
     if(this.starter)
     {
       this.subject = txtSubject.getText();
@@ -143,11 +153,16 @@ implements ActionListener, KeyListener, ObjectListener
       }
     }
 
+    /* hide the subject window */
     dialog.removeWindowListener(this);
     dialog.setVisible(false);
+    
+    /* show the main frame */
     initMainFrame();
-    String msg = "#JOIN# " + Client.getInstance().getMyInfos().getName();
+    /* join the reunion */
+    ReunionMessage msg = ReunionMessage.createJoinInstance(Client.getInstance().getMyInfos().getName());
 
+	/* if the user started the reunion, send them the join message */
     if(starter)
     {
       for(int i = 0; i < ocFriends.length; i++)
@@ -159,6 +174,7 @@ implements ActionListener, KeyListener, ObjectListener
         } catch(Exception e) {}
       }
     }
+    /* else, just send the join message to the reunion creator */
     else
     {
     	try {
@@ -176,18 +192,19 @@ implements ActionListener, KeyListener, ObjectListener
     else
       exited = true;
 
-    //still asking for accept
+    /* still asking for accept */
     if(frame == null)
     {
       exit();
       return;
     }
 
-    String msg;
+	ReunionMessage msg;
+	/* if the user started the reunion, send all friends the end message */
     if(starter)
     {
-      msg = "#END#";
-      txtRead.addHTML(createHTMLInfoMessage(tr("endMsg")));
+      msg = ReunionMessage.createEndInstance();
+      txtRead.addHTML(msg.toString(this));
 
       for(int i = 0; i < ocFriends.length; i++)
       {
@@ -197,9 +214,10 @@ implements ActionListener, KeyListener, ObjectListener
       }
       saveReunion();
     }
+	/* else, send the reunion creator, the leave message */
     else
     {
-      msg = "#LEAVE# " + Client.getInstance().getMyInfos().getName();
+      msg = ReunionMessage.createLeaveInstance(Client.getInstance().getMyInfos().getName());
       try {
         ocCoordinator.write(msg);
       } catch(Exception e) {}
@@ -210,30 +228,34 @@ implements ActionListener, KeyListener, ObjectListener
 
   private void initMainFrame()
   {
+    /* creation of the frame */
     frame = new JFrame(this.subject);
     frame.addWindowListener(this);
     frame.setSize(640, 480);
     frame.getContentPane().setLayout(new BorderLayout());
+    /* the send textbox */
     txtRead = new HTMLEditor();
     txtRead.setEditable(false);
 	txtRead.setToolbarVisible(false);
-    //txtRead.setLineWrap(true);
-    //txtRead.setWrapStyleWord(true);
+	frame.getContentPane().add(new JScrollPane(txtRead), BorderLayout.CENTER);
+    /* the friends */
     lstUsers = new JList();
     users = new DefaultListModel();
     lstUsers.setModel(users);
     frame.getContentPane().add(new JScrollPane(lstUsers), BorderLayout.EAST);
 
+	txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("subjectMsg") + this.subject));
+
     if(this.starter)
     {
-      txtRead.addHTML(createHTMLInfoMessage(tr("subjectMsg") + this.subject));
       addUser(Client.getInstance().getMyInfos().getName());
     }
 
-    frame.getContentPane().add(new JScrollPane(txtRead), BorderLayout.CENTER);
+	/* send button */
     txtSend = new HTMLEditor();
     txtSend.getEditorPane().addKeyListener(this);
     frame.getContentPane().add(txtSend, BorderLayout.SOUTH);
+    
     frame.addWindowListener(this);
     frame.setVisible(true);
   }
@@ -250,27 +272,25 @@ implements ActionListener, KeyListener, ObjectListener
       if(frame == null)
       {
         actionPerformed(null);
-
         return;
       }
 
       /* mainfraime */
-	  String msg = createHTMLUserMessage(
-                   Client.getInstance().getMyInfos().getName(),
-                   txtSend.getText());
-      txtSend.clear();
+      /* if there is no message to send, stop */
+	  if(txtSend.getText().equals(""))
+		return;
+      /* create the message to send */
+      ReunionMessage msg =
+        ReunionMessage.createTextInstance(
+          Client.getInstance().getMyInfos().getName(),
+          txtSend.getText());
+        txtSend.clear();
 
-      if(msg.equals(""))
 
-        return;
-
-      //special char
-      if(msg.charAt(0) == '#')
-        msg = '#' + msg;
-
+      /* if the user started the reunion, send the message to all friends */
       if(starter)
       {
-        txtRead.addHTML(msg);
+        txtRead.addHTML(msg.toString(this));
 
         for(int i = 0; i <ocFriends.length; i++)
         {
@@ -279,6 +299,7 @@ implements ActionListener, KeyListener, ObjectListener
           } catch(Exception e) {}
         }
       }
+      /* else, send just to the reunion creator */
       else
       {
         try {
@@ -298,21 +319,21 @@ implements ActionListener, KeyListener, ObjectListener
 
   public void addUser(String user)
   {
-    txtRead.addHTML(createHTMLInfoMessage(tr("joinMsg") + user));
-    this.users.addElement(user);
-    this.lstUsers.setModel(users);
+    //txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("joinMsg") + user));
+	this.users.addElement(user);
+	this.lstUsers.setModel(users);
   }
 
   public void delUser(String user)
   {
-    txtRead.addHTML(createHTMLInfoMessage(tr("leaveMsg") + user));
+    //txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("leaveMsg") + user));
     this.users.removeElement(user);
     this.lstUsers.setModel(users);
   }
 
   public void end()
   {
-    txtRead.addHTML(createHTMLInfoMessage(tr("endMsg")));
+    txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("endMsg")));
     txtSend.getEditorPane().removeKeyListener(this);
 
     if(starter)
@@ -354,12 +375,16 @@ implements ActionListener, KeyListener, ObjectListener
  
   public void objectRead(Object o)
   {
-    process((String)o);
-    if(starter)
-      shareMessage((String)o);
+    try {
+      process((ReunionMessage) o);
+      if (starter)
+        shareMessage((ReunionMessage) o);
+    } catch (Exception e) {
+      e.printStackTrace(System.out);
+    }
   }
 
-  private void shareMessage(String msg)
+  private void shareMessage(ReunionMessage msg)
   {
     //share messages
     for(int j=0; j<ocFriends.length; j++)
@@ -370,75 +395,45 @@ implements ActionListener, KeyListener, ObjectListener
     }
   }
 
-  private void process(String msg)
+  private void process(ReunionMessage msg)
   {
-    if(msg == null || msg.equals(""))
+    if(msg == null)
       return;
 
     //normal message
-    if(msg.charAt(0) != '#')
+    if(msg.getType()==ReunionMessage.TYPE_TEXT)
     {
-      txtRead.addHTML(createHTMLInfoMessage(msg));
+      txtRead.addHTML(msg.toString(this));
     }
 
     //command
     else
     {
       //JOIN
-      if(msg.charAt(1) == 'J')
+      if(msg.getType()==ReunionMessage.TYPE_JOIN)
       {
-        String user = msg.substring(msg.indexOf(" ") + 1);
+		txtRead.addHTML(msg.toString(this));
+        String user = (String)(msg.getData());
         addUser(user);
       }
 
       //LEAVE
-      else if(msg.charAt(1) == 'L')
+	  else if(msg.getType()==ReunionMessage.TYPE_LEAVE)
       {
-        String user = msg.substring(msg.indexOf(" ") + 1);
+		txtRead.addHTML(msg.toString(this));
+		String user = (String)(msg.getData());
         delUser(user);
       }
 
       //END
-      else if(msg.charAt(1) == 'E')
+	  else if(msg.getType()==ReunionMessage.TYPE_END)
       {
         end();
       }
       else
-        txtRead.addHTML(createHTMLInfoMessage(msg.substring(1)));
+        txtRead.addHTML(msg.toString(this));
     }
   }
 
-  private String createHTMLUserMessage(String user, String message) {
-    String res;
-    res =
-    "<DIV "
-      + "STYLE=\"padding:0px;margin-bottom:2px;"
-      + "border-width:1px;border-style:solid;border-color:#eeeedd;"
-      + "background-color:#ffffee;width:100%;\">"
-      + "<font size=2>"
-      + DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date())
-      + "</font>&nbsp;<b><font size=4>"
-      + user
-      + "&nbsp;&gt; </font></b>"
-      + "<font size=4>"
-      + message
-      + "</font></DIV>";
-      /*"<TABLE STYLE=\"padding:1px;margin:1px; border-width:1px; border-style:solid; border-color:#ccccaa; background-color:#ffffee;width:100%;\">\n"
-        + "<TR><TD STYLE=\"width:50px;font-size:12px;font-weight:bold;\">\n"
-        + user
-        + "</TD>\n"
-        + "<TD STYLE=\"font-size:10px;border-width:1px; border-style:solid; border-color:#ccccaa; background-color:#ffffff;\">\n"
-        + message
-        + "\n</TD></TR></TABLE>\n";*/
-    return res;
-  }
-
-  private String createHTMLInfoMessage(String message) {
-    String res;
-    res =
-      "<DIV><FONT SIZE=4 COLOR=#888888>"
-        + message
-        + "</FONT></DIV>";
-    return res;
-  }
 }
+
