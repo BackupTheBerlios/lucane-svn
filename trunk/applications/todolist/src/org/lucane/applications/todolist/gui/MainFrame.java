@@ -20,6 +20,10 @@
 package org.lucane.applications.todolist.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -27,8 +31,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -47,35 +53,35 @@ import org.lucane.applications.todolist.io.IO;
 import org.lucane.client.widgets.DialogBox;
 
 public class MainFrame extends JFrame {
-	JToolBar jtbToolBar;
+	private JToolBar jtbToolBar;
 
-	JList jlTodolists;
-	JSplitPane jspList;
-	JTextArea jtaListDescription;
-	JPanel jpListView;
+	private JList jlTodolists;
+	private JSplitPane jspList;
+	private JTextArea jtaListDescription;
+	private JPanel jpListView;
 
-	JList jlTodolistItems;
-	JSplitPane jspItem;
-	JTextField jtaListItemName;
-	JTextArea jtaListItemDescription;
-	JTextField jtaListItemPriority;
-	JCheckBox jcbListItemCompleted;
-	JPanel jpItemView;
+	private JList jlTodolistItems;
+	private JSplitPane jspItem;
+	private JLabel jlListItemName;
+	private JLabel jlListItemPriority;
+	private JLabel jlListItemComplete;
+	private JTextArea jtaListItemDescription;
+	private JPanel jpItemView;
 	
-	JSplitPane jspMain;
+	private JSplitPane jspMain;
 
-	JButton jbCreateTodolist;
-	JButton jbEditTodolist;
-	JButton jbDeleteTodolist;
-	JButton jbCreateItem;
-	JButton jbEditItem;
-	JButton jbDeleteItem;
+	private JButton jbCreateTodolist;
+	private JButton jbEditTodolist;
+	private JButton jbDeleteTodolist;
+	private JButton jbCreateItem;
+	private JButton jbEditItem;
+	private JButton jbDeleteItem;
 	
-	MainFrame mainFrame;
+	private MainFrame mainFrame;
 	
-	HashMap todolistsByName;
-	HashMap todolistItemsByName;
-	
+	private HashMap todolistsByName;
+	private HashMap todolistItemsByName;
+
 	public MainFrame() {
 		super("Todo List");
 
@@ -111,12 +117,67 @@ public class MainFrame extends JFrame {
 		jlTodolistItems = new JList();
 		jlTodolistItems.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
-				if (jlTodolists.getSelectedIndex()>=0) {
-					jtaListDescription.setText(((Todolist)todolistsByName.get((String)jlTodolists.getSelectedValue())).getDescription());
+				if (jlTodolistItems.getSelectedIndex()>=0) {
+					TodolistItem tli = (TodolistItem)todolistItemsByName.get((String)jlTodolistItems.getSelectedValue());
+					jlListItemName.setText(tli.getName());
+					jtaListItemDescription.setText(tli.getDescription());
+					jlListItemPriority.setText(""+tli.getPriority());
+					jlListItemComplete.setText(""+tli.isComplete());
 				}
 			}
 		});
 		jpItemView = new JPanel();
+
+		jpItemView.setLayout(new GridBagLayout());
+		GridBagConstraints c = new GridBagConstraints();
+		
+		c.insets=new Insets(2,2,2,2);
+		c.anchor=GridBagConstraints.NORTH;
+		c.fill=GridBagConstraints.HORIZONTAL;
+		c.gridy=0;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=0;
+		jpItemView.add(new JLabel("Name :"), c);
+		c.gridx=1;
+		c.weightx=1;
+		jlListItemName = new JLabel();
+		jpItemView.add(jlListItemName, c);
+
+		c.gridy=1;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=1;
+		jpItemView.add(new JLabel("Description :"), c);
+		c.fill=GridBagConstraints.BOTH;
+		c.gridx=1;
+		c.weightx=1;
+		jtaListItemDescription = new JTextArea();
+		jtaListItemDescription.setEditable(false);
+		jtaListItemDescription.setOpaque(false);
+		jtaListItemDescription.setBorder(BorderFactory.createEmptyBorder());
+		jpItemView.add(new JScrollPane(jtaListItemDescription), c);
+
+		c.gridy=2;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=0;
+		jpItemView.add(new JLabel("Priority :"), c);
+		c.gridx=1;
+		c.weightx=1;
+		jlListItemPriority = new JLabel();
+		jpItemView.add(jlListItemPriority, c);
+
+		c.gridy=3;
+		c.gridx=0;
+		c.weightx=0;
+		c.weighty=0;
+		jpItemView.add(new JLabel("Complete :"), c);
+		c.gridx=1;
+		c.weightx=1;
+		jlListItemComplete = new JLabel();
+		jpItemView.add(jlListItemComplete, c);
+
 		//jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodoListItems), jpItemView);
 		jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jlTodolistItems), jpItemView);
 		jspItem.setResizeWeight(.60);
