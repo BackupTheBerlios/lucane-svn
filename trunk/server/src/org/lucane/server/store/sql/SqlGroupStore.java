@@ -72,25 +72,26 @@ public class SqlGroupStore extends GroupStore
 	throws SQLException
 	{       
         Connection c = layer.openConnection();
-        Statement s = c.createStatement();
+        PreparedStatement insert;
         Iterator i;
-        String query;
                
-        //store group           
-        query = "INSERT INTO " + TABLENAME + " VALUES('"
-            + group.getName() + "', '"
-            + group.getDescription() + "')";           
-        s.execute(query);
+        //store group          
+        insert = c.prepareStatement("INSERT INTO " + TABLENAME + " VALUES(?, ?)");
+		insert.setString(1, group.getName());
+		insert.setString(2, group.getDescription());
+        insert.execute();
+        insert.close();
         
         //store group links
         i = group.getParents();
         while(i.hasNext())
         {
             GroupConcept parent = (GroupConcept)i.next();
-            query = "INSERT INTO " + GROUPLINKS + " VALUES('"
-                + parent.getName() + "', '"
-                + group.getName() + "')";           
-            s.execute(query);            
+			insert = c.prepareStatement("INSERT INTO " + GROUPLINKS + " VALUES(?, ?)");
+			insert.setString(1, parent.getName());
+			insert.setString(2, group.getName());
+			insert.execute();
+			insert.close();            
         }
         
         //store user links
@@ -98,10 +99,11 @@ public class SqlGroupStore extends GroupStore
         while(i.hasNext())
         {
             UserConcept user = (UserConcept)i.next();
-            query = "INSERT INTO " + USERLINKS + " VALUES('"
-                + group.getName() + "', '"
-                + user.getName() + "')";           
-            s.execute(query);            
+			insert = c.prepareStatement("INSERT INTO " + USERLINKS + " VALUES(?, ?)");
+			insert.setString(1, group.getName());
+			insert.setString(2, user.getName());
+			insert.execute();
+			insert.close();         
         }
         
         //store services links
@@ -109,11 +111,11 @@ public class SqlGroupStore extends GroupStore
         while(i.hasNext())
         {
             ServiceConcept service = (ServiceConcept)i.next();
-            query = "INSERT INTO " + SERVICELINKS + " VALUES('"
-                + group.getName() + "', '"
-                + service.getName() + "')";           
-            
-            s.execute(query);
+			insert = c.prepareStatement("INSERT INTO " + SERVICELINKS + " VALUES(?, ?)");
+			insert.setString(1, group.getName());
+			insert.setString(2, service.getName());
+			insert.execute();
+			insert.close();   
         }        
         
         //store plugins links
@@ -121,13 +123,13 @@ public class SqlGroupStore extends GroupStore
         while(i.hasNext())
         {
             PluginConcept plugin = (PluginConcept)i.next();
-            query = "INSERT INTO " + PLUGINLINKS + " VALUES('"
-                + group.getName() + "', '"
-                + plugin.getName() + "')";           
-            s.execute(query);            
+			insert = c.prepareStatement("INSERT INTO " + PLUGINLINKS + " VALUES(?, ?)");
+			insert.setString(1, group.getName());
+			insert.setString(2, plugin.getName());
+			insert.execute();
+			insert.close();          
         }        
         
-        s.close();
         c.close();
 	}
 	
@@ -144,17 +146,16 @@ public class SqlGroupStore extends GroupStore
 		//-- delete basic infos	
 		removeGroupOnly(group);
 		
-        Connection c = layer.openConnection();
-        Statement s = c.createStatement();
-        String query;
-               
+        Connection c = layer.openConnection();           
         
         //delete group links
-        query = "DELETE FROM " + GROUPLINKS + " WHERE parent='"
-            + group.getName() + "' OR child='" + group.getName() + "'";           
-        s.execute(query);      
+        PreparedStatement delete = c.prepareStatement("DELETE FROM " + GROUPLINKS 
+        	+ " WHERE parent=? OR child=?");
+		delete.setString(1, group.getName());           
+		delete.setString(2, group.getName());           
+        delete.execute();      
         
-        s.close();
+        delete.close();
         c.close();
 	}
 
@@ -164,9 +165,10 @@ public class SqlGroupStore extends GroupStore
         GroupConcept group = null;
 
         Connection c = layer.openConnection();
-        Statement s = c.createStatement();
-        ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME 
-            + " WHERE name='" + name + "'");
+        PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
+            + " WHERE name=?");
+        select.setString(1, name);
+        ResultSet rs = select.executeQuery();
                     
         if(rs.next())
         {
@@ -182,7 +184,7 @@ public class SqlGroupStore extends GroupStore
         }
     
         rs.close();     
-        s.close();
+        select.close();
         c.close();  
             
         return group;  
@@ -194,8 +196,8 @@ public class SqlGroupStore extends GroupStore
 		ArrayList all = new ArrayList();
 		
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME);
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
+		ResultSet rs = select.executeQuery();
 					
 		while(rs.next())
 		{
@@ -212,7 +214,7 @@ public class SqlGroupStore extends GroupStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();		
 		
 		return all.iterator();    
@@ -223,9 +225,10 @@ public class SqlGroupStore extends GroupStore
     private void setServiceLinks(Connection c, GroupConcept group)
     throws Exception
     {
-        Statement s = c.createStatement();
-        ResultSet rs = s.executeQuery("SELECT service FROM " + SERVICELINKS 
-            + " WHERE groupName='" + group.getName() + "'");
+    	PreparedStatement select = c.prepareStatement("SELECT service FROM " + SERVICELINKS 
+			+ " WHERE groupName=?");
+		select.setString(1, group.getName());
+        ResultSet rs = select.executeQuery();        
                     
         while(rs.next())
         {
@@ -235,15 +238,16 @@ public class SqlGroupStore extends GroupStore
         }
     
         rs.close();     
-        s.close();
+        select.close();
     }
 
     private void setPluginLinks(Connection c, GroupConcept group)
     throws Exception
     {
-        Statement s = c.createStatement();
-        ResultSet rs = s.executeQuery("SELECT plugin FROM " + PLUGINLINKS 
-            + " WHERE groupName='" + group.getName() + "'");
+		PreparedStatement select = c.prepareStatement("SELECT plugin FROM " + PLUGINLINKS 
+			+ " WHERE groupName=?");
+		select.setString(1, group.getName());
+		ResultSet rs = select.executeQuery();  
                     
         while(rs.next())
         {
@@ -253,15 +257,16 @@ public class SqlGroupStore extends GroupStore
         }
     
         rs.close();     
-        s.close();
+        select.close();
     }
 
     private void setUserLinks(Connection c, GroupConcept group)
     throws Exception
     {
-        Statement s = c.createStatement();
-        ResultSet rs = s.executeQuery("SELECT userName FROM " + USERLINKS 
-            + " WHERE groupName='" + group.getName() + "'");
+		PreparedStatement select = c.prepareStatement("SELECT userName FROM " + USERLINKS 
+			+ " WHERE groupName=?");
+		select.setString(1, group.getName());
+		ResultSet rs = select.executeQuery();  
                     
         while(rs.next())
         {
@@ -271,15 +276,16 @@ public class SqlGroupStore extends GroupStore
         }
     
         rs.close();     
-        s.close();
+        select.close();
     }
 
     private void setGroupLinks(Connection c, GroupConcept group)
     throws Exception
     {
-        Statement s = c.createStatement();
-        ResultSet rs = s.executeQuery("SELECT parent FROM " + GROUPLINKS 
-            + " WHERE child='" + group.getName() + "'");
+		PreparedStatement select = c.prepareStatement("SELECT parent FROM " + GROUPLINKS 
+			+ " WHERE child=?");
+		select.setString(1, group.getName());
+		ResultSet rs = select.executeQuery();  
                     
         while(rs.next())
         {
@@ -289,42 +295,45 @@ public class SqlGroupStore extends GroupStore
         }
     
         rs.close();     
-        s.close();
+        select.close();
     }
     
 	private void removeGroupOnly(GroupConcept group)
 	throws SQLException
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		String query;
+		PreparedStatement delete;
                
-		//delete group           
-		query = "DELETE FROM " + TABLENAME + " WHERE name='"
-			+ group.getName() + "'";           
-		s.execute(query);
+		//delete group
+		delete = c.prepareStatement("DELETE FROM " + TABLENAME + " WHERE name=?");
+		delete.setString(1, group.getName());
+		delete.execute();
+		delete.close();
         
 		//delete group links
-		query = "DELETE FROM " + GROUPLINKS + " WHERE child='" 
-			+ group.getName() + "'";           
-		s.execute(query);
+		delete = c.prepareStatement("DELETE FROM " + GROUPLINKS + " WHERE child=?");
+		delete.setString(1, group.getName());
+		delete.execute();
+		delete.close();
 		
 		//delete user links
-		query = "DELETE FROM " + USERLINKS + " WHERE groupName='"
-			+ group.getName() + "'";           
-		s.execute(query);
+		delete = c.prepareStatement("DELETE FROM " + USERLINKS + " WHERE groupName=?");
+		delete.setString(1, group.getName());
+		delete.execute();
+		delete.close();
         
 		//delete services links
-		query = "DELETE FROM " +SERVICELINKS + " WHERE groupName='"
-			+ group.getName() + "'";           
-		s.execute(query);
-        
+		delete = c.prepareStatement("DELETE FROM " + SERVICELINKS + " WHERE groupName=?");
+		delete.setString(1, group.getName());
+		delete.execute();
+		delete.close();
+		
 		//delete plugins links
-		query = "DELETE FROM " + PLUGINLINKS + " WHERE groupName='"
-			+ group.getName() + "'";           
-		s.execute(query);
+		delete = c.prepareStatement("DELETE FROM " + PLUGINLINKS + " WHERE groupName=?");
+		delete.setString(1, group.getName());
+		delete.execute();
+		delete.close();
                
-		s.close();
 		c.close();
 	}
 

@@ -43,40 +43,42 @@ public class SqlServiceStore extends ServiceStore
 	{	
 		//store service
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();			
-		String query = "INSERT INTO " + TABLENAME + " VALUES('"
-			+ service.getName() + "', "
-			+ (service.isInstalled() ? 1 : 0) + ", '"
-			+ service.getDescription() + "')";
-			
-		s.execute(query);
-		s.close();
+		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
+			+ " VALUES(?, ?, ?)");
+		
+		insert.setString(1, service.getName());
+		insert.setInt(2, service.isInstalled() ? 1 : 0);
+		insert.setString(3, service.getDescription());		
+		insert.execute();
+		
+		insert.close();
 		c.close();
 	}
 	
 	public void updateService(ServiceConcept service)
 	throws SQLException
 	{
-		Connection c = layer.openConnection();
-		Statement s = c.createStatement();		
+		Connection c = layer.openConnection();			
 		
 		//try to delete service
 		try {
-			s.execute("DELETE FROM " + TABLENAME 
-			+ " WHERE name='" + service.getName() + "'");							
+			PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
+				+ " WHERE name=?");
+			delete.setString(1, service.getName());
+			delete.execute();
 		} catch(SQLException e) {
 			//no such service
 		}
 		
 		//store service
-	
-		String query = "INSERT INTO " + TABLENAME + " VALUES('"
-			+ service.getName() + "', "
-			+ (service.isInstalled() ? 1 : 0) + ", '"
-			+ service.getDescription() + "')";
-			
-		s.execute(query);
-		s.close();
+		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
+			+ " VALUES(?, ?, ?)");
+		insert.setString(1, service.getName());
+		insert.setInt(2, service.isInstalled() ? 1 : 0);
+		insert.setString(3, service.getDescription());		
+		insert.execute();
+		insert.close();
+		
 		c.close();
 	}
 
@@ -84,14 +86,17 @@ public class SqlServiceStore extends ServiceStore
 	throws SQLException
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		
-		s.execute("DELETE FROM " + TABLENAME 
-			+ " WHERE name='" + service.getName() + "'");
 
-		s.execute("DELETE FROM " + SqlGroupStore.SERVICELINKS 
-			+ " WHERE service='" + service.getName() + "'");			
-		s.close();
+		PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
+						+ " WHERE name=?");
+		delete.setString(1, service.getName());
+		delete.execute();
+
+		delete = c.prepareStatement("DELETE FROM " + SqlGroupStore.SERVICELINKS 
+			+ " WHERE service=?");			
+		delete.setString(1, service.getName());
+		delete.execute();
+
 		c.close();	
 	}
 
@@ -101,9 +106,10 @@ public class SqlServiceStore extends ServiceStore
 		ServiceConcept service = null;
 
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME 
-			+ " WHERE name='" + name + "'");
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
+			+ " WHERE name=?");
+		select.setString(1, name);
+		ResultSet rs = select.executeQuery();
 					
 		if(rs.next())
 		{
@@ -116,7 +122,7 @@ public class SqlServiceStore extends ServiceStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();	
 			
 		return service;
@@ -128,8 +134,8 @@ public class SqlServiceStore extends ServiceStore
 		ArrayList all = new ArrayList();
 		
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME);
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
+		ResultSet rs = select.executeQuery();
 					
 		while(rs.next())
 		{
@@ -143,7 +149,7 @@ public class SqlServiceStore extends ServiceStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();		
 		
 		return all.iterator();

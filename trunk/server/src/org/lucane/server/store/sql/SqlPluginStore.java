@@ -43,14 +43,13 @@ public class SqlPluginStore extends PluginStore
 	{	
 		//store plugin
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();			
-		String query = "INSERT INTO " + TABLENAME + " VALUES('"
-			+ plugin.getName() + "', '"
-			+ plugin.getVersion() + "', '"
-			+ plugin.getDescription() + "')";
-			
-		s.execute(query);
-		s.close();
+		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
+			+ " VALUES(?, ?, ?)");
+		insert.setString(1, plugin.getName());
+		insert.setString(2, plugin.getVersion());
+		insert.setString(3, plugin.getDescription());
+		insert.execute();
+		insert.close();
 		c.close();
 	}
 	
@@ -58,24 +57,27 @@ public class SqlPluginStore extends PluginStore
 	throws SQLException
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
 		
 		//try to delete plugin
 		try {
-			s.execute("DELETE FROM " + TABLENAME 
-				+ " WHERE name='" + plugin.getName() + "'");
+			PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
+				+ " WHERE name=?");
+			delete.setString(1, plugin.getName());
+			delete.execute();
+			delete.close();		
 		} catch(SQLException e) {
 			//no such plugin
 		}
 		
 		//store plugin	
-		String query = "INSERT INTO " + TABLENAME + " VALUES('"
-			+ plugin.getName() + "', '"
-			+ plugin.getVersion() + "', '"
-			+ plugin.getDescription() + "')";
-			
-		s.execute(query);
-		s.close();
+		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
+			+ " VALUES(?, ?, ?)");
+		insert.setString(1, plugin.getName());
+		insert.setString(2, plugin.getVersion());
+		insert.setString(3, plugin.getDescription());
+		insert.execute();
+		insert.close();
+		
 		c.close();
 	}
 
@@ -85,11 +87,17 @@ public class SqlPluginStore extends PluginStore
 		Connection c = layer.openConnection();
 		Statement s = c.createStatement();
 		
-		s.execute("DELETE FROM " + TABLENAME 
-			+ " WHERE name='" + plugin.getName() + "'");
+		PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
+			+ " WHERE name=?");
+		delete.setString(1, plugin.getName());
+		delete.execute();
+		delete.close();		
 			
-		s.execute("DELETE FROM " + SqlGroupStore.PLUGINLINKS 
-			+ " WHERE plugin='" + plugin.getName() + "'");
+		delete = c.prepareStatement("DELETE FROM " + SqlGroupStore.PLUGINLINKS 
+			+ " WHERE plugin=?");
+		delete.setString(1, plugin.getName());
+		delete.execute();
+		delete.close();					
 						
 		s.close();
 		c.close();	
@@ -101,9 +109,10 @@ public class SqlPluginStore extends PluginStore
 		PluginConcept plugin = null;
 
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME 
-			+ " WHERE name='" + name + "'");
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
+			+ " WHERE name=?");
+		select.setString(1, name);
+		ResultSet rs = select.executeQuery();
 					
 		if(rs.next())
 		{
@@ -116,7 +125,7 @@ public class SqlPluginStore extends PluginStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();	
 			
 		return plugin;	
@@ -128,8 +137,8 @@ public class SqlPluginStore extends PluginStore
 		ArrayList all = new ArrayList();
 		
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME);
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
+		ResultSet rs = select.executeQuery();
 					
 		while(rs.next())
 		{
@@ -143,7 +152,7 @@ public class SqlPluginStore extends PluginStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();		
 		
 		return all.iterator();

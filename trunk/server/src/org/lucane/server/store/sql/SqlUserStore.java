@@ -43,18 +43,19 @@ public class SqlUserStore extends UserStore
 	{	
 		//store user
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();			
-		String query = "INSERT INTO " + TABLENAME + " VALUES('"
-			+ user.getName() + "', '"
-			+ user.getPassword() + "', "
-			+ (user.isLocked() ? 1 : 0) + ", '"
-			+ user.getStartupPlugin() + "', '"
-			+ user.getPublicKey() + "', '"
-			+ user.getPrivateKey() + "', '"
-			+ user.getDescription() + "')";
-			
-		s.execute(query);
-		s.close();
+		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
+			+ " VALUES(?, ?, ?, ?, ?, ?, ?);");
+		
+		insert.setString(1, user.getName());
+		insert.setString(2, user.getPassword());
+		insert.setInt(3, user.isLocked() ? 1 : 0);
+		insert.setString(4, user.getStartupPlugin());
+		insert.setString(5, user.getPublicKey());
+		insert.setString(6, user.getPrivateKey());
+		insert.setString(7, user.getDescription());	
+		insert.execute();
+		insert.close();
+		
 		c.close();
 	}
 
@@ -67,39 +68,45 @@ public class SqlUserStore extends UserStore
 
 		//try to delete user
 		try {
-			s.execute("DELETE FROM " + TABLENAME 
-				+ " WHERE login='" + user.getName() + "'");						
+			PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
+				+ " WHERE login=?");
+			delete.setString(1, user.getName());
+			delete.execute();
 		} catch(SQLException e) {
 			//no such user
 		}
 		
 		//store user
-		String query = "INSERT INTO " + TABLENAME + " VALUES('"
-			+ user.getName() + "', '"
-			+ user.getPassword() + "', "
-			+ (user.isLocked() ? 1 : 0) + ", '"
-			+ user.getStartupPlugin() + "', '"
-			+ user.getPublicKey() + "', '"
-			+ user.getPrivateKey() + "', '"
-			+ user.getDescription() + "')";
+		PreparedStatement insert = c.prepareStatement("INSERT INTO " + TABLENAME 
+			+ " VALUES(?, ?, ?, ?, ?, ?, ?);");
+		
+		insert.setString(1, user.getName());
+		insert.setString(2, user.getPassword());
+		insert.setInt(3, user.isLocked() ? 1 : 0);
+		insert.setString(4, user.getStartupPlugin());
+		insert.setString(5, user.getPublicKey());
+		insert.setString(6, user.getPrivateKey());
+		insert.setString(7, user.getDescription());	
+		insert.execute();
+		insert.close();
 			
-		s.execute(query);
-		s.close();
 		c.close();
 	}
 	public void removeUser(UserConcept user)
 	throws SQLException
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
 		
-		s.execute("DELETE FROM " + TABLENAME 
-			+ " WHERE login='" + user.getName() + "'");
-
-		s.execute("DELETE FROM " + SqlGroupStore.USERLINKS 
-			+ " WHERE userName='" + user.getName() + "'");
-			
-		s.close();
+		PreparedStatement delete = c.prepareStatement("DELETE FROM " + TABLENAME 
+			+ " WHERE login=?");
+		delete.setString(1, user.getName());
+		delete.execute();
+		
+		delete = c.prepareStatement("DELETE FROM " + SqlGroupStore.USERLINKS 
+			+ " WHERE userName=?");
+		delete.setString(1, user.getName());
+		delete.execute();
+		
 		c.close();							
 	}
 	
@@ -109,9 +116,11 @@ public class SqlUserStore extends UserStore
 		UserConcept user = null;
 
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME 
-			+ " WHERE login='" + login + "'");
+		
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME 
+			+ " WHERE login=?");
+		select.setString(1, login);
+		ResultSet rs = select.executeQuery();
 					
 		if(rs.next())
 		{
@@ -129,7 +138,7 @@ public class SqlUserStore extends UserStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();	
 			
 		return user;
@@ -141,9 +150,9 @@ public class SqlUserStore extends UserStore
 		ArrayList all = new ArrayList();
 		
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet rs = s.executeQuery("SELECT * FROM " + TABLENAME);
-					
+		PreparedStatement select = c.prepareStatement("SELECT * FROM " + TABLENAME);
+		ResultSet rs = select.executeQuery();		
+							
 		while(rs.next())
 		{
 			String login = rs.getString(1);
@@ -161,7 +170,7 @@ public class SqlUserStore extends UserStore
 		}
 	
 		rs.close();		
-		s.close();
+		select.close();
 		c.close();		
 		
 		return all.iterator();
