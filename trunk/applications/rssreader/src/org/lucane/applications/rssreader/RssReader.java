@@ -1,5 +1,6 @@
 package org.lucane.applications.rssreader;
 
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -12,11 +13,7 @@ import org.lucane.common.ObjectConnection;
 
 public class RssReader extends StandalonePlugin 
 {
-	private static String SF_NET =
-		"http://sourceforge.net/export/rss2_projnews.php?group_id=95945&rss_fulltext=1";
-	private static String DLFP =
-		"http://linuxfr.org/backend.rss";
-
+	private MainFrame frame;
 	private ConnectInfo service;
 	
 	public RssReader() 
@@ -37,9 +34,10 @@ public class RssReader extends StandalonePlugin
 		System.setProperty("proxyHost", getLocalConfig().get("proxyHost", ""));
 		System.setProperty("proxyPort", getLocalConfig().get("proxyPort", ""));
 
-		MainFrame frame = new MainFrame(this);
+		frame = new MainFrame(this);
 		frame.refreshChannelList();
 		frame.setSize(600, 600);
+		frame.restoreState();
 		frame.show();
 	}
 	
@@ -56,6 +54,8 @@ public class RssReader extends StandalonePlugin
 		
 		if(! ack.equals("OK"))
 			DialogBox.error("Failed to add channel : \n" + ack);
+		else
+			frame.refreshChannelList();
 
 		oc.close();
 	}
@@ -73,6 +73,8 @@ public class RssReader extends StandalonePlugin
 		
 		if(! ack.equals("OK"))
 			DialogBox.error("Failed to remove channel : \n" + ack);
+		else
+			frame.refreshChannelList();
 
 		oc.close();
 	}
@@ -100,5 +102,11 @@ public class RssReader extends StandalonePlugin
 		oc.close();
 		
 		return channels;
+	}
+	
+	public void windowClosing(WindowEvent e)
+	{
+		frame.saveState();
+		this.exit();
 	}
 }
