@@ -20,6 +20,7 @@ package org.lucane.server.database;
 
 import java.sql.*;
 
+import org.lucane.common.Logging;
 import org.lucane.server.Server;
 
 class HSQLDBLayer extends DatabaseAbstractionLayer
@@ -28,15 +29,30 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   
   public HSQLDBLayer(String url, String login, String passwd) 
   {
+  	//TODO call getAbsoluteUrl everytime when Server is clean
     if (Server.lucanePath!=null) {
-      int pos = url.indexOf("hsqldb/lucane");
-      this.url=url.substring(0, pos)+Server.lucanePath+"hsqldb/lucane";
+      this.url = getAbsoluteUrl(url);
     } else {
       this.url = url;
     }
     this.login = login;
     this.passwd = passwd;
     this.connection = null;
+  }
+  
+  private String getAbsoluteUrl(String url)
+  {
+  	String standardStart = "jdbc:hsqldb:";
+  	if(url.startsWith(standardStart))
+  	{
+  		String miniurl = url.substring(standardStart.length());
+  		if(! miniurl.startsWith("/"))
+  			url = standardStart + Server.lucanePath + miniurl;
+  	}
+  	
+  	Logging.getLogger().fine("HSQLdb url : " + url);
+  	
+  	return url;
   }
   
   public Connection openConnection()

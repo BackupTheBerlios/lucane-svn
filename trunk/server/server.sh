@@ -4,4 +4,4 @@ for file in lib/*.jar
 done
 
 # run program
-java org.lucane.server.Server
+java org.lucane.server.Server $*
