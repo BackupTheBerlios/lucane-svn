@@ -2,7 +2,7 @@
 <project>
   <pomVersion>3</pomVersion>
   <groupId>lucane</groupId>
-  <currentVersion>0.7-preview</currentVersion>
+  <currentVersion>0.7-beta</currentVersion>
   <organization>
     <name>The Lucane Team</name>
     <url>http://lucane.org</url>
