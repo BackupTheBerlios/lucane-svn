@@ -6,7 +6,7 @@
   <name>Lucane Applications</name>
   
   <groupId>lucane</groupId>
-  <currentVersion>0.7-beta2</currentVersion>
+  <currentVersion>0.7</currentVersion>
   <organization>
     <name>The Lucane Team</name>
     <url>http://lucane.org</url>
@@ -19,17 +19,17 @@
     <dependency>
       <groupId>lucane</groupId>
       <artifactId>lucane-common</artifactId>
-      <version>0.7-beta2</version>
+      <version>0.7</version>
     </dependency>
     <dependency>
       <groupId>lucane</groupId>
       <artifactId>lucane-server</artifactId>
-      <version>0.7-beta2</version>
+      <version>0.7</version>
     </dependency>
     <dependency>
       <groupId>lucane</groupId>
       <artifactId>lucane-client</artifactId>
-      <version>0.7-beta2</version>
+      <version>0.7</version>
     </dependency>
   </dependencies>
 
