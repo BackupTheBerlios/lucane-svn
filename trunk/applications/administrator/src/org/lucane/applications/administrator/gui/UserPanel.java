@@ -27,6 +27,7 @@ import javax.swing.*;
 import org.lucane.applications.administrator.AdministratorPlugin;
 import org.lucane.client.widgets.*;
 import org.lucane.common.concepts.*;
+import org.lucane.common.crypto.MD5;
 import org.lucane.common.*;
 
 public class UserPanel extends  JPanel

@@ -20,7 +20,6 @@
 package org.lucane.server;
 
 import java.util.*;
-import java.util.jar.JarFile;
 
 import org.lucane.common.*;
 import org.lucane.common.concepts.ServiceConcept;
@@ -71,14 +70,10 @@ public class ServiceManager
 				String servicename = service.getName();
 				try
 				{
-					loader.addUrl("jar:file:///" + baseURL + servicename + ".jar!/");
-					//TODO add a JarUtils in common to do this and the same for plugins
-					String className =
-						(new JarFile(baseURL + servicename + ".jar"))
-						.getManifest()
-						.getMainAttributes()
-						.getValue("Service-Class");
-					
+					String jarPath = baseURL + servicename + ".jar";
+					loader.addUrl("jar:file:///" + jarPath + "!/");
+
+					String className = JarUtils.getServiceClass(jarPath);
 					if (className == null)
 						continue;
 					

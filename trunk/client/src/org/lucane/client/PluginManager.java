@@ -22,7 +22,6 @@ import org.lucane.common.*;
 
 import java.net.URL;
 import java.util.*;
-import java.util.jar.*;
 
 
 /**
@@ -157,14 +156,14 @@ public class PluginManager
 			{
 				LucaneClassLoader loader = LucaneClassLoader.getInstance();
 				String baseURL = System.getProperty("user.dir") + "/" + Client.APPLICATIONS_DIRECTORY;
-				URL url = new URL("jar:file:///" + baseURL + name + ".jar!/");
+				String jarUrl = baseURL + name + ".jar";
+				URL url = new URL("jar:file:///" + jarUrl + "!/");
 				loader.addUrl(url);
 				Logging.getLogger().fine("plugin URL: " + url);
 				
 				//we have to set our ClassLoader to reload the plugin.
-				Logging.getLogger().finer("classname: " + baseURL + name + ".jar");
-				String className = (new JarFile(baseURL + name + ".jar")).getManifest()
-				.getMainAttributes().getValue("Plugin-Class");
+				String className = JarUtils.getPluginClass(jarUrl);
+				Logging.getLogger().finer("classname: " + className);
 				
 				plugin = (Plugin)Class.forName(className, true, loader).newInstance();
 				plugin.setLocale(Client.getInstance().getConfig().getLanguage());

@@ -21,10 +21,10 @@ package org.lucane.server.store;
 
 import org.lucane.server.*;
 import org.lucane.common.concepts.*;
+import org.lucane.common.crypto.MD5;
 import org.lucane.server.store.sql.*;
 import org.lucane.server.store.ldap.*;
 import org.lucane.common.Logging;
-import org.lucane.common.MD5;
 
 /**
  * The unique way to get Stores for the different concepts.

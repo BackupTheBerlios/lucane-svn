@@ -21,6 +21,7 @@ package org.lucane.applications.passwdchanger;
 import org.lucane.client.*;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
+import org.lucane.common.crypto.MD5;
 import org.lucane.common.signature.*;
 import java.awt.*;
 import java.awt.event.*;

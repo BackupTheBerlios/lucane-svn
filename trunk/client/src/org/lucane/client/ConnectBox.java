@@ -22,6 +22,8 @@ package org.lucane.client;
 import org.lucane.client.util.*;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
+import org.lucane.common.crypto.MD5;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
