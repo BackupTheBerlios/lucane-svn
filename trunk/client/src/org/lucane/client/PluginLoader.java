@@ -136,8 +136,7 @@ public class PluginLoader
   	String name = message.getApplication();
 	Logging.getLogger().fine("Trying to load plugin " + name);
 
-    Plugin p = ((Plugin)this.plugins.get(name)).init(new ConnectInfo[0], false);
-    p.setLocale(Client.getInstance().getConfig().getLanguage());
+    Plugin p = newPluginInstance(name, new ConnectInfo[0], false); 
     p.load(oc, message.getSender(), (String)message.getData());
     (new Thread(p, p.getName())).start();
 	Logging.getLogger().info("Plugin " + name + " loaded.");
@@ -153,12 +152,18 @@ public class PluginLoader
   public Plugin run(String name, ConnectInfo[] friends)
   {
 	Logging.getLogger().fine("Trying to run plugin " + name);
-	Plugin p = ((Plugin)this.plugins.get(name)).init(friends, true);
-    p.setLocale(Client.getInstance().getConfig().getLanguage());
+	Plugin p = newPluginInstance(name, friends, true);
     (new Thread(p, p.getName())).start();
     Logging.getLogger().fine("Plugin " + name + " started.");
     
     return p;
+  }
+  
+  public Plugin newPluginInstance(String name, ConnectInfo[] friends, boolean starter)
+  {
+  	Plugin p = ((Plugin)this.plugins.get(name)).init(friends, starter);
+  	p.setLocale(Client.getInstance().getConfig().getLanguage());
+  	return p;
   }
 
   /**

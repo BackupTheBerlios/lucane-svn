@@ -186,12 +186,11 @@ public class QuickMessage
     }
     else if(e.getKeyCode() == KeyEvent.VK_F1)
     {
-    	Plugin help = PluginLoader.getInstance().run("org.lucane.applications.helpbrowser", null);
     	try {
-    		while(!help.isReady())
-    			Thread.yield();
-    		
-			help.invoke("showHelp", new Class[]{Plugin.class}, new Object[]{this});
+    		Plugin help = PluginLoader.getInstance().newPluginInstance(
+    				"org.lucane.applications.helpbrowser", new ConnectInfo[0], true);
+    		help.start();
+    		help.invoke("showHelp", new Class[]{Plugin.class}, new Object[]{this});
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			ex.getCause().printStackTrace();

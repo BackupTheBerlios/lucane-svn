@@ -38,12 +38,10 @@ import javax.swing.ImageIcon;
 public abstract class Plugin
   implements Runnable, WindowListener
 {
-	private boolean ready = false;
-
   //do not redeclare them in your plugin !
   protected boolean starter;
-  protected ResourceBundle bundle;
-  protected LocalConfig config;
+  private ResourceBundle bundle;
+  private LocalConfig config;
   
   /**
    * Used by the PluginLoader
@@ -145,16 +143,6 @@ public abstract class Plugin
   }
 
   /**
-   * Is the plugin completely ready ?
-   * @return true if the plugin is ready
-   */
-  public boolean isReady()
-  {
-  	return ready;
-  }
-
-
-  /**
    * Used by the PluginLoader to initialize the plugin with adequate parameters
    * 
    * @param friends the connections to use
@@ -238,8 +226,6 @@ public abstract class Plugin
       start();
     else
       follow();
-
-	this.ready = true;
   }
 
   /**
