@@ -134,7 +134,7 @@ public class Client
 		this.communicator.updatePlugins();
  
         
-        this.serverInfos = new ConnectInfo("Server", "", myinfos.server,
+        this.serverInfos = new ConnectInfo("Server", "", myinfos.getAuthenticationServer(),
             config.getServerPort(), "nokey", "Server");
         
         try

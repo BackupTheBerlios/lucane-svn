@@ -214,7 +214,7 @@ public class Communicator
     {
       ci_res = (ConnectInfo)this.infos.elementAt(i);
 
-      if(ci_res.name.equals(username) || 
+      if(ci_res.getName().equals(username) || 
          ci_res.getName().equals(username))
         found = true;
     }
@@ -231,7 +231,7 @@ public class Communicator
         oc.close();
         
         if(ci_res.isService() || ci_res.isServer())
-        	ci_res.setServer(Client.getInstance().getConfig().getServerHost());
+        	ci_res.setHostName(Client.getInstance().getConfig().getServerHost());
         
         this.infos.addElement(ci_res);
       }

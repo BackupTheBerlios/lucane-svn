@@ -290,7 +290,7 @@ public class Server implements Runnable
                                 message.getSender().getName());
                         service =
                             store.getServiceStore().getService(
-                                message.getReceiver().name);
+                                message.getReceiver().getName());
                     }
                     catch (Exception e)
                     {
@@ -309,7 +309,7 @@ public class Server implements Runnable
                             "#Err > "
                                 + message.getSender()
                                 + " : Service denied to "
-                                + message.getReceiver().name);
+                                + message.getReceiver().getName());
                         try
                         {
                             oc.write(
@@ -346,7 +346,7 @@ public class Server implements Runnable
                 }
 				Logging.getLogger().warning(
                     "#Err > Service "
-                        + message.getReceiver().name
+                        + message.getReceiver().getName()
                         + " unknown");
             }
         }
@@ -439,7 +439,7 @@ public class Server implements Runnable
     {
         String passwd = null;
         String name = null;
-        String server = null;
+        String authenticationServer = null;
         String hostname = null;
         int port = 0;
         StringTokenizer stk = new StringTokenizer(data, " ");
@@ -464,8 +464,8 @@ public class Server implements Runnable
             return;
         }
 
-        name = message.getSender().name;
-        server = message.getSender().server;
+        name = message.getSender().getName();
+        authenticationServer = message.getSender().getAuthenticationServer();
         UserConcept user = null;
         
         try {
@@ -490,7 +490,7 @@ public class Server implements Runnable
 				this.removeConnectInfo(oldUser);
 			}
 			
-            connections.add(new ConnectInfo(name, server, hostname,
+            connections.add(new ConnectInfo(name, authenticationServer, hostname,
                     port, user.getPublicKey(), "Client"));
             try
             {

@@ -26,11 +26,12 @@ import java.io.Serializable;
  */
 public class ConnectInfo implements Serializable
 {
-  public String name;
-  public String server;
-  public String hostname;
+  private String name; //login
+  private String authenticationServer; //auth server
+  public String hostname; //where to connect
   public int port;
-  public String type;
+  public String type; //server, service, client or plugin
+  
   public Verifier verifier;
   private String key;
 
@@ -48,7 +49,7 @@ public class ConnectInfo implements Serializable
                      String key, String type)
   {
     this.name = name;
-    this.server = server;
+    this.authenticationServer = server;
     this.hostname = hostname;
     this.port = port;
     this.type = type;
@@ -73,7 +74,7 @@ public class ConnectInfo implements Serializable
    */
   public String toString()
   {
-    return this.name + "@" + this.server + " = " + this.hostname + ":" + 
+    return this.name + "@" + this.authenticationServer + " = " + this.hostname + ":" + 
            this.port + " (" + this.type + ")";
   }
 
@@ -84,7 +85,7 @@ public class ConnectInfo implements Serializable
    */
   public String getRepresentation()
   {
-    return this.name + " " + this.server + " " + this.hostname + " " + 
+    return this.name + " " + this.authenticationServer + " " + this.hostname + " " + 
            this.port + " " + this.key + " " + this.type;
   }
 
@@ -98,15 +99,19 @@ public class ConnectInfo implements Serializable
     return this.name;
   }
   
-  /**
-   * Change the server
-   * 
-   * @param server the new server
-   */
-  public void setServer(String server)
+  public String getAuthenticationServer()
   {
-  	this.server = server;
-  	this.hostname = server;
+  	return this.authenticationServer;
+  }
+  
+  /**
+   * Change the host name
+   * 
+   * @param server the new hostname
+   */
+  public void setHostName(String hostname)
+  {
+  		this.hostname = hostname;
   }
   
   /**
