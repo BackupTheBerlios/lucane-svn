@@ -32,7 +32,7 @@ import javax.swing.border.EmptyBorder;
  * Connection Dialog
  */
 class ConnectBox
-implements KeyListener, ActionListener
+implements KeyListener, ActionListener, WindowListener
 {
     private JDialog dialog;
     
@@ -111,8 +111,8 @@ implements KeyListener, ActionListener
 
         pnlMain.add(pnlLogin, BorderLayout.SOUTH);
         
-        dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        dialog.addWindowListener(this);
+        
         btOk.addActionListener(this);
         btCancel.addActionListener(this);
         btOk.addKeyListener(this);
@@ -127,8 +127,6 @@ implements KeyListener, ActionListener
         
 		dialog.pack();
 		dialog.setResizable(false);
-        
-        
     }
     
     /**
@@ -347,4 +345,16 @@ implements KeyListener, ActionListener
         else
             return Translation.tr("connectBoxBadMessage1") + "\n" + Translation.tr("connectBoxBadMessage2");
     }
+
+	public void windowOpened(WindowEvent we) {}
+	public void windowClosed(WindowEvent we) {}
+	public void windowIconified(WindowEvent we) {}
+	public void windowDeiconified(WindowEvent we) {}
+	public void windowActivated(WindowEvent we) {}
+	public void windowDeactivated(WindowEvent we) {}
+	public void windowClosing(WindowEvent we)
+	{
+		closeDialog();
+		System.exit(0);
+	}
 }
