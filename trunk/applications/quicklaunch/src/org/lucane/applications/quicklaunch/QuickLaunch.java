@@ -34,6 +34,8 @@ public class QuickLaunch
   extends Plugin
   implements ActionListener
 {
+	private static final String MAIN_INTERFACE = "org.lucane.applications.maininterface";
+	
   private TrayIcon trayIcon;
   
   /**
@@ -63,10 +65,11 @@ public class QuickLaunch
   { 	
   	try {  		
 	  	this.trayIcon = new TrayIcon(this.getImageIcon(), this.getTitle());
-	} catch(Exception e) {
+	} catch(Throwable t) {
 		DialogBox.error(tr("err.noTray"));
-		PluginLoader.getInstance().run("org.lucane.applications.maininterface", 
-			new ConnectInfo[0]);	
+		PluginLoader.getInstance().run(MAIN_INTERFACE, new ConnectInfo[0]);	
+		Client.getInstance().setStartupPlugin(MAIN_INTERFACE);
+		return;
 	}
 	
 	HashMap categories = new HashMap();

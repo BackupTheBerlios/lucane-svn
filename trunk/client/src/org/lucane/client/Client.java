@@ -381,7 +381,19 @@ public class Client
 	{
     	return this.startupPlugin;
     }
-
+    
+    /**
+     * Change the flag startup plugin.
+     * You shouldn't use it. It's used by quicklaunch to set MainInterface
+     * if quicklaunch can't be started.
+     * 
+     * @param pluginName the plugin name
+     */
+    public void setStartupPlugin(String pluginName)
+	{
+    	this.startupPlugin = pluginName;
+    }
+    
 	/**
 	 * Set configuration
 	 * 
