@@ -102,7 +102,7 @@ public class JMailPlugin
 	public ImageIcon getIcon(String icon)
 	{
 		try {
-			return new ImageIcon(new URL(getDirectory() + "base/pics/" +icon));
+			return new ImageIcon(new URL(getDirectory() + "pics/" +icon));
 		} catch(Exception e) {		
 			return new ImageIcon();
 		}
