@@ -310,6 +310,11 @@ public class Store
         getPluginStore().storePlugin(todolistPlugin);
         getServiceStore().storeService(todolistService);
         
+        //rssreader application
+        PluginConcept rssreaderPlugin = new PluginConcept("org.lucane.applications.rssreader", "0.7");
+        allUsers.addPlugin(rssreaderPlugin);
+        getPluginStore().storePlugin(rssreaderPlugin);
+        
         getGroupStore().storeGroup(allUsers);
         getGroupStore().storeGroup(grantedUsers);
         getGroupStore().storeGroup(admins);
