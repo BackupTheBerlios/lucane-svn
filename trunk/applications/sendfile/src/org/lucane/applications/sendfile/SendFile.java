@@ -23,217 +23,217 @@ import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
+
 import javax.swing.*;
 
 
 public class SendFile
-  extends Plugin
-  implements ActionListener
+extends Plugin
 {
+	private ObjectConnection connection;
+	private ConnectInfo friend;
+	private String fileName;
+	
+	private SendFileDialog dialog;
+	
+	public SendFile()
+	{
+	}
+	
+	
+	public Plugin newInstance(ConnectInfo[] friends, boolean starter)
+	{
+		Logging.getLogger().finer("SendFile:init() starter=" + starter);
+		if(friends.length > 0)
+			return new SendFile(friends[0], starter);
+		else
+			return new SendFile(null, starter);
+	}
+	
+	public SendFile(ConnectInfo friend, boolean starter)
+	{
+		this.friend = friend;
+		this.starter = starter;
+	}
+	
+	public void load(ObjectConnection friend, ConnectInfo who, String filename)
+	{
+		this.connection = friend;
+		this.friend = who;
+		this.fileName = filename;
+	}
+	
+	public void start()
+	{
+		
+		// selection check
+		if(this.friend == null)
+		{
+			DialogBox.info(tr("noselect"));
+			exit();
+			return;
+		}
+		
+		dialog = new SendFileDialog(this, getTitle() + "> " + friend.getName(), true);
+		dialog.setExitPluginOnClose(true);
+		selectFile(dialog);
+		dialog.show();		
+	}
+	
+	public void follow()
+	{
+		dialog = new SendFileDialog(this, getTitle() + " < " + friend.getName(), false);
+		 dialog.setPreferredSize(new Dimension(400, 300));		 
+		 dialog.setFilePath(fileName);
+		 
+		 try {
+			String comment = connection.readString();
+			dialog.setComment(comment); 
+		} catch (Exception e) {
+			dialog.setComment(tr("err.comment"));
+		}
+		 
+		 dialog.show();		 
+	}
+		
+	public void selectFile(SendFileDialog dialog)
+	{
+		JFileChooser fc = new JFileChooser();
+		int returnVal = fc.showOpenDialog(null);
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+			dialog.setFilePath(fc.getSelectedFile().getPath());
+	}
+	
+	public void askForAccept(String filePath, String comment)
+	{
+		dialog.dispose();
+		
+		filePath = filePath.replace('\\', '/');
+		int index = filePath.lastIndexOf('/');
+		if(index > 0)
+			this.fileName = filePath.substring(index+1);
+		else 
+			this.fileName = filePath;
+		
+		try {
+			connection = Communicator.getInstance().sendMessageTo(friend, getName(), fileName);
+			connection.write(comment);
+			
+			Boolean acceptation = Boolean.FALSE;
+			
+			try	{
+				acceptation = (Boolean)connection.read();
+			} catch(Exception e) {
+				//file refused
+			}
+			
+			if(acceptation.booleanValue())
+				sendFile(filePath);
+			else
+			{
+				String reject = tr("msg.rejectFile");
+				reject = reject.replaceAll("%1", friend.getName());
+				reject = reject.replaceAll("%2", fileName);
+				DialogBox.error(reject);
+			}
+			
+			connection.close();
+		}
+		catch(Exception e)
+		{
+			DialogBox.error(tr("sendError"));
+			e.printStackTrace();			
+		}
+	}
+	
+	public void acceptFile()
+	{	
+		JFileChooser fc = new JFileChooser();
+		
+		int returnVal = fc.showSaveDialog(null);
+		if(returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			
+			try {
+				connection.write(Boolean.TRUE);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-  private ConnectInfo friend;
-  private String filename;
-  private ManagedWindow dialog;
-  private JTextField txtWho;
-  private JTextField txtWhat;
-  private JButton btnDlg;
-  private JButton btnChoose;
-  private JFileChooser fc;
-  private JLabel lblNewFile;
-  private File file;
-  private ObjectConnection sc;
-
-  public SendFile()
-  {
-  }
-
-
-  public Plugin newInstance(ConnectInfo[] friends, boolean starter)
-  {
-	Logging.getLogger().finer("SendFile:init() starter=" + starter);
-    if(friends.length > 0)
-      return new SendFile(friends[0], starter);
-    else
-      return new SendFile(null, starter);
-  }
-
-  public SendFile(ConnectInfo friend, boolean starter)
-  {
-    this.friend = friend;
-    this.starter = starter;
-  }
-
-  public void load(ObjectConnection friend, ConnectInfo who, String filename)
-  {
-    this.sc = friend;
-    this.friend = who;
-    this.filename = filename;
-  }
-
-  public void start()
-  {
-
-    /* selection check */
-    if(this.friend == null)
-    {
-      DialogBox.info(tr("noselect"));
-      exit();
-      return;
-    }
-
-    /* chose file to send */
-    JFileChooser fc = new JFileChooser();
-    int returnVal = fc.showOpenDialog(null);
-
-    if(returnVal == JFileChooser.APPROVE_OPTION)
-    {
-      file = fc.getSelectedFile();
-
-      try
-      {
-        filename = file.getName();
-        sc = Communicator.getInstance().sendMessageTo(this.friend, 
-                       this.getName(),  filename);
-
-        String line = null;
-
-        try
-        {
-          line = (String)sc.read();
-        }
-        catch(Exception e)
-        {
-			//file refused
-        }
-
-        if(line == null || ! line.equals("ACCEPT"))
-          DialogBox.error(tr("reject1") + this.friend.getName() + " " + tr("reject2") + " " + 
-                this.filename + tr("reject3"));
-        else
-        {
-          sendFile();
-          DialogBox.info(tr("sent1") + " " + filename + " " + tr("sent2"));
-          exit();
-        }
-
-        this.sc.close();
-      }
-      catch(Exception e)
-      {
-        DialogBox.error(tr("sendError"));
-      }
-    }
-  }
-
-
-  public void actionPerformed(ActionEvent ae)
-  {
-    JButton jb = (JButton)ae.getSource();
-
-    /* reject file */
-    if(jb.getText().equals(tr("reject")))
-    {
-      try
-      {
-        sc.write("REJECT");
+			File file = fc.getSelectedFile();			
+			downloadFile(file.getPath());
+		}
+		else
+			rejectFile();
+		
+	}
+	
+	
+	
+	public void rejectFile()
+	{
+		try {
+			connection.write(Boolean.FALSE);
+		} catch (IOException e) {
+			//oops
+		}
 		Logging.getLogger().finer("SendFile::REJECT");
-        sc.close();
-        dialog.dispose();
-        exit();
-      }
-      catch(Exception e)
-      {
-        //pheeeesh...
-      }
-    }
-
-    /* save file */
-    else if(jb.getText().equals(tr("save")))
-    {
-      fc = new JFileChooser();
-
-      int returnVal = fc.showSaveDialog(null);
-      if(returnVal == JFileChooser.APPROVE_OPTION)
-      {
-        file = fc.getSelectedFile();
-
+		connection.close();
+		dialog.dispose();
+		exit();
+	}
+	
+	public void sendFile(String filePath)
+	throws Exception
+	{
+		DataInputStream dis = null;
+		try { 
+			dis = new DataInputStream(new FileInputStream(filePath));
+			byte[] buf = new byte[dis.available()];
+			dis.readFully(buf);
+			connection.write(buf);
+			connection.close();
+		} finally {
+			if(dis != null)
+				dis.close();
+		}
+		
+		String sent = tr("msg.sent").replaceAll("%1", fileName);
+		DialogBox.info(sent);
+		exit();		
+	}	
+	
+	public void downloadFile(String destination)
+	{
 		DataOutputStream dos = null;
-        try
-        {
-          sc.write("ACCEPT");
-		  Logging.getLogger().finer("SendFile::ACCEPT");
-          dialog.dispose();
-
-          dos = new DataOutputStream(new FileOutputStream(new File(file.getPath())));
-          byte[] buf = (byte[])sc.read();
-          dos.write(buf);
-
-          sc.close();
-          DialogBox.info(tr("get1") + " " + filename + " " + tr("get2"));
-          exit();
-        }
-        catch(Exception e)
-        {
-          DialogBox.error(tr("getError"));
-        }
-        finally {
-        	if(dos != null) {
-        		try {
-        			dos.close();
-        		} catch(IOException ioe) {}
-        	}
-        }
-      }
-    }
-  }
-
-  public void follow()
-  {
-    dialog = new ManagedWindow(this, getTitle());
-    dialog.setExitPluginOnClose(true);
-    dialog.getContentPane().setLayout(new FlowLayout());
-    lblNewFile = new JLabel( "[" + friend.getName() + "] " + this.filename);
-    btnDlg = new JButton(tr("reject"));
-    btnDlg.addActionListener(this);
-    btnChoose = new JButton(tr("save"));
-    btnChoose.addActionListener(this);
-    dialog.getContentPane().add(lblNewFile);
-    dialog.getContentPane().add(btnDlg);
-    dialog.getContentPane().add(btnChoose);
-	dialog.setIconImage(this.getImageIcon().getImage());
-    dialog.show();
-  }
-
-
-  private void sendFile() throws Exception
-  {
-    DataInputStream dis = null;
-    try { 
-        dis = new DataInputStream(new FileInputStream(this.file.getPath()));
-    	byte[] buf = new byte[dis.available()];
-    	dis.readFully(buf);
-    	sc.write(buf);
-    	sc.close();
-    } finally {
-    	if(dis != null)
-    		dis.close();
-    }
-   }
-
-  public void windowClosing(WindowEvent we)
-  {
-    try
-    {
-      if(! starter && sc != null)
-        sc.close();
-    }
-    catch(Exception e)
-    {
-      //we can't do much here
-    }
-
-    exit();
-  }
+		try
+		{
+			connection.write(Boolean.TRUE);
+			Logging.getLogger().finer("SendFile::ACCEPT");
+			dialog.dispose();
+			
+			dos = new DataOutputStream(new FileOutputStream(destination));
+			byte[] buf = (byte[])connection.read();
+			dos.write(buf);	
+			
+			connection.close();
+			
+			String get = tr("msg.get").replaceAll("%1", fileName);
+			DialogBox.info(get);
+			exit();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			DialogBox.error(tr("getError"));
+		}
+		finally {
+			if(dos != null) {
+				try {
+					dos.close();
+				} catch(IOException ioe) {}
+			}
+		}
+	}
 }
