@@ -23,6 +23,8 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import javax.swing.UIManager;
+
 import org.lucane.client.Client;
 import org.lucane.common.Logging;
 
@@ -58,6 +60,9 @@ public class Translation
                 Translation.bundle = null;
             }
         }
+        
+        if(Translation.bundle != null)
+        	Translation.changeUIMessages();            
     }
     
     /**
@@ -88,4 +93,37 @@ public class Translation
         
         return url.replace('\\', '/');
     }
+    
+    /**
+     * Change the messages for Swing objects
+     */
+    private static void changeUIMessages()
+	{
+    	String[] messages = {
+    			"FileChooser.acceptAllFileFilterText",
+				"FileChooser.cancelButtonText",
+				"FileChooser.cancelButtonToolTipText",
+				"FileChooser.detailsViewButtonToolTipText",
+				"FileChooser.directoryDescriptionText",
+				"FileChooser.fileDescriptionText",
+				"FileChooser.fileNameLabelText",
+				"FileChooser.filesOfTypeLabelText",
+				"FileChooser.helpButtonText",
+				"FileChooser.helpButtonToolTipText",
+				"FileChooser.homeFolderToolTipText",
+				"FileChooser.listViewButtonToolTipText",
+				"FileChooser.lookInLabelText",
+				"FileChooser.newFolderErrorText",
+				"FileChooser.newFolderToolTipText",
+				"FileChooser.openButtonText",
+				"FileChooser.openButtonToolTipText",
+				"FileChooser.saveButtonText",
+				"FileChooser.saveButtonToolTipText",
+				"FileChooser.updateButtonText",
+				"FileChooser.updateButtonToolTipText",
+    	"FileChooser.upFolderToolTipText"};
+    	
+    	for(int i=0;i<messages.length;i++)
+    		UIManager.put(messages[i], Translation.tr(messages[i]));
+    }    
 }
