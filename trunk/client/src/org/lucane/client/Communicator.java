@@ -180,6 +180,15 @@ public class Communicator
   }
 
   /**
+   * Clean the cache to force connectInfo loading
+   * Usefull when someone disconnected and reconnected 
+   */
+  protected void flushConnectInfosCache()
+  {
+  	this.infos = new Vector();
+  }
+
+  /**
    * Get the connections informations on all known clients
    * 
    * @return the info list

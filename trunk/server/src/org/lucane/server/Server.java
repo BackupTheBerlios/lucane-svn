@@ -232,28 +232,13 @@ public class Server implements Runnable
             /* if the user asks for authentication, we try to do it and exits this method */
             if (cmd.equals("AUTH"))
             {
-                try
-                {
+                try {
                     oc.write("OK");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if (alreadyConnected)
-                {
-                    try
-                    {
-                    	//TODO : improve here. we don't need to eject the newcoming
-                        oc.write("ALREADY_CONNECTED");
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                }
-                else
-                    authentification(oc, message, cmdData);
+                authentification(oc, message, cmdData);
             }
             else if (!alreadyConnected)
             {
@@ -488,8 +473,22 @@ public class Server implements Runnable
         	e.printStackTrace();
         }
 
+		//password ok
         if(user != null && store.getUserStore().checkUserPassword(user,  passwd))
         {
+			//disconnect already connected user
+			if(isAlreadyKnown(message.getSender()))
+			{
+				ConnectInfo oldUser = getCompleteConnectInfo(message.getSender());
+				try {
+					ObjectConnection myoc = this.sendMessageTo(oldUser, "Client", "DISCONNECT");
+					myoc.close();
+				} catch (Exception e) {
+					//we can't do much here, the client might have crashed
+				}
+				this.removeConnectInfo(oldUser);
+			}
+			
             connections.add(new ConnectInfo(name, server, hostname,
                     port, user.getPublicKey(), "Client"));
             try

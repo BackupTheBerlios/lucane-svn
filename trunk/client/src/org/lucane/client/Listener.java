@@ -208,6 +208,8 @@ class Listener
     /* internal commands */
 	if(command.equals("USER_LIST"))
       setUserList(data);
+	else if(command.equals("DISCONNECT"))
+	  disconnect();
   }
 
   /**
@@ -230,6 +232,14 @@ class Listener
     }
 
     parent.setUserList(users);
+  }
+  
+  /**
+   * Disconnects and exit
+   */
+  private void disconnect()
+  {
+  	Client.getInstance().disconnect();
   }
 
   /**

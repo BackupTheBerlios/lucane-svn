@@ -280,6 +280,15 @@ public class Client
     }
     
     /**
+     * Disconnected by the server
+     */
+    protected void disconnect()
+    {
+    	DialogBox.info(Translation.tr("msg.disconnected"));
+    	cleanExit();
+    }
+    
+    /**
      * Quits the client properly
      */
     protected void cleanExit()
@@ -307,6 +316,7 @@ public class Client
     protected void setUserList(Vector users)
     {
         this.users = users;
+        this.communicator.flushConnectInfosCache();
         
         for(int i = 0; i < this.userListListeners.size(); i++)
             ((UserListListener)this.userListListeners.elementAt(i)).userListChanged(users);
