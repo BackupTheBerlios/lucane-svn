@@ -103,7 +103,7 @@ public class QuickMessage
     dialog.getContentPane().add(txtNew, BorderLayout.CENTER);
     dialog.getContentPane().add(btnMain, BorderLayout.SOUTH);
     dialog.setSize(350, 200);
-	dialog.setIconImage(this.getImageIcon().getImage());
+	  dialog.setIconImage(this.getImageIcon().getImage());
     dialog.setVisible(true);
   }
 

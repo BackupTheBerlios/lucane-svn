@@ -412,27 +412,27 @@ public class Client
 		return this.config;
 	}
 	
-	/**
-	 * Get an icon from its image name
-	 * 
-	 * @param icon the image name
-	 * @return an ImageIcon instance
-	 */
-	public static ImageIcon getIcon(String icon)
-	{
-		URL url=null;
-		try {
-			/* create the default url */
-			url=new URL("jar:file:///"
-				+ System.getProperty("user.dir").replace('\\', '/')
-				+ "/lib/lucane-client-" + Client.VERSION + ".jar!/icons/"
-				+ icon);
-			
-			return new ImageIcon(url);
-		} catch(Exception e) {		
-			return new ImageIcon();
-		}
-	}
+  /**
+   * Get an icon from its image name
+   * 
+   * @param icon the image name
+   * @return an ImageIcon instance
+   */
+  public static ImageIcon getIcon(String icon)
+  {
+    URL url=null;
+    try {
+      /* create the default url */
+      url=new URL("jar:file:///"
+        + System.getProperty("user.dir").replace('\\', '/')
+        + "/lib/lucane-client-" + Client.VERSION + ".jar!/icons/"
+        + icon);
+      
+      return new ImageIcon(url);
+    } catch(Exception e) {    
+      return new ImageIcon();
+    }
+  }
     
     /**
      * Main
