@@ -35,6 +35,9 @@ import java.util.*;
  */
 public class Server
 {
+	
+	public static String lucanePath;
+	
 	private static final String CONFIG_FILE = "etc/server-config.xml";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
 	public static final String VERSION = "0.7";
@@ -242,7 +245,12 @@ public class Server
 		DataInputStream dis = null;
 		try
 		{
-			dis = new DataInputStream(new FileInputStream(APPLICATIONS_DIRECTORY + data + ".jar"));
+			String path;
+			if (lucanePath!=null)
+				path = lucanePath+APPLICATIONS_DIRECTORY + data + ".jar";
+			else
+				path = APPLICATIONS_DIRECTORY + data + ".jar";
+			dis = new DataInputStream(new FileInputStream(path));
 			byte[] buf = new byte[dis.available()];
 			dis.readFully(buf);
 			oc.write(buf);
@@ -372,9 +380,25 @@ public class Server
 	 */
 	public static void main(String[] args)
 	{
+		if (args.length > 1) {
+			System.out.println("USAGE :\nserver.(bat|sh) [server path]");
+		}
+		if (args.length==1) {
+			lucanePath=args[0];
+			lucanePath=lucanePath.replace('\\','/');
+			if (lucanePath.startsWith("\""))
+				lucanePath=lucanePath.substring(1, lucanePath.length()-2);
+			if (!lucanePath.endsWith("/"))
+				lucanePath+="/";
+		}
 		//init logging
 		try {
-			Logging.init("lucane.log", "ALL");
+			String logpath;
+			if (lucanePath!=null)
+				logpath=lucanePath+"lucane.log";
+			else
+				logpath="lucane.log";
+			Logging.init(logpath, "ALL");
 		} catch(IOException ioe) {
 			System.err.println("Unable to init logging, exiting.");
 			System.exit(1);

@@ -55,8 +55,11 @@ public class ServiceManager
 	 */
 	protected void loadAllServices()
 	{
-		String baseURL = System.getProperty("user.dir")	+ "/" + Server.APPLICATIONS_DIRECTORY;
-		
+		String baseURL;
+		if (Server.lucanePath!=null)
+			baseURL = Server.lucanePath + Server.APPLICATIONS_DIRECTORY;
+		else
+			baseURL = System.getProperty("user.dir") + "/" + Server.APPLICATIONS_DIRECTORY;
 		//get all services from store
 		Iterator services;
 		try {

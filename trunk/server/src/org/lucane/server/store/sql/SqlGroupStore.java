@@ -45,8 +45,15 @@ public class SqlGroupStore extends GroupStore
         
         if(!layer.hasTable(TABLENAME))
         {
-        	String dbDescription = "jar:file:///"
-        			+ System.getProperty("user.dir").replace('\\', '/')
+        	String dbDescription;
+        	if (Server.lucanePath!=null)
+	        	dbDescription = "jar:file:///"
+	    			+ Server.lucanePath
+					+ "lib/lucane-server-" +Server.VERSION+ ".jar!/"
+					+ "db-sqlstore.xml";
+        	else
+	        	dbDescription = "jar:file:///"
+	    			+ System.getProperty("user.dir").replace('\\', '/')
 					+ "/lib/lucane-server-" +Server.VERSION+ ".jar!/"
 					+ "db-sqlstore.xml";
 

@@ -28,13 +28,15 @@ public class FileService
   extends Service
 {
 
-  private static final String DIRECTORY = "STORAGE";
+  private static String DIRECTORY = "STORAGE";
 
   /**
    * Creates a new FileService object.
    */
   public FileService()
   {
+  	if (Server.lucanePath!=null)
+  		DIRECTORY = Server.lucanePath+DIRECTORY;  
   }
 
   /**

@@ -48,7 +48,9 @@ public class ServerConfig
 	throws Exception
 	{
 		  DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		  Document document = builder.parse(filename);
+		  
+		  String fileToParse = Server.lucanePath!=null?Server.lucanePath+filename:filename;
+		  Document document = builder.parse(fileToParse);
                                                                   
 		  //-- root element
 		  Node node = document.getFirstChild();                                                                               

@@ -20,13 +20,20 @@ package org.lucane.server.database;
 
 import java.sql.*;
 
+import org.lucane.server.Server;
+
 class HSQLDBLayer extends DatabaseAbstractionLayer
 {
   private Connection connection;
   
   public HSQLDBLayer(String url, String login, String passwd) 
   {
-    this.url = url;
+    if (Server.lucanePath!=null) {
+      int pos = url.indexOf("hsqldb/lucane");
+      this.url=url.substring(0, pos)+Server.lucanePath+"hsqldb/lucane";
+    } else {
+      this.url = url;
+    }
     this.login = login;
     this.passwd = passwd;
     this.connection = null;
