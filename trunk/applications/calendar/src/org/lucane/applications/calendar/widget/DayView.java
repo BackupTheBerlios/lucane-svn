@@ -60,9 +60,12 @@ implements MouseListener
 		this.occupied = new ArrayList[48];
 		for(int i=0;i<occupied.length;i++)
 			occupied[i] = new ArrayList();
-
-		GridBagConstraints constraints;
 		
+		//speed up scrolling !
+		this.getVerticalScrollBar().setUnitIncrement(15);
+		
+		
+		GridBagConstraints constraints;		
 		
 		//-- hours
 		constraints = new GridBagConstraints();
@@ -179,7 +182,7 @@ implements MouseListener
 			this.background[start + i].setVisible(false);
 			this.border[start + i].setBackground(event.getColor());
 			this.occupied[start + i].add(new Integer(constraints.gridx));
-		}
+		}		
 	}
 	
 	//-- mouse listener
