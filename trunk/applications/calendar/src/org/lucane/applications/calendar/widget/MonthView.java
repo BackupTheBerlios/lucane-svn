@@ -160,7 +160,9 @@ implements MouseListener
 		c.set(Calendar.YEAR, this.displayedYear);
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		
-		int res = c.get(Calendar.DAY_OF_WEEK) - c.getFirstDayOfWeek();
+		//as day labels don't respect locales, we have to enforce monday
+		//instead of getFirstDayOfWeek() here to stay consistent
+		int res = c.get(Calendar.DAY_OF_WEEK) - Calendar.MONDAY;
 		
 		return res < 0 ? 6 : res;
 	}
