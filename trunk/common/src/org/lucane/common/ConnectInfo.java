@@ -97,4 +97,34 @@ public class ConnectInfo implements Serializable
   {
     return this.name;
   }
+  
+  /**
+   * Change the server
+   * 
+   * @param server the new server
+   */
+  public void setServer(String server)
+  {
+  	this.server = server;
+  }
+  
+  /**
+   * Is the object pointed by this ConnectInfo a service ?
+   * 
+   * @return true if it is a service
+   */
+  public boolean isService()
+  {
+  	return this.type.equals("service");
+  }
+  
+  /**
+   * Is the object pointed by this ConnectInfo a Server ?
+   * 
+   * @return true if it is a service
+   */
+  public boolean isServer()
+  {
+	return this.type.equals("Server");
+  }
 }

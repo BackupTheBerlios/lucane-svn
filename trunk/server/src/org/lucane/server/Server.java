@@ -51,7 +51,7 @@ public class Server implements Runnable
     Store store;
     DatabaseAbstractionLayer dbLayer;
     ConnectInfo myConnectInfo;
-    String hostname;
+    String serverIp;
     int port;
     Signer signer;
 
@@ -86,7 +86,7 @@ public class Server implements Runnable
         }
 
         try {
-            this.hostname = InetAddress.getLocalHost().getHostName().toLowerCase();
+            this.serverIp = InetAddress.getLocalHost().getHostAddress();
             this.socket = new ServerSocket(this.port);
         } catch (IOException e) {
 			Logging.getLogger().severe("#Err > Unable to listen on the port " + port + ".");
@@ -107,7 +107,7 @@ public class Server implements Runnable
         try {
             String[] pair = KeyGenerator.generateKeyPair();
             myConnectInfo = new ConnectInfo("server",
-                    			this.hostname, this.hostname,
+                    			this.serverIp, this.serverIp,
                     			this.port, pair[1], "Server");
             this.connections.add(myConnectInfo);
             this.signer = new Signer(pair[0]);
@@ -407,8 +407,8 @@ public class Server implements Runnable
                     this.connections.add(
                         new ConnectInfo(
                             servicename,
-                            hostname,
-                            hostname,
+                            serverIp,
+                            serverIp,
                             port,
                             "nokey",
                             "service"));

@@ -209,7 +209,7 @@ public class Communicator
     ConnectInfo ci_res = null;
     boolean found = false;
 
-    /* search in the local cache */
+    // search in the local cache
     for(int i = 0; i < this.infos.size() && ! found; i++)
     {
       ci_res = (ConnectInfo)this.infos.elementAt(i);
@@ -219,7 +219,7 @@ public class Communicator
         found = true;
     }
 
-    /* not found, ask the server */
+    // not found, ask the server
     if(! found)
     {
       try
@@ -228,6 +228,11 @@ public class Communicator
             "CONNECT_GET " + username);
         		
         ci_res = (ConnectInfo)oc.read();
+        oc.close();
+        
+        if(ci_res.isService() || ci_res.isServer())
+        	ci_res.setServer(Client.getInstance().getConfig().getServerHost());
+        
         this.infos.addElement(ci_res);
       }
       catch(Exception e)
