@@ -119,7 +119,7 @@ implements TreeSelectionListener, ActionListener
 	}
 	
 	//-- useful methods
-
+	
 	/**
 	 * Show the help for a plugin
      */

@@ -22,6 +22,8 @@ import org.lucane.common.*;
 
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.util.*;
 
@@ -36,6 +38,7 @@ import javax.swing.ImageIcon;
 public abstract class Plugin
   implements Runnable, WindowListener
 {
+	private boolean ready = false;
 
   //do not redeclare them in your plugin !
   protected boolean starter;
@@ -142,6 +145,16 @@ public abstract class Plugin
   }
 
   /**
+   * Is the plugin completely ready ?
+   * @return true if the plugin is ready
+   */
+  public boolean isReady()
+  {
+  	return ready;
+  }
+
+
+  /**
    * Used by the PluginLoader to initialize the plugin with adequate parameters
    * 
    * @param friends the connections to use
@@ -179,6 +192,21 @@ public abstract class Plugin
   {
   	exit();
   }
+  
+  /**
+   * Invoke a methode
+   * 
+   * @param method the method name
+   * @param types the params types
+   * @param params the params
+   * @return the method result
+   */
+  public Object invoke(String method, Class[] types, Object[] params) 
+  throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException
+  {
+  	Method m = this.getClass().getDeclaredMethod(method, types);
+	return m.invoke(this, params);
+  }
 
 
   /**
@@ -210,6 +238,8 @@ public abstract class Plugin
       start();
     else
       follow();
+
+	this.ready = true;
   }
 
   /**

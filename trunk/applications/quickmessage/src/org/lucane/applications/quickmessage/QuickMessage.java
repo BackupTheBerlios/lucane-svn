@@ -184,6 +184,19 @@ public class QuickMessage
       ctrl = false;
       actionPerformed(null);
     }
+    else if(e.getKeyCode() == KeyEvent.VK_F1)
+    {
+    	Plugin help = PluginLoader.getInstance().run("org.lucane.applications.helpbrowser", null);
+    	try {
+    		while(!help.isReady())
+    			Thread.yield();
+    		
+			help.invoke("showHelp", new Class[]{Plugin.class}, new Object[]{this});
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			ex.getCause().printStackTrace();
+		}
+    }
     else
       ctrl = false;
   }

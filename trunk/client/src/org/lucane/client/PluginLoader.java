@@ -131,7 +131,7 @@ public class PluginLoader
    * @param dest the component that has to receive the message
    * @param command the network request
    */
-  public void load(ObjectConnection oc, Message message)
+  public Plugin load(ObjectConnection oc, Message message)
   {
   	String name = message.getApplication();
 	Logging.getLogger().fine("Trying to load plugin " + name);
@@ -141,6 +141,7 @@ public class PluginLoader
     p.load(oc, message.getSender(), (String)message.getData());
     (new Thread(p, p.getName())).start();
 	Logging.getLogger().info("Plugin " + name + " loaded.");
+	return p;
   }
 
   /**
@@ -149,13 +150,15 @@ public class PluginLoader
    * @param name the Plugin to run
    * @param friends the connexions associated with the plugin
    */
-  public void run(String name, ConnectInfo[] friends)
+  public Plugin run(String name, ConnectInfo[] friends)
   {
 	Logging.getLogger().fine("Trying to run plugin " + name);
 	Plugin p = ((Plugin)this.plugins.get(name)).init(friends, true);
     p.setLocale(Client.getInstance().getConfig().getLanguage());
     (new Thread(p, p.getName())).start();
     Logging.getLogger().fine("Plugin " + name + " started.");
+    
+    return p;
   }
 
   /**
