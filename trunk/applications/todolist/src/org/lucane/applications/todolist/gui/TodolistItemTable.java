@@ -22,10 +22,14 @@ package org.lucane.applications.todolist.gui;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumnModel;
 
 import org.lucane.applications.todolist.TodolistItem;
@@ -73,4 +77,128 @@ public class TodolistItemTable extends JTable {
 		((TodolistItemTableModel)getModel()).clear();
 	}
 	
+}
+
+class TodolistItemTableModel extends AbstractTableModel {
+
+	private static final String[] COLUMNS_NAMES = {"Name", "Priority", "Complete"};
+	private static final int[] COLUMNS_SORT = {TodolistItemsSorter.NAME, TodolistItemsSorter.PRIORITY, TodolistItemsSorter.COMPLETED};
+	private ArrayList items;
+	private Comparator comparator;
+	
+	private int sortedCol = -1;
+	private int sortDirection = TodolistItemsSorter.ASC;
+	
+	public TodolistItemTableModel() {
+		items = new ArrayList();
+		comparator = new TodolistItemsSorter(TodolistItemsSorter.NAME, TodolistItemsSorter.ASC);
+	}
+	
+	public void setComparator(Comparator comparator) {
+		this.comparator = comparator;
+	}
+	
+	public void sort(int columnIndex) {
+		if (columnIndex==sortedCol) {
+			sortDirection = sortDirection == TodolistItemsSorter.ASC
+					? TodolistItemsSorter.DESC
+					: TodolistItemsSorter.ASC;
+		} else {
+			sortedCol = columnIndex;
+			sortDirection = TodolistItemsSorter.ASC;
+		}
+		
+		comparator = new TodolistItemsSorter(COLUMNS_SORT[sortedCol], sortDirection);
+		Collections.sort(items, comparator);
+		fireTableDataChanged();
+	}
+	
+	public void add(TodolistItem item) {
+		items.add(item);
+		Collections.sort(items, comparator);
+		fireTableDataChanged();
+	}
+	
+	public void remove(TodolistItem item) {
+		items.remove(item);
+		fireTableDataChanged();
+	}
+	
+	public Class getColumnClass(int col) {
+		return String.class;
+	}
+
+	public String getColumnName(int col) {
+		return COLUMNS_NAMES[col];
+	}
+
+	public boolean isCellEditable(int row, int col) {
+		return false;
+	}
+
+	public void setValueAt(Object value, int row, int col) {
+		super.setValueAt(value, row, col);
+	}
+	
+	public int getColumnCount() {
+		return 3;
+	}
+
+	public int getRowCount() {
+		return items.size();
+	}
+
+	public Object getValueAt(int row, int col) {
+		TodolistItem item = (TodolistItem)items.get(row);
+		switch (col) {
+			case 0 :
+				return item.getName();
+			case 1 :
+				return ""+item.getPriority();
+			case 2 :
+				return item.isComplete()?"true":"false";
+		}
+		return "";
+	}
+
+	public Object getValueAt(int row) {
+		return ((TodolistItem)items.get(row));
+	}
+	
+	public void clear() {
+		items.clear();
+		fireTableRowsDeleted(0, 0);
+	}
+}
+
+class TodolistItemsSorter implements Comparator {
+
+	public static final int ASC = 1;
+	public static final int DESC = -1;
+
+	public static final int NAME = 0;
+	public static final int PRIORITY = 1;
+	public static final int COMPLETED = 2;
+	
+	private int sortBy=0;
+	private int direction = 0;
+	
+	public TodolistItemsSorter(int sortBy, int direction) {
+		this.sortBy = sortBy;
+		this.direction = direction;
+	}
+	
+	public int compare(Object o1, Object o2) {
+		TodolistItem tli1 = (TodolistItem) o1;
+		TodolistItem tli2 = (TodolistItem) o2;
+		switch (sortBy) {
+			case NAME :
+				return direction*(tli1.getName().compareTo(tli2.getName()));
+			case PRIORITY :
+				return direction*(tli1.getPriority()-tli2.getPriority());
+			case COMPLETED :
+				return direction*((tli1.isComplete()?1:0)-(tli2.isComplete()?1:0));
+		}
+		return 0;
+	}
 }

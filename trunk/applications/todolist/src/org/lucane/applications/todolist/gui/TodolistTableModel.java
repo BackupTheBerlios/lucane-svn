@@ -20,16 +20,10 @@
 package org.lucane.applications.todolist.gui;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.swing.table.AbstractTableModel;
 
 import org.lucane.applications.todolist.Todolist;
-import org.lucane.applications.todolist.TodolistItemsSorter;
 
 public class TodolistTableModel extends AbstractTableModel {
 
