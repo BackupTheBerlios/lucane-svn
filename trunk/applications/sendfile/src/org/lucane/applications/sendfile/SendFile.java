@@ -19,7 +19,6 @@
 package org.lucane.applications.sendfile;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -36,7 +35,7 @@ public class SendFile
 
   private ConnectInfo friend;
   private String filename;
-  private JFrame dialog;
+  private ManagedWindow dialog;
   private JTextField txtWho;
   private JTextField txtWhat;
   private JButton btnDlg;
@@ -86,7 +85,7 @@ public class SendFile
 
     /* chose file to send */
     JFileChooser fc = new JFileChooser();
-    int returnVal = fc.showOpenDialog(dialog);
+    int returnVal = fc.showOpenDialog(null);
 
     if(returnVal == JFileChooser.APPROVE_OPTION)
     {
@@ -155,7 +154,7 @@ public class SendFile
     {
       fc = new JFileChooser();
 
-      int returnVal = fc.showSaveDialog(dialog);
+      int returnVal = fc.showSaveDialog(null);
       if(returnVal == JFileChooser.APPROVE_OPTION)
       {
         file = fc.getSelectedFile();
@@ -192,8 +191,8 @@ public class SendFile
 
   public void follow()
   {
-    dialog = new JFrame();
-    dialog.addWindowListener(new PluginExitWindowListener(this));
+    dialog = new ManagedWindow(this, getTitle());
+    dialog.setExitPluginOnClose(true);
     dialog.getContentPane().setLayout(new FlowLayout());
     lblNewFile = new JLabel( "[" + friend.getName() + "] " + this.filename);
     btnDlg = new JButton(tr("reject"));
@@ -203,9 +202,8 @@ public class SendFile
     dialog.getContentPane().add(lblNewFile);
     dialog.getContentPane().add(btnDlg);
     dialog.getContentPane().add(btnChoose);
-    dialog.pack();
 	dialog.setIconImage(this.getImageIcon().getImage());
-    dialog.setVisible(true);
+    dialog.show();
   }
 
 

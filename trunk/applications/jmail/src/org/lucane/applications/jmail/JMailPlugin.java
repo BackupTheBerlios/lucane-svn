@@ -57,7 +57,7 @@ public class JMailPlugin
 			splash.show();
 			
 			JMailWindow jmail = new JMailWindow(this);
-			jmail.setExtendedState(JMailWindow.MAXIMIZED_BOTH);
+			//jmail.setExtendedState(JMailWindow.MAXIMIZED_BOTH);
 
 			splash.dispose();
 		} catch(Exception e) {

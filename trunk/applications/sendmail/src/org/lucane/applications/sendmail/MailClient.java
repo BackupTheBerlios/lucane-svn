@@ -19,7 +19,6 @@
 package org.lucane.applications.sendmail;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -32,7 +31,7 @@ import javax.swing.*;
 public class MailClient extends StandalonePlugin implements ActionListener
 {
 	/* dialog components */
-	private JFrame frame;
+	private ManagedWindow window;
 	private JTextField from;
 	private JTextField to;
 	private JTextField cc;
@@ -59,9 +58,9 @@ public class MailClient extends StandalonePlugin implements ActionListener
 	{
 		this.sendmail = Communicator.getInstance().getConnectInfo("org.lucane.applications.sendmail");
 		
-		frame = new JFrame(getTitle());
-		frame.addWindowListener(new PluginExitWindowListener(this));
-		frame.getContentPane().setLayout(new GridLayout(0, 2));
+		window = new ManagedWindow(this, getTitle());
+		window.setExitPluginOnClose(true);
+		window.getContentPane().setLayout(new GridLayout(0, 2));
 		
 		from = new JTextField();
 		to = new JTextField();
@@ -74,26 +73,25 @@ public class MailClient extends StandalonePlugin implements ActionListener
 		btnSend = new JButton(tr("send"));
 		btnSend.addActionListener(this);
 		
-		frame.getContentPane().add(new JLabel(tr("from")));
-		frame.getContentPane().add(from);
-		frame.getContentPane().add(new JLabel(tr("to")));
-		frame.getContentPane().add(to);
-		frame.getContentPane().add(new JLabel(tr("cc")));
-		frame.getContentPane().add(cc);
-		frame.getContentPane().add(new JLabel(tr("bcc")));
-		frame.getContentPane().add(bcc);
-		frame.getContentPane().add(new JLabel(tr("subject")));
-		frame.getContentPane().add(subject);
-		frame.getContentPane().add(new JLabel(tr("content")));
-		frame.getContentPane().add(content);
-		frame.getContentPane().add(new JLabel(tr("attach.name")));
-		frame.getContentPane().add(attachName);
-		frame.getContentPane().add(new JLabel(tr("attach.data")));
-		frame.getContentPane().add(attachData);
-		frame.getContentPane().add(new JLabel(""));
-		frame.getContentPane().add(btnSend);
-		frame.pack();
-		frame.setVisible(true);
+		window.getContentPane().add(new JLabel(tr("from")));
+		window.getContentPane().add(from);
+		window.getContentPane().add(new JLabel(tr("to")));
+		window.getContentPane().add(to);
+		window.getContentPane().add(new JLabel(tr("cc")));
+		window.getContentPane().add(cc);
+		window.getContentPane().add(new JLabel(tr("bcc")));
+		window.getContentPane().add(bcc);
+		window.getContentPane().add(new JLabel(tr("subject")));
+		window.getContentPane().add(subject);
+		window.getContentPane().add(new JLabel(tr("content")));
+		window.getContentPane().add(content);
+		window.getContentPane().add(new JLabel(tr("attach.name")));
+		window.getContentPane().add(attachName);
+		window.getContentPane().add(new JLabel(tr("attach.data")));
+		window.getContentPane().add(attachData);
+		window.getContentPane().add(new JLabel(""));
+		window.getContentPane().add(btnSend);
+		window.show();
 	}
 
 	public void actionPerformed(ActionEvent ae)
@@ -124,7 +122,7 @@ public class MailClient extends StandalonePlugin implements ActionListener
                         else
                         {
                           DialogBox.info(tr("success"));
-                          frame.dispose();
+                          window.dispose();
                           exit();
                         }
 		}

@@ -23,9 +23,10 @@ import java.awt.*;
 import javax.swing.*;
 
 import org.lucane.client.Client;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.applications.notes.*;
 
-public class CommentFrame extends JFrame
+public class CommentFrame extends ManagedWindow
 {
     private Note note;
 	private TitlePanel title;
@@ -34,13 +35,13 @@ public class CommentFrame extends JFrame
 	
 	public CommentFrame(NotesPlugin plugin, Note note)
 	{
-		super(plugin.tr("comment.frame.title.add"));
+		super(plugin, plugin.tr("comment.frame.title.add"));
         init(plugin, note);
 	}
 
     public CommentFrame(NotesPlugin plugin, Note note, Comment comment)
     {
-		super(plugin.tr("comment.frame.title.view"));
+		super(plugin, plugin.tr("comment.frame.title.view"));
         init(plugin, note);
         setCommentTitle(comment.getTitle());
         setContent(comment.getContent());
@@ -52,8 +53,7 @@ public class CommentFrame extends JFrame
     
     private void init(NotesPlugin plugin, Note note)
     {
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setSize(600, 400);
+        this.setPreferredSize(new Dimension(600, 400));
         this.getContentPane().setLayout(new BorderLayout(5, 0));
         
         MyActionListener listener = new MyActionListener(plugin, this);

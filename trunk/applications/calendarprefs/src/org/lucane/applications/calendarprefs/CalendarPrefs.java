@@ -26,13 +26,14 @@ import javax.swing.*;
 
 import org.lucane.client.*;
 import org.lucane.client.widgets.DialogBox;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.common.*;
 
 public class CalendarPrefs
   extends StandalonePlugin
   implements ActionListener
 {
-	private JFrame frame;
+	private ManagedWindow window;
 	private UIFactory ui;
 	private LocalConfig prefs;
 	
@@ -63,8 +64,8 @@ public class CalendarPrefs
 		ui.setWorkEnd(workEnd);
 		ui.setFirstDayOfWeek(firstDayOfWeek);
 		
-  		frame = ui.createMainFrame(this);
-  		frame.show();
+  		window = ui.createMainFrame(this);
+  		window.show();
   }
 
   public Color getColor(String name, Color defaultColor)
@@ -104,21 +105,21 @@ public class CalendarPrefs
 				ioe.printStackTrace();
 			}
 			
-			frame.dispose();
+			window.dispose();
 	  	}
 	  	else if(button.getName().equals("cancel"))
-	  		frame.dispose();
+	  		window.dispose();
 	  		
 	  	else if(button.getName().equals("worked"))
 	  	{
 	  		Color color = ui.getWorkedColor();
-	  		color = JColorChooser.showDialog(frame, tr("selectWorkedColor"), color);
+	  		color = JColorChooser.showDialog(null, tr("selectWorkedColor"), color);
 	  		ui.setWorkedColor(color);
 	  	}
 		else if(button.getName().equals("unworked"))
 		{
 			Color color = ui.getUnworkedColor();
-			color = JColorChooser.showDialog(frame, tr("selectUnworkedColor"), color);
+			color = JColorChooser.showDialog(null, tr("selectUnworkedColor"), color);
 			ui.setUnworkedColor(color);
 		}
   }

@@ -32,7 +32,7 @@ class WinListener
 
   public void windowClosing(WindowEvent e)
   {
-    parent.postFrame = null;
+    parent.postWindow = null;
   }
 
   public void windowActivated(WindowEvent e)

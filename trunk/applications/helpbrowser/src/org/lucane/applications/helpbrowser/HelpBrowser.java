@@ -19,6 +19,7 @@
 package org.lucane.applications.helpbrowser;
 
 import org.lucane.client.*;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.common.*;
 
 import java.awt.*;
@@ -36,7 +37,7 @@ public class HelpBrowser extends StandalonePlugin
 implements TreeSelectionListener, ActionListener
 {
 	//-- widgets
-	private JFrame frame;
+	private ManagedWindow window;
 	private JTree sections;
 	private JEditorPane bighelp;
 	private JTextArea minihelp;
@@ -64,9 +65,9 @@ implements TreeSelectionListener, ActionListener
  	 */
 	public void start()
 	{
-		frame = new JFrame(getTitle());
-		frame.getContentPane().setLayout(new BorderLayout());
-		frame.setName("frame");
+		window = new ManagedWindow(this, getTitle());
+		window.getContentPane().setLayout(new BorderLayout());
+		window.setName("frame");
 		
 		bighelp = new JEditorPane();
 		bighelp.setEditable(false);
@@ -80,12 +81,12 @@ implements TreeSelectionListener, ActionListener
 				new JScrollPane(minihelp));
 		split.setOneTouchExpandable(true);
 		split.setName("split");
-		frame.getContentPane().add(split, BorderLayout.CENTER);
+		window.getContentPane().add(split, BorderLayout.CENTER);
 		sections = new JTree(new DefaultMutableTreeNode());
 		sections.setRootVisible(false);
 		sections.setEditable(false);
 		sections.addTreeSelectionListener(this);
-		frame.getContentPane().add(sections, BorderLayout.WEST);
+		window.getContentPane().add(sections, BorderLayout.WEST);
 		plugins = new JComboBox();
 		plugins.addActionListener(this);
 		
@@ -93,10 +94,10 @@ implements TreeSelectionListener, ActionListener
 		while(i.hasNext())
 			plugins.addItem(i.next());
 		
-		frame.getContentPane().add(plugins, BorderLayout.NORTH);
-		frame.setSize(600, 400);
-		frame.setIconImage(this.getImageIcon().getImage());
-		frame.show();
+		window.getContentPane().add(plugins, BorderLayout.NORTH);
+		window.setPreferredSize(new Dimension(600, 400));
+		window.setIconImage(this.getImageIcon().getImage());
+		window.show();
 		split.setDividerLocation(310);
 	}
 

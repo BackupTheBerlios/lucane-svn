@@ -40,7 +40,7 @@ public class Forum
 {
 
   /* widgets : main window */
-  private JFrame mainFrame;
+  private ManagedWindow mainWindow;
   private JTextField txtTitle;
   private JTextField txtDate;
   private JTextField txtAuthor;
@@ -53,7 +53,7 @@ public class Forum
   private TreePath lastSelected;
 
   /* widgets : new post */
-  public JFrame postFrame;
+  public ManagedWindow postWindow;
   private JTextField txtPostTitle;
   private HTMLEditor txtPostMessage;
   private JButton btnPost;
@@ -77,7 +77,7 @@ public class Forum
 
   public void start()
   {
-    mainFrame = new JFrame(tr("title"));
+    mainWindow = new ManagedWindow(this, getTitle());
     lstForums = new JList();
     treeTopics = new JTree(new Vector());
     btnRefresh = new JButton(tr("refresh"));
@@ -103,8 +103,8 @@ public class Forum
     JPanel bas = new JPanel();
     JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, haut, bas);
     split.setOneTouchExpandable(true);
-    mainFrame.getContentPane().setLayout(new BorderLayout());
-    mainFrame.getContentPane().add(split);
+    mainWindow.getContentPane().setLayout(new BorderLayout());
+    mainWindow.getContentPane().add(split);
     haut.setLeftComponent(new JScrollPane(lstForums));
     haut.setRightComponent(new JScrollPane(treeTopics));
     haut.setOneTouchExpandable(true);
@@ -138,10 +138,10 @@ public class Forum
     buttons.add(btnAnswer);
     right.setLayout(new BorderLayout());
     right.add(buttons, BorderLayout.NORTH);
-    mainFrame.setSize(600, 400);
-    mainFrame.addWindowListener(new PluginExitWindowListener(this));
-	mainFrame.setIconImage(this.getImageIcon().getImage());
-    mainFrame.setVisible(true);
+    mainWindow.setPreferredSize(new Dimension(600, 400));
+    mainWindow.addWindowListener(new PluginExitWindowListener(this));
+	mainWindow.setIconImage(this.getImageIcon().getImage());
+    mainWindow.show();
     split.setDividerLocation(0.5);
     haut.setDividerLocation(0.25);
     getForumList();
@@ -192,8 +192,8 @@ public class Forum
                   (String)lstForums .getSelectedValue() + "\001" + txtPostTitle.getText() + 
                    "\001" + txtPostMessage.getText().replace('\n', '\001'));
         sc.close();
-        postFrame.setVisible(false);
-        postFrame = null;
+        postWindow.dispose();
+        postWindow = null;
         getForum((String)lstForums.getSelectedValue());
       }
       catch(Exception e)
@@ -319,13 +319,13 @@ public class Forum
 
   private void showPostFrame(ForumMessage msg)
   {
-    if(postFrame != null)
+    if(postWindow != null)
     {
       DialogBox.error(tr("frameopened"));
       return;
     }
 
-    postFrame = new JFrame(tr("newmsg"));
+    postWindow = new ManagedWindow(this, tr("newmsg"));
     txtPostTitle = new JTextField();
     btnPost = new JButton(tr("send"));
     txtPostMessage = new HTMLEditor();
@@ -335,11 +335,11 @@ public class Forum
     haut.add(txtPostTitle, BorderLayout.CENTER);
     haut.add(btnPost, BorderLayout.EAST);
     btnPost.addActionListener(this);
-    postFrame.setSize(300, 400);
-    postFrame.addWindowListener(new WinListener(this));
-    postFrame.getContentPane().setLayout(new BorderLayout());
-    postFrame.getContentPane().add(haut, BorderLayout.NORTH);
-    postFrame.getContentPane().add(txtPostMessage,  BorderLayout.CENTER);
+    postWindow.setPreferredSize(new Dimension(300, 400));
+    postWindow.addWindowListener(new WinListener(this));
+    postWindow.getContentPane().setLayout(new BorderLayout());
+    postWindow.getContentPane().add(haut, BorderLayout.NORTH);
+    postWindow.getContentPane().add(txtPostMessage,  BorderLayout.CENTER);
     idref = "0";
 
     if(msg != null)
@@ -348,7 +348,7 @@ public class Forum
       idref = msg.id;
     }
 	
-	postFrame.setIconImage(this.getImageIcon().getImage());
-    postFrame.setVisible(true);
+	postWindow.setIconImage(this.getImageIcon().getImage());
+    postWindow.show();
   }
 }

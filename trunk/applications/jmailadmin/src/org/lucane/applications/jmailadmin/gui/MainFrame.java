@@ -24,9 +24,10 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import org.lucane.applications.jmailadmin.*;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.common.concepts.UserConcept;
 
-public class MainFrame extends JFrame
+public class MainFrame extends ManagedWindow
 implements ActionListener, ListSelectionListener
 {
 	private JMailAdminPlugin plugin;
@@ -36,7 +37,7 @@ implements ActionListener, ListSelectionListener
 	
 	public MainFrame(JMailAdminPlugin plugin)
 	{		
-		super(plugin.getTitle());
+		super(plugin, plugin.getTitle());
 	
 		this.plugin = plugin;	
 		this.account = new AccountPanel(plugin);
@@ -45,7 +46,7 @@ implements ActionListener, ListSelectionListener
 		getContentPane().add(new UserListPanel(plugin, this), BorderLayout.WEST);
 		getContentPane().add(this.account, BorderLayout.CENTER);
 		getContentPane().add(new ButtonPanel(plugin, this), BorderLayout.SOUTH);
-		setSize(500, 250);
+		setPreferredSize(new Dimension(500, 250));
 	}
 
 	public void actionPerformed(ActionEvent ae)

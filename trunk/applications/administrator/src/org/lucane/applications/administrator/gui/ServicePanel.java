@@ -164,14 +164,4 @@ implements MouseListener, ActionListener
 			panel.showConcept(null);
 		}
 	}
-
-	public static void main(String [] args)
-	{
-		ServicePanel sp = new ServicePanel(null, null);
-		JFrame jf = new JFrame();
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.getContentPane().add(sp);
-		jf.setSize(800, 500);
-		jf.show();
-	}
 }

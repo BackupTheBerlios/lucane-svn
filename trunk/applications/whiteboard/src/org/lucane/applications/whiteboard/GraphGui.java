@@ -7,6 +7,8 @@ import javax.swing.*;
 import org.jgraph.JGraph;
 import org.jgraph.graph.*;
 import org.lucane.applications.whiteboard.listeners.*;
+import org.lucane.client.Plugin;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.common.ObjectConnection;
 
 public class GraphGui
@@ -32,12 +34,12 @@ public class GraphGui
 		this.graphChangeObjectListener = new GraphChangeObjectListener(graph);
 	}
 	
-	public void showFrame(String title)
+	public void showWindow(Plugin plugin, String title)
 	{
-		JFrame frame = new JFrame(title);
-		frame.getContentPane().add(new JScrollPane(graph));
-		frame.setSize(600, 600);
-		frame.setVisible(true);
+		ManagedWindow win = new ManagedWindow(plugin, title);
+		win.getContentPane().add(new JScrollPane(graph));
+		win.setPreferredSize(new Dimension(600, 600));
+		win.show();
 	}
 	
 	public void setGraphAsSource()

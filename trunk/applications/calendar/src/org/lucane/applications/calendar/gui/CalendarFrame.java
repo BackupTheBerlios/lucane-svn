@@ -23,6 +23,7 @@ import javax.swing.*;
 
 import org.lucane.client.Client;
 import org.lucane.client.widgets.DialogBox;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.common.concepts.UserConcept;
 import org.lucane.applications.calendar.CalendarPlugin;
 import org.lucane.applications.calendar.Event;
@@ -33,7 +34,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.net.URL;
 
-public class CalendarFrame extends JFrame
+public class CalendarFrame extends ManagedWindow
 implements ActionListener, CalendarListener
 {
 	private MonthPanel monthPanel;
@@ -51,7 +52,7 @@ implements ActionListener, CalendarListener
 	
 	public CalendarFrame(CalendarPlugin plugin)
 	{
-		super(plugin.getTitle());
+		super(plugin, plugin.getTitle());
 		getContentPane().setLayout(new BorderLayout());
 		this.plugin = plugin;
 		
@@ -126,7 +127,7 @@ implements ActionListener, CalendarListener
 				getContentPane().remove(weekPanel);
 				getContentPane().add(monthPanel, BorderLayout.CENTER);
 				getContentPane().validate();
-				this.repaint();
+				getContentPane().repaint();
 			}
 		}
 		else if(ae.getSource() == goToCurrentWeek)
@@ -138,7 +139,7 @@ implements ActionListener, CalendarListener
 				getContentPane().remove(dayPanel);
 				getContentPane().add(weekPanel, BorderLayout.CENTER);
 				getContentPane().validate();
-				this.repaint();
+				getContentPane().repaint();
 			}
 		}
 		else if(ae.getSource() == goToCurrentDay)
@@ -150,7 +151,7 @@ implements ActionListener, CalendarListener
 				getContentPane().remove(weekPanel);
 				getContentPane().add(dayPanel, BorderLayout.CENTER);
 				getContentPane().validate();
-				this.repaint();
+				getContentPane().repaint();
 			}
 		}
 		else if(ae.getSource() == otherCalendars)
@@ -158,13 +159,13 @@ implements ActionListener, CalendarListener
 			ArrayList users;
 			try {
 				users = plugin.getUsers();
-				int index = DialogBox.list(this, tr("userSelection"), tr("msg.selectUser"), new Vector(users));
+				int index = DialogBox.list(null, tr("userSelection"), tr("msg.selectUser"), new Vector(users));
 				if(index < 0)
 					return;
 				
 				UserConcept user = (UserConcept)users.get(index);
 				CalendarViewer viewer = new CalendarViewer(plugin, user.getName());
-				viewer.setSize(780, 550);
+				viewer.setPreferredSize(new Dimension(780, 550));
 				viewer.setIconImage(plugin.getImageIcon().getImage());
 				viewer.show();					
 			} catch (Exception e) {
@@ -190,7 +191,7 @@ implements ActionListener, CalendarListener
 		getContentPane().remove(weekPanel);
 		getContentPane().add(dayPanel, BorderLayout.CENTER);
 		getContentPane().validate();
-		this.repaint();
+		getContentPane().repaint();
 	}
 
 	public void onEventClick(EventLabel event) 

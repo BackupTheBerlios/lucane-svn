@@ -65,6 +65,9 @@ public class Client
 	
 	//stores running plugins
 	private ArrayList registeredPlugins;
+	
+	//the window manager
+	private WindowManager windowManager;
 
 
     private static Client instance = null;
@@ -99,6 +102,7 @@ public class Client
 		this.config = null;
 		
 		this.registeredPlugins = new ArrayList();
+		this.windowManager = new DefaultWindowManager();
 
 		//create application directory structure
 		String appPath = System.getProperty("user.dir") + '/' + APPLICATIONS_DIRECTORY;
@@ -323,6 +327,14 @@ public class Client
     protected ConnectBox getConnectBox()
     {       
         return this.connectbox;
+    }
+    
+    /**
+     * Get the current window manager
+     */
+    public WindowManager getWindowManager()
+    {
+    	return this.windowManager;
     }
     
     /**

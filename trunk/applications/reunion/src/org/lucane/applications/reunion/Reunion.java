@@ -42,7 +42,7 @@ implements ActionListener, KeyListener, ObjectListener
   protected ObjectConnection ocCoordinator;
   protected ObjectConnection[] ocFriends;
 
-  private JFrame dialog;
+  private ManagedWindow dialog;
   private JLabel lblInfo;
   private JTextField txtSubject;
   private JButton btnDlg;
@@ -90,10 +90,10 @@ implements ActionListener, KeyListener, ObjectListener
     }
 
     /* creation of the frame */
-    dialog = new JFrame(getTitle());
+    dialog = new ManagedWindow(this, getTitle());
     dialog.setIconImage(this.getImageIcon().getImage());
     dialog.addWindowListener(new PluginExitWindowListener(this));
-    dialog.addKeyListener(this);
+    dialog.getContentPane().addKeyListener(this);
     dialog.getContentPane().setLayout(new BorderLayout());
     /* the subject */
     lblInfo = new JLabel(tr("subject"));
@@ -106,16 +106,15 @@ implements ActionListener, KeyListener, ObjectListener
     btnDlg.addActionListener(this);
     dialog.getContentPane().add(btnDlg, BorderLayout.EAST);
 
-    dialog.pack();
-    dialog.setVisible(true);
+    dialog.show();
   }
 
   /* if the user joined the reunion */
   public void follow()
   {
     /* creation of the frame */
-    dialog = new JFrame(getTitle());
-    dialog.addWindowListener(new PluginExitWindowListener(this));
+    dialog = new ManagedWindow(this, getTitle());
+    dialog.setExitPluginOnClose(true);
     dialog.getContentPane().setLayout(new BorderLayout());
     /* the subject */
     lblInfo = new JLabel("[" + this.coordinator.getName() + "]");
@@ -129,8 +128,7 @@ implements ActionListener, KeyListener, ObjectListener
     btnDlg.addActionListener(this);
     dialog.getContentPane().add(btnDlg, BorderLayout.EAST);
 
-    dialog.pack();
-    dialog.setVisible(true);
+    dialog.show();
   }
 
 

@@ -23,6 +23,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import org.lucane.client.Client;
+import org.lucane.client.widgets.ManagedWindow;
 
 public class UIFactory
 {
@@ -39,11 +40,11 @@ public class UIFactory
 	private JComboBox firstDayOfWeek;
 	
 	
-	public JFrame createMainFrame(CalendarPrefs plugin)
+	public ManagedWindow createMainFrame(CalendarPrefs plugin)
 	{
-		JFrame frame = new JFrame(plugin.getTitle());
-		frame.setIconImage(plugin.getImageIcon().getImage());			
-		frame.getContentPane().setLayout(new BorderLayout());
+		ManagedWindow window = new ManagedWindow(plugin, plugin.getTitle());
+		window.setIconImage(plugin.getImageIcon().getImage());			
+		window.getContentPane().setLayout(new BorderLayout());
 
 		JPanel content = new JPanel(new GridLayout(5, 2));
 		
@@ -107,11 +108,10 @@ public class UIFactory
 		buttonContainer.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
 		
 		// frame
-		frame.getContentPane().add(content, BorderLayout.CENTER);
-		frame.getContentPane().add(buttonContainer, BorderLayout.SOUTH);
-		frame.pack();
+		window.getContentPane().add(content, BorderLayout.CENTER);
+		window.getContentPane().add(buttonContainer, BorderLayout.SOUTH);
 		
-		return frame;
+		return window;
 	}
 	
 	public void setFirstDayOfWeek(int day)

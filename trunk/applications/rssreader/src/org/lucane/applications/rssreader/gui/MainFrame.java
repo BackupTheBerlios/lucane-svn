@@ -35,8 +35,9 @@ import org.lucane.client.Client;
 import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.DialogBox;
+import org.lucane.client.widgets.ManagedWindow;
 
-public class MainFrame extends JFrame
+public class MainFrame extends ManagedWindow
 implements ListSelectionListener, ActionListener
 {
 	private JButton btnRefresh;
@@ -53,7 +54,7 @@ implements ListSelectionListener, ActionListener
 	
 	public MainFrame(RssReader plugin)
 	{
-		super(plugin.getTitle());
+		super(plugin, plugin.getTitle());
 		this.setName("mainFrame");
 		this.setIconImage(plugin.getImageIcon().getImage());
 		
@@ -101,18 +102,16 @@ implements ListSelectionListener, ActionListener
 		getContentPane().add(buttonPanel, BorderLayout.NORTH);
 		getContentPane().add(split, BorderLayout.CENTER);
 		
-		addWindowListener(new PluginExitWindowListener(plugin));
+		setExitPluginOnClose(true);
 	}
 	
 	public void saveState()
 	{
-		WidgetState.save(plugin.getLocalConfig(), this);
 		WidgetState.save(plugin.getLocalConfig(), split);
 	}
 	
 	public void restoreState()
 	{
-		WidgetState.restore(plugin.getLocalConfig(), this);
 		WidgetState.restore(plugin.getLocalConfig(), split);
 	}
 

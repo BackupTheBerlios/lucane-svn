@@ -20,13 +20,13 @@
 package org.lucane.applications.notes.gui.main;
 
 import java.awt.*;
-import javax.swing.*;
 
 import org.lucane.applications.notes.*;
 import org.lucane.client.*;
 import org.lucane.client.util.PluginExitWindowListener;
+import org.lucane.client.widgets.ManagedWindow;
 
-public class MainFrame extends JFrame
+public class MainFrame extends ManagedWindow
 {
 	private TopListPanel lists;
 	private MainPanel content;
@@ -34,9 +34,9 @@ public class MainFrame extends JFrame
 	public MainFrame(NotesPlugin parent)
 	{
 		//panel config
-		super(parent.getTitle());
+		super(parent, parent.getTitle());
 		this.getContentPane().setLayout(new BorderLayout(0, 5));
-		setSize(600, 400);
+		setPreferredSize(new Dimension(600, 400));
 
 		MyListSelectionListener mlsl = new MyListSelectionListener(parent, this);
         MyActionListener mal = new MyActionListener(parent, this); 

@@ -43,13 +43,13 @@ public class WhiteBoard extends Plugin
   
 	GraphGui gui = new GraphGui(connection);
 	gui.setGraphAsSource();
-	gui.showFrame("start");
+	gui.showWindow(this, "start");
   }
 
   public void follow()
   {
 	GraphGui gui = new GraphGui(connection);
 	gui.setGraphAsDest();
-	gui.showFrame("follow");
+	gui.showWindow(this, "follow");
   }
 }

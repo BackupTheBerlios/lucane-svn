@@ -37,13 +37,13 @@ public class FileManager
 {
 
   private ConnectInfo service;
-  private JFrame mainFrame;
+  private ManagedWindow mainWindow;
   private JList filelist;
   private JButton btnMkdir;
   private JButton btnUpload;
   private JButton btnDownload;
   private JButton btnBrowse;
-  private JFrame mkdirFrame;
+  private ManagedWindow mkdirWindow;
   private JTextField mkdirTxt;
   private JButton mkdirBtn;
   private String currentPath;
@@ -99,7 +99,7 @@ public class FileManager
     {
       mkdir(mkdirTxt.getText());
       updateFileList();
-      mkdirFrame.setVisible(false);
+      mkdirWindow.dispose();
     }
   }
 
@@ -158,13 +158,13 @@ public class FileManager
 
   private void showMainFrame()
   {
-    mainFrame = new JFrame(getTitle());
-    mainFrame.addWindowListener(new PluginExitWindowListener(this));
-    mainFrame.setSize(400, 300);
-    mainFrame.getContentPane().setLayout(new BorderLayout());
+    mainWindow = new ManagedWindow(this, getTitle());
+    mainWindow.setExitPluginOnClose(true);
+    mainWindow.setPreferredSize(new Dimension(400, 300));
+    mainWindow.getContentPane().setLayout(new BorderLayout());
     filelist = new JList();
     filelist.addMouseListener(this);
-    mainFrame.getContentPane().add(new JScrollPane(filelist), BorderLayout.CENTER);
+    mainWindow.getContentPane().add(new JScrollPane(filelist), BorderLayout.CENTER);
     btnMkdir = new JButton(tr("mkdir"));
     btnMkdir.addActionListener(this);
     btnUpload = new JButton(tr("upload"));
@@ -184,25 +184,25 @@ public class FileManager
     panel.add(btnMkdir);
     panel.add(btnUpload);
     panel.add(btnDownload);
-    mainFrame.getContentPane().add(left, BorderLayout.EAST);
-	mainFrame.setIconImage(this.getImageIcon().getImage());
-    mainFrame.setVisible(true);
+    mainWindow.getContentPane().add(left, BorderLayout.EAST);
+	mainWindow.setIconImage(this.getImageIcon().getImage());
+    mainWindow.show();
   }
 
 
   private void showMkdirDialog()
   {
-    mkdirFrame = new JFrame(tr("mkdir"));
-    mkdirFrame.getContentPane().setLayout(new BorderLayout());
-    mkdirFrame.getContentPane().add(new JLabel(tr("mkdirName")), BorderLayout.WEST);
+    mkdirWindow = new ManagedWindow(this, tr("mkdir"));
+    mkdirWindow.getContentPane().setLayout(new BorderLayout());
+    mkdirWindow.getContentPane().add(new JLabel(tr("mkdirName")), BorderLayout.WEST);
     mkdirTxt = new JTextField();
-    mkdirFrame.getContentPane().add(mkdirTxt, BorderLayout.CENTER);
+    mkdirWindow.getContentPane().add(mkdirTxt, BorderLayout.CENTER);
     mkdirBtn = new JButton(tr("create"));
     mkdirBtn.addActionListener(this);
-    mkdirFrame.getContentPane().add(mkdirBtn, BorderLayout.EAST);
-    mkdirFrame.setSize(300, 50);
-	mkdirFrame.setIconImage(this.getImageIcon().getImage());
-    mkdirFrame.setVisible(true);
+    mkdirWindow.getContentPane().add(mkdirBtn, BorderLayout.EAST);
+    mkdirWindow.setPreferredSize(new Dimension(300, 50));
+	mkdirWindow.setIconImage(this.getImageIcon().getImage());
+    mkdirWindow.show();
   }
 
 
@@ -229,7 +229,7 @@ public class FileManager
   {
     JFileChooser fc = new JFileChooser();
     File file = null;
-    int returnVal = fc.showOpenDialog(mainFrame);
+    int returnVal = fc.showOpenDialog(null);
 
     if(returnVal == JFileChooser.APPROVE_OPTION)
       file = fc.getSelectedFile();
@@ -265,7 +265,7 @@ public class FileManager
   {
     File file = null;
     JFileChooser fc = new JFileChooser();
-    int returnVal = fc.showSaveDialog(mainFrame);
+    int returnVal = fc.showSaveDialog(null);
 
     if(returnVal == JFileChooser.APPROVE_OPTION)
       file = fc.getSelectedFile();

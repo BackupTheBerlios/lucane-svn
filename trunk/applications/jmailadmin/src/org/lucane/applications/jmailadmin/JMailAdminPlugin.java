@@ -47,7 +47,7 @@ public class JMailAdminPlugin
 	{
 		this.service = Communicator.getInstance().getConnectInfo("org.lucane.applications.jmailadmin");
 		MainFrame mf = new MainFrame(this);
-		mf.addWindowListener(new PluginExitWindowListener(this));
+		mf.setExitPluginOnClose(true);
 		mf.show();
 	}
 	

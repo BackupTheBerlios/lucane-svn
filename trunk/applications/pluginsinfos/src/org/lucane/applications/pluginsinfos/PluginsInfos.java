@@ -19,7 +19,7 @@
 package org.lucane.applications.pluginsinfos;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.common.*;
 
 import java.awt.*;
@@ -35,7 +35,7 @@ public class PluginsInfos
   implements ActionListener
 {
 
-  private JFrame frame;
+  private ManagedWindow window;
   JTextField name; // + version
   JTextField author; // + email
   JTextField tooltip;
@@ -62,10 +62,10 @@ public class PluginsInfos
 
     JPanel jpmain = new JPanel();
     jpmain.setLayout(new BorderLayout());
-    frame = new JFrame(tr("ftitle"));
-    frame.addWindowListener(new PluginExitWindowListener(this));
-    frame.getContentPane().setLayout(new BorderLayout());
-    frame.getContentPane().add(jpmain, BorderLayout.CENTER);
+    window = new ManagedWindow(this, getTitle());
+    window.setExitPluginOnClose(true);
+    window.getContentPane().setLayout(new BorderLayout());
+    window.getContentPane().add(jpmain, BorderLayout.CENTER);
     plugins = new JComboBox();
     plugins.addActionListener(this);
     jpmain.add(plugins, BorderLayout.NORTH);
@@ -109,9 +109,9 @@ public class PluginsInfos
         plugins.addItem(p.getName());
     }
 
-    frame.setSize(340, 150);
-	frame.setIconImage(this.getImageIcon().getImage());
-    frame.setVisible(true);
+    window.setPreferredSize(new Dimension(340, 150));
+	window.setIconImage(this.getImageIcon().getImage());
+    window.show();
   }
 
   public void actionPerformed(ActionEvent ae)

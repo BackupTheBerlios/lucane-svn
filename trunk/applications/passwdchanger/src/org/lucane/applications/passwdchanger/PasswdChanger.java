@@ -19,7 +19,6 @@
 package org.lucane.applications.passwdchanger;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import org.lucane.common.signature.*;
@@ -34,7 +33,7 @@ public class PasswdChanger
 {
 
   /* dialog components */
-  private JFrame frame;
+  private ManagedWindow window;
   private JTextField txtold;
   private JTextField txtnew1;
   private JTextField txtnew2;
@@ -68,25 +67,24 @@ public class PasswdChanger
   public void start()
   {
     this.cinfo = Communicator.getInstance().getConnectInfo("org.lucane.applications.passwdchanger");
-    frame = new JFrame(getTitle());
-    frame.addWindowListener(new PluginExitWindowListener(this));
-    frame.getContentPane().setLayout(new GridLayout(0, 2));
+    window = new ManagedWindow(this, getTitle());
+    window.setExitPluginOnClose(true);
+    window.getContentPane().setLayout(new GridLayout(0, 2));
     txtold = new JPasswordField();
     txtnew1 = new JPasswordField();
     txtnew2 = new JPasswordField();
     btnChange = new JButton(tr("button"));
     btnChange.addActionListener(this);
-    frame.getContentPane().add(new JLabel(tr("old")));
-    frame.getContentPane().add(txtold);
-    frame.getContentPane().add(new JLabel(tr("new")));
-    frame.getContentPane().add(txtnew1);
-    frame.getContentPane().add(new JLabel(tr("check")));
-    frame.getContentPane().add(txtnew2);
-    frame.getContentPane().add(new JLabel(""));
-    frame.getContentPane().add(btnChange);
-    frame.pack();
-	frame.setIconImage(this.getImageIcon().getImage());
-    frame.setVisible(true);
+    window.getContentPane().add(new JLabel(tr("old")));
+    window.getContentPane().add(txtold);
+    window.getContentPane().add(new JLabel(tr("new")));
+    window.getContentPane().add(txtnew1);
+    window.getContentPane().add(new JLabel(tr("check")));
+    window.getContentPane().add(txtnew2);
+    window.getContentPane().add(new JLabel(""));
+    window.getContentPane().add(btnChange);
+	window.setIconImage(this.getImageIcon().getImage());
+    window.show();
   }
 
   /**
@@ -130,7 +128,7 @@ public class PasswdChanger
       else if(response.equals("PASSWD_CHANGED"))
       {
         DialogBox.info(tr("modified"));
-        frame.dispose();
+        window.dispose();
         exit();
       }
     }

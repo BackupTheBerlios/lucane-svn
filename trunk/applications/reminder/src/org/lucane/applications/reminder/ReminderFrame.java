@@ -22,12 +22,13 @@ package org.lucane.applications.reminder;
 import javax.swing.*;
 
 import org.lucane.client.*;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 import java.awt.event.*;
 import java.awt.*;
 
-public class ReminderFrame extends JFrame
+public class ReminderFrame extends ManagedWindow
 implements ActionListener
 {
 	private ReminderInfos infos;
@@ -36,7 +37,7 @@ implements ActionListener
 	
 	public ReminderFrame(ReminderPlugin plugin, ReminderInfos infos)
 	{
-		super(plugin.tr("reminder") + " " + infos.getTitle());
+		super(plugin, plugin.tr("reminder") + " " + infos.getTitle());
 		this.infos = infos;
 		getContentPane().setLayout(new BorderLayout());
 		
@@ -59,7 +60,7 @@ implements ActionListener
 		container.add(buttons, BorderLayout.NORTH);
 		getContentPane().add(container, BorderLayout.EAST);
 		this.setIconImage(p.getImageIcon().getImage());
-		setSize(450, 200);
+		setPreferredSize(new Dimension(450, 200));
 	}
 	
 	public void actionPerformed(ActionEvent ae)

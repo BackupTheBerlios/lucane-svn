@@ -164,14 +164,4 @@ implements MouseListener, ActionListener
 			panel.showConcept(null);
 		}
    }
-
-   public static void main(String [] args)
-   {
-	   PluginPanel pp = new PluginPanel(null, null);
-	   JFrame jf = new JFrame();
-	   jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	   jf.getContentPane().add(pp);
-	   jf.setSize(800, 500);
-	   jf.show();
-   }
 }

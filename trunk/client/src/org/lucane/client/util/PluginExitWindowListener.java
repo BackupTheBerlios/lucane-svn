@@ -18,8 +18,10 @@
  */
 package org.lucane.client.util;
 
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 
 import org.lucane.client.Plugin;
 
@@ -46,6 +48,7 @@ public class PluginExitWindowListener extends WindowAdapter
 	 */
 	public void windowClosing(WindowEvent e)
 	{
+		WidgetState.save(plugin.getLocalConfig(), (JFrame)e.getSource());
 		plugin.exit();
 	}
 }

@@ -4,12 +4,13 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import org.lucane.client.util.PluginExitWindowListener;
+import org.lucane.client.widgets.ManagedWindow;
 
 /**
  * SQLNavigator
  */
-class Navigator extends JFrame implements ListSelectionListener
+class Navigator extends ManagedWindow 
+implements ListSelectionListener
 {
 	transient SqlPlugin plugin;
 	JPanel result;
@@ -23,8 +24,9 @@ class Navigator extends JFrame implements ListSelectionListener
      */
     public Navigator(SqlPlugin plugin)
 	{
+    	super(plugin, plugin.getTitle());
         this.plugin = plugin;
-        this.addWindowListener(new PluginExitWindowListener(plugin));
+        setExitPluginOnClose(true);
            
         result = new JPanel();
         result.setLayout(new BorderLayout());       
@@ -63,8 +65,8 @@ class Navigator extends JFrame implements ListSelectionListener
         getContentPane().add(jp, BorderLayout.SOUTH);
        
         setTitle(plugin.getTitle());
-		setSize(800, 600);
-		setVisible(true);
+		setPreferredSize(new Dimension(800, 600));
+		show();
 	}
     
     

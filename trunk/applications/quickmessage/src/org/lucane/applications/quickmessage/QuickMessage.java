@@ -19,7 +19,6 @@
 package org.lucane.applications.quickmessage;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 import org.lucane.common.*;
@@ -46,7 +45,7 @@ public class QuickMessage
   private String message;
 
   /* widgets */
-  private JFrame dialog;
+  private ManagedWindow dialog;
   private JTextField txtWho;
   private HTMLEditor txtMessage;
   private HTMLEditor txtNew;
@@ -93,8 +92,8 @@ public class QuickMessage
       return;
     }
 
-    dialog = new JFrame("QuickMessage");
-    dialog.addWindowListener(new PluginExitWindowListener(this));
+    dialog = new ManagedWindow(this, getTitle());
+    dialog.setExitPluginOnClose(true);
     dialog.getContentPane().setLayout(new BorderLayout());
     txtWho = new JTextField(friends[0].getName());
     txtWho.setEditable(false);
@@ -109,9 +108,9 @@ public class QuickMessage
     dialog.getContentPane().add(txtWho, BorderLayout.NORTH);
     dialog.getContentPane().add(txtNew, BorderLayout.CENTER);
     dialog.getContentPane().add(btnMain, BorderLayout.SOUTH);
-    dialog.setSize(350, 200);
+    dialog.setPreferredSize(new Dimension(350, 200));
 	  dialog.setIconImage(this.getImageIcon().getImage());
-    dialog.setVisible(true);
+    dialog.show();
   }
 
   public void follow()
@@ -127,8 +126,8 @@ public class QuickMessage
   	
   	feedback.play();
   	
-    dialog = new JFrame("QuickMessage");
-    dialog.addWindowListener(new PluginExitWindowListener(this));
+    dialog = new ManagedWindow(this, getTitle());
+    dialog.setExitPluginOnClose(true);
     dialog.getContentPane().setLayout(new BorderLayout());
     txtWho = new JTextField(friends[0].getName());
     txtWho.setEditable(false);
@@ -147,9 +146,9 @@ public class QuickMessage
     jsp.setOneTouchExpandable(true);
     dialog.getContentPane().add(jsp, BorderLayout.CENTER);
     dialog.getContentPane().add(btnMain, BorderLayout.SOUTH);
-    dialog.setSize(350, 350);
+    dialog.setPreferredSize(new Dimension(350, 350));
 	dialog.setIconImage(this.getImageIcon().getImage());
-    dialog.setVisible(true);
+    dialog.show();
     jsp.setDividerLocation(0.4);
    }
 

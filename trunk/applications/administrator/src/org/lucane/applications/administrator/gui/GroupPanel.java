@@ -441,14 +441,4 @@ implements MouseListener, ActionListener
 			((ConceptTableModel)groupServices.getModel()).removeAt(row);
 		}
    }
-
-   public static void main(String [] args)
-   {
-	   GroupPanel gp = new GroupPanel(null, null);
-	   JFrame jf = new JFrame();
-	   jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	   jf.getContentPane().add(gp);
-	   jf.setSize(800, 500);
-	   jf.show();
-   }
 }

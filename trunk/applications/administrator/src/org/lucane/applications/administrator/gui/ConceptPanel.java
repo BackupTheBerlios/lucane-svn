@@ -98,13 +98,4 @@ implements ListSelectionListener
 		
 		splitPane.setDividerLocation(250);
 	}
-	
-	public static void main(String[] args)
-	{
-		JFrame jf = new JFrame("test");
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.getContentPane().add(new ConceptPanel(null));
-		jf.pack();
-		jf.show();
-	}
 }

@@ -18,6 +18,8 @@
  */
 package org.lucane.applications.jmailaccount;
 
+import java.awt.Dimension;
+
 import org.lucane.client.*;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.ConnectInfo;
@@ -44,7 +46,7 @@ public class JMailAccountPlugin
 		this.service = Communicator.getInstance().getConnectInfo("org.lucane.applications.jmailaccount");
 		AccountFrame frame = new AccountFrame(this);
 		frame.setAccount(getAccount());
-		frame.setSize(250, 300);
+		frame.setPreferredSize(new Dimension(250, 300));
 		frame.setIconImage(this.getImageIcon().getImage());
 		frame.show();
 	}

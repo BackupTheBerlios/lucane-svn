@@ -28,7 +28,7 @@ import org.lucane.client.widgets.*;
 import org.lucane.applications.calendar.*;
 import org.lucane.applications.calendar.Event;
 
-public class EventFrame extends JFrame
+public class EventFrame extends ManagedWindow
 implements ActionListener
 {
 	private transient CalendarPlugin plugin;
@@ -49,7 +49,7 @@ implements ActionListener
 		
 	public EventFrame(CalendarPlugin plugin, Event event, DayPanel day, WeekPanel week, MonthPanel month)
 	{
-		super(event.getTitle());
+		super(plugin, event.getTitle());
 		
 		this.plugin = plugin;
 		this.event = event;
@@ -105,7 +105,7 @@ implements ActionListener
 		buttonsContainer.add(buttons, BorderLayout.EAST);
 		getContentPane().add(buttonsContainer, BorderLayout.SOUTH);
 		
-		setSize(650, 400);
+		setPreferredSize(new Dimension(650, 400));
 		setIconImage(plugin.getImageIcon().getImage());
 	}
 	

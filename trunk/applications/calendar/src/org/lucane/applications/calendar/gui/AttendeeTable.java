@@ -18,6 +18,7 @@
  */
 package org.lucane.applications.calendar.gui;
 
+import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.net.URL;
@@ -94,7 +95,7 @@ implements MouseListener
 		{	
 			Attendee a = this.getAttendeeAt(this.getSelectedRow());
 			CalendarViewer viewer = new CalendarViewer(plugin, a.getUser());
-			viewer.setSize(780, 550);
+			viewer.setPreferredSize(new Dimension(780, 550));
 			viewer.setIconImage(plugin.getImageIcon().getImage());
 			viewer.show();				
 		}

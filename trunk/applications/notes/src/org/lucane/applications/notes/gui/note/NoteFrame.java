@@ -20,13 +20,13 @@
 package org.lucane.applications.notes.gui.note;
 
 import java.awt.*;
-import javax.swing.*;
 
 import org.lucane.client.Client;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.applications.notes.Note;
 import org.lucane.applications.notes.NotesPlugin;
 
-public class NoteFrame extends JFrame
+public class NoteFrame extends ManagedWindow
 {
 	private MainPanel content;
 	private ButtonPanel buttons;
@@ -34,13 +34,13 @@ public class NoteFrame extends JFrame
 	
 	public NoteFrame(NotesPlugin plugin)
 	{
-		super(plugin.tr("note.frame.title.add"));
+		super(plugin, plugin.tr("note.frame.title.add"));
         init(plugin);
 	}
   
     public NoteFrame(NotesPlugin plugin, Note note)
     {
-        super(plugin.tr("note.frame.title.edit"));
+        super(plugin, plugin.tr("note.frame.title.edit"));
         init(plugin);
         noteId = note.getId();
         
@@ -55,9 +55,8 @@ public class NoteFrame extends JFrame
 
 	private void init(NotesPlugin plugin)
     {
-        this.setSize(600, 400);
+        this.setPreferredSize(new Dimension(600, 400));
         this.getContentPane().setLayout(new BorderLayout(5, 0));
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
         MyActionListener listener = new MyActionListener(plugin, this);
         

@@ -19,16 +19,11 @@
 package org.lucane.client.widgets.htmleditor;
 
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
 import javax.swing.text.html.HTMLEditorKit;
 
 /**
@@ -139,40 +134,5 @@ public class HTMLEditor extends JComponent {
 
 	public void clear() {
 		editor.setText("<html><head><style>body{margin:0px;padding:0px;} p{margin:0px;padding:0px;}</style></head></html>");
-	}
-
-	public static void main(String[] args) {
-		JFrame jf = new JFrame("test");
-		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		final HTMLEditor ed = new HTMLEditor();
-		final JTextArea jta = new JTextArea();
-
-		ed.editor.addCaretListener(new CaretListener() {
-			public void caretUpdate(CaretEvent e) {
-				jta.setText(ed.getText());
-			}
-		});
-		jf.getContentPane().setLayout(new GridLayout());
-		jf.getContentPane().add(ed);
-		jf.getContentPane().add(jta);
-		jf.setSize(300, 250);
-		jf.show();
-
-//		ed.setText("<html><head></head></html>");
-/*		ed.addHTML(
-			"<div style=\"margin:5px;padding:5px;font-weight:bold;display:block;border:1px solid #000000\"><font color=\"#00AA00\">gras vert<br>avec marges<br>et bordures</font></div>");
-		ed.addHTML("normal");
-		ed.addHTML("<u>souligné</u>");
-
-		for (int i = 0; i < 3; i++)
-			ed.addHTML(
-				"<DIV "
-					+ "STYLE=\"padding:0px;margin-bottom:2px;"
-					+ "border-width:1px;border-style:solid;border-color:#eeeedd;"
-					+ "background-color:#ffffee;width:100%;\">"
-					+ "<i><font size=2>20:15</font></i>&nbsp;"
-					+ "<b><font size=4>guest&nbsp;&gt; </font></b>"
-					+ "<font size=10px>vcxvvsdfdsfezrze</font>"
-					+ "</DIV>");*/
 	}
 }

@@ -33,7 +33,7 @@ public class ForumAdmin
   implements ActionListener
 {
 
-  private JFrame mainFrame;
+  private ManagedWindow mainWindow;
   private JButton btnCreate;
   private JButton btnDelete;
   private JButton btnClose;
@@ -54,7 +54,7 @@ public class ForumAdmin
   {
 	this.service = Communicator.getInstance().getConnectInfo("org.lucane.applications.forumadmin");
 
-    mainFrame = new JFrame(getTitle());
+    mainWindow = new ManagedWindow(this, getTitle());
     lstForums = new JList();
     btnCreate = new JButton(tr("create"));
     btnDelete = new JButton(tr("remove"));
@@ -62,8 +62,8 @@ public class ForumAdmin
     btnCreate.addActionListener(this);
     btnDelete.addActionListener(this);
     btnClose.addActionListener(this);
-    mainFrame.getContentPane().setLayout(new BorderLayout());
-    mainFrame.getContentPane().add(lstForums, BorderLayout.CENTER);
+    mainWindow.getContentPane().setLayout(new BorderLayout());
+    mainWindow.getContentPane().add(lstForums, BorderLayout.CENTER);
 
     JPanel pnlBtns = new JPanel(new BorderLayout());
     JPanel pnlTop = new JPanel(new GridLayout(0, 1));
@@ -71,10 +71,10 @@ public class ForumAdmin
     pnlTop.add(btnDelete);
     pnlBtns.add(pnlTop, BorderLayout.NORTH);
     pnlBtns.add(btnClose, BorderLayout.SOUTH);
-    mainFrame.getContentPane().add(pnlBtns, BorderLayout.EAST);
-    mainFrame.setSize(300, 300);
-	mainFrame.setIconImage(this.getImageIcon().getImage());
-    mainFrame.show();
+    mainWindow.getContentPane().add(pnlBtns, BorderLayout.EAST);
+    mainWindow.setPreferredSize(new Dimension(300, 300));
+	mainWindow.setIconImage(this.getImageIcon().getImage());
+    mainWindow.show();
     getForumList();
   }
   
@@ -86,7 +86,7 @@ public class ForumAdmin
       deleteForum();
     else if(ae.getSource() == btnClose)
     {
-      mainFrame.dispose();
+      mainWindow.dispose();
       exit();
     }
   }

@@ -27,9 +27,10 @@ import javax.mail.*;
 import javax.swing.*;
 
 import org.lucane.applications.jmail.JMailPlugin;
+import org.lucane.client.widgets.ManagedWindow;
 
 /** Main window */
-public class JMailWindow extends JFrame {
+public class JMailWindow extends ManagedWindow {
 	/** Language resource */
 	private ResourceBundle msgBundle;
 
@@ -105,7 +106,7 @@ public class JMailWindow extends JFrame {
 	 *                  locale used
 	 */
 	public JMailWindow(JMailPlugin plugin) {
-		super(plugin.getTitle());
+		super(plugin, plugin.getTitle());
 		this.plugin = plugin;
 		
 		this.msgBundle = plugin.getBundle();
@@ -118,8 +119,8 @@ public class JMailWindow extends JFrame {
 
 		setPanel();
 		addWindowListener(listener);
-		setSize(800, 600);
-		setVisible(true);
+		setPreferredSize(new Dimension(800, 600));
+		show();
 
 		if (profile.getType().compareTo("pop3") != 0) {
 			FolderListener f = new FolderListener(panel);
@@ -328,7 +329,7 @@ public class JMailWindow extends JFrame {
 	private void update() {
 		panel.disconnect();
 		setPanel();
-		SwingUtilities.updateComponentTreeUI(this);
+		SwingUtilities.updateComponentTreeUI(getContentPane());
 	}
 
 	/** Reloads the main panel */

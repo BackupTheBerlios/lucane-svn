@@ -18,6 +18,7 @@
  */
 package org.lucane.applications.rssreader;
 
+import java.awt.Dimension;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
@@ -53,7 +54,7 @@ public class RssReader extends StandalonePlugin
 
 		frame = new MainFrame(this);
 		frame.refreshChannelList();
-		frame.setSize(600, 600);
+		frame.setPreferredSize(new Dimension(600, 600));
 		frame.restoreState();
 		frame.show();
 	}

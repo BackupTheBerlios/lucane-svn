@@ -20,6 +20,7 @@
 package org.lucane.applications.calendar;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.*;
 
 import org.lucane.client.*;
@@ -52,8 +53,8 @@ public class CalendarPlugin extends StandalonePlugin
 		
 		//-- display month view
 		CalendarFrame cf = new CalendarFrame(this);
-		cf.addWindowListener(new PluginExitWindowListener(this));
-		cf.setSize(780, 550);
+		cf.setExitPluginOnClose(true);
+		cf.setPreferredSize(new Dimension(780, 550));
 		cf.setIconImage(this.getImageIcon().getImage());
 		cf.show();	 
 	}

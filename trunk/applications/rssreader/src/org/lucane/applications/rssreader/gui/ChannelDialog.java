@@ -40,7 +40,7 @@ implements ActionListener
 	
 	public ChannelDialog(MainFrame main, RssReader plugin)
 	{
-		super(main, plugin.tr("addChannel"));
+		super((JFrame)null, plugin.tr("addChannel"));
 		
 		this.main = main;
 		this.plugin = plugin;

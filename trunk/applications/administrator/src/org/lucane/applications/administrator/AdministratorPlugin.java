@@ -19,12 +19,10 @@
 
 package org.lucane.applications.administrator;
 
+import java.awt.Dimension;
 import java.util.*;
 
-import javax.swing.JFrame;
-
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import org.lucane.common.concepts.*;
@@ -55,12 +53,12 @@ public class AdministratorPlugin extends StandalonePlugin
 	{
 		service = Communicator.getInstance().getConnectInfo("org.lucane.applications.administrator");
 		
-		JFrame jf = new JFrame("Admin plugin");
-		jf.addWindowListener(new PluginExitWindowListener(this));
-		jf.getContentPane().add(new MainPanel(this));
-		jf.setSize(800, 550);
-		jf.setIconImage(this.getImageIcon().getImage());
-		jf.show();
+		ManagedWindow win = new ManagedWindow(this, "Admin plugin");
+		win.setExitPluginOnClose(true);
+		win.getContentPane().add(new MainPanel(this));
+		win.setPreferredSize(new Dimension(800, 550));
+		win.setIconImage(this.getImageIcon().getImage());
+		win.show();
 	}
 	
 	//-- get cached concepts

@@ -23,10 +23,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 import org.lucane.client.Client;
+import org.lucane.client.widgets.ManagedWindow;
 
 
 
-public class AccountFrame extends JFrame
+public class AccountFrame extends ManagedWindow
 implements ActionListener
 {
 	private JMailAccountPlugin plugin;
@@ -45,10 +46,11 @@ implements ActionListener
 	
 	public AccountFrame(JMailAccountPlugin plugin)
 	{
-		super(plugin.getTitle());
+		super(plugin, plugin.getTitle());
 		this.plugin = plugin;
 		
 		getContentPane().setLayout(new BorderLayout());
+		setExitPluginOnClose(true);
 		this.address = new JTextField();
 		this.type = new JComboBox();
 		this.type.addItem("imap");

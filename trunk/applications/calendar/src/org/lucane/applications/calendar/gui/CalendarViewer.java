@@ -22,6 +22,7 @@ package org.lucane.applications.calendar.gui;
 import javax.swing.*;
 
 import org.lucane.client.widgets.DialogBox;
+import org.lucane.client.widgets.ManagedWindow;
 import org.lucane.applications.calendar.CalendarPlugin;
 import org.lucane.applications.calendar.widget.*;
 import org.lucane.applications.calendar.Event;
@@ -31,7 +32,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.net.URL;
 
-public class CalendarViewer extends JFrame
+public class CalendarViewer extends ManagedWindow
 implements ActionListener, CalendarListener
 {
 	private MonthPanel monthPanel;
@@ -46,7 +47,7 @@ implements ActionListener, CalendarListener
 	
 	public CalendarViewer(CalendarPlugin plugin, String userName)
 	{
-		super(plugin.getTitle() + " - " +userName);
+		super(plugin, plugin.getTitle() + " - " +userName);
 		getContentPane().setLayout(new BorderLayout());
 		this.plugin = plugin;
 		
@@ -99,7 +100,7 @@ implements ActionListener, CalendarListener
 				getContentPane().remove(dayPanel);
 				getContentPane().add(monthPanel, BorderLayout.CENTER);
 				getContentPane().validate();
-				this.repaint();
+				getContentPane().repaint();
 			}
 		}
 		else if(ae.getSource() == goToCurrentDay)
@@ -110,7 +111,7 @@ implements ActionListener, CalendarListener
 				getContentPane().remove(monthPanel);
 				getContentPane().add(dayPanel, BorderLayout.CENTER);
 				getContentPane().validate();
-				this.repaint();
+				getContentPane().repaint();
 			}
 		}
 		else if(ae.getSource() == close)
@@ -128,7 +129,7 @@ implements ActionListener, CalendarListener
 		getContentPane().remove(monthPanel);
 		getContentPane().add(dayPanel, BorderLayout.CENTER);
 		getContentPane().validate();
-		this.repaint();
+		getContentPane().repaint();
 	}
 
 	public void onEventClick(EventLabel label) 

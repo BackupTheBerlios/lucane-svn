@@ -25,12 +25,13 @@ import javax.swing.*;
 
 import org.lucane.applications.audioconf.AudioConf;
 import org.lucane.client.Client;
+import org.lucane.client.widgets.ManagedWindow;
 
 public class Controller
 implements ActionListener, WindowListener
 {
 	private AudioConf plugin;
-	private JFrame controller;
+	private ManagedWindow controller;
 	
 	public Controller(AudioConf plugin)
 	{
@@ -39,7 +40,7 @@ implements ActionListener, WindowListener
 	
 	public void showController()
 	{
-		controller = new JFrame(plugin.getTitle());
+		controller = new ManagedWindow(plugin, plugin.getTitle());
 			
 		JButton stop = new JButton(plugin.tr("btn.stop"));
 		stop.addActionListener(this);
@@ -59,22 +60,12 @@ implements ActionListener, WindowListener
 		controller.getContentPane().add(stop, BorderLayout.EAST);
 		
 		controller.addWindowListener(this);
-		controller.pack();
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				controller.show();
-			}
-		});
+		controller.show();
 	}
 	
 	public void hideController()
 	{
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				controller.dispose();
-			}
-		});
+		controller.dispose();
 	}
 
 	public void actionPerformed(ActionEvent ae)

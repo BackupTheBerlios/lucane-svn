@@ -20,8 +20,6 @@
 package org.lucane.applications.maininterface;
 
 import org.lucane.client.*;
-import org.lucane.client.util.PluginExitWindowListener;
-import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
@@ -52,7 +50,7 @@ public class MainInterface
   private PluginLoader ploader;
 
   /* dialog components */
-  private JFrame frame;
+  private ManagedWindow window;
   private JPanel pnlUsers;
   private JPanel pnlPlugins;
   private JComboBox cmbGroups;
@@ -95,17 +93,17 @@ public class MainInterface
 
     this.service = commu.getConnectInfo(this.getName());
 	
-    frame = new JFrame("Lucane - " + parent.getMyInfos().getName());
-    frame.setName("maininterface");
+    window = new ManagedWindow(this, "Lucane - " + parent.getMyInfos().getName());
+    window.setName("maininterface");
     
-    frame.getContentPane().setLayout(new BorderLayout());
-    frame.addWindowListener(new PluginExitWindowListener(this));
+    window.getContentPane().setLayout(new BorderLayout());
+    //window.addWindowListener(new PluginExitWindowListener(this));
     mnuBar = new JMenuBar();
     mnuMain = new JMenu("Lucane");
     mnuExtends = new JMenu(tr("applications"));
     mnuBar.add(mnuMain);
     mnuBar.add(mnuExtends);
-    frame.setJMenuBar(mnuBar);
+    window.setJMenuBar(mnuBar);
     mnuExit = new JMenuItem(tr("quit"));
     mnuExit.addActionListener(this);
     mnuMain.add(mnuExit);
@@ -116,8 +114,8 @@ public class MainInterface
     pnlButtons.setLayout(new BorderLayout());
     pnlPlugins.setLayout(new GridLayout(0, 1));
     pnlUsers.setLayout(new BorderLayout());
-    frame.getContentPane().add(pnlUsers, BorderLayout.CENTER);
-    frame.getContentPane().add(pnlButtons, BorderLayout.EAST);
+    window.getContentPane().add(pnlUsers, BorderLayout.CENTER);
+    window.getContentPane().add(pnlButtons, BorderLayout.EAST);
     pnlButtons.add(pnlPlugins, BorderLayout.NORTH);
     cmbGroups = new JComboBox();
     lstUsers = new JList();
@@ -135,15 +133,10 @@ public class MainInterface
 
     parent.addUserListListener(this);
     
-    frame.setIconImage(this.getImageIcon16().getImage());
-    frame.setSize(350, 400);
-    
-    WidgetState.restore(getLocalConfig(), frame);
-    SwingUtilities.invokeLater(new Runnable() {
-    	public void run() {
-			frame.show();
-		}	
-    });
+    window.setIconImage(this.getImageIcon16().getImage());
+    window.setPreferredSize(new Dimension(350, 400));
+    window.setExitPluginOnClose(true);
+    window.show();
   }
   
   private void initGroupCombo()
@@ -285,7 +278,7 @@ public class MainInterface
 
   	if(ae.getSource() == mnuExit)
     {
-      this.frame.dispose();
+      this.window.dispose();
       cleanExit();
       return;
     }
@@ -354,7 +347,7 @@ public class MainInterface
   private void cleanExit()
   {
 	Logging.getLogger().finer("MainInterface::cleanExit()");
-	WidgetState.save(getLocalConfig(), frame);
+	//WidgetState.save(getLocalConfig(), window);
     parent.removeUserListListener(this);
     exit();    
   }
