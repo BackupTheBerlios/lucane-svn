@@ -373,6 +373,12 @@ public class Server
 		return this.authenticator;
 	}
 	
+	//-- static methos
+	public static void shutdownServer()
+	{
+		Server.getInstance().shutdown();
+	}
+	
 	/**
 	 * Main Method
 	 * 
