@@ -121,6 +121,7 @@ public class Store
         GroupConcept allUsers = new GroupConcept("AllUsers");
         GroupConcept grantedUsers = new GroupConcept("GrantedUsers");
 		GroupConcept admins = new GroupConcept("Admins");
+		GroupConcept shutdownGroup = new GroupConcept("Shutdown");
         admins.addParent(allUsers);
         grantedUsers.addParent(allUsers);
         
@@ -133,7 +134,7 @@ public class Store
 		//shutdown user
 		UserConcept shutdown = new UserConcept("shutdown", MD5.encode("shutdown"), false, "org.lucane.applications.shutdown");
 		shutdown.generateKeys("shutdown");
-		admins.addUser(shutdown);
+		shutdownGroup.addUser(shutdown);
 		getUserStore().storeUser(shutdown);
 		
         //guest user
@@ -161,6 +162,8 @@ public class Store
 		 ServiceConcept shutdownService = new ServiceConcept("org.lucane.applications.shutdown", false);
 		 admins.addPlugin(shutdownPlugin);
 		 admins.addService(shutdownService);
+		 shutdownGroup.addPlugin(shutdownPlugin);
+		 shutdownGroup.addService(shutdownService);
 		 getPluginStore().storePlugin(shutdownPlugin);
 		 getServiceStore().storeService(shutdownService);
 
@@ -336,5 +339,6 @@ public class Store
         getGroupStore().storeGroup(allUsers);
         getGroupStore().storeGroup(grantedUsers);
         getGroupStore().storeGroup(admins);
+        getGroupStore().storeGroup(shutdownGroup);
     }
 }
