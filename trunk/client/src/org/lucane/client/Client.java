@@ -22,13 +22,16 @@ import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import java.net.*;
 import java.io.*;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.ImageIcon;
 
 
 /**
- * The client main class
+ * The client main class.
+ * It's a singleton containing the different client parts : 
+ *   Listener, Communicator, PluginLoader, ...
+ * It is used as a glue between the different components
  */
 public class Client
 {   
@@ -38,23 +41,27 @@ public class Client
 	
     private ConnectInfo myinfos;    //can be masked by the proxy
     private ConnectInfo realinfos;  //has the real infos
+	private ConnectInfo serverInfos;
+
     private PluginLoader pluginloader;
     private Listener listener;
     private Communicator communicator;
+
     private ConnectBox connectbox;
-    private ConnectInfo serverInfos;
+
     private boolean isConnected;
-    private Vector userListListeners;
+
+    private ArrayList userListListeners;
     private Vector users;
     private Vector groups;
-    private int pluginsRegistered;
-	private String proxyHost;
-	private int proxyPort;
-    private String publicIp;
-    private String language;
+
 	private ClientConfig config;
 	
+	//the current startup plugin
 	private String startupPlugin;
+	
+	//stores running plugins
+	private ArrayList registeredPlugins;
 
 
     private static Client instance = null;
@@ -85,14 +92,10 @@ public class Client
         this.communicator = null;
         this.users = new Vector();
         this.groups = new Vector();
-        this.userListListeners = new Vector();
-        this.pluginsRegistered = 0;
-		this.proxyHost = null;
-		this.proxyPort = 0;
-        this.publicIp = null;
-        this.language = "en";
+        this.userListListeners = new ArrayList();
 		this.config = null;
 		
+		this.registeredPlugins = new ArrayList();
 
 		//create application directory structure
 		String appPath = System.getProperty("user.dir") + '/' + APPLICATIONS_DIRECTORY;
@@ -107,18 +110,11 @@ public class Client
      * @param passwd the password to use automatically or null
      * @param serverName the server to use for the connection
      * @param serverPort the server to use for the connection
-     * @return true is the connection is accepted, false otherwise
      */
-    protected boolean showConnectBox(String defaultLogin, String passwd, String serverName, int serverPort)
+    protected void showConnectBox(String defaultLogin, String passwd, String serverName, int serverPort)
     {
-        this.connectbox = new ConnectBox(defaultLogin, passwd, serverName, serverPort);
-        
-        while(connectbox.waiting())
-        {
-            Thread.yield();
-        }
-        
-        return this.connectbox.connectionAccepted();
+        this.connectbox = new ConnectBox(serverName, serverPort);
+        connectbox.showModalDialog(defaultLogin, passwd);
     }
     
     /**
@@ -154,7 +150,7 @@ public class Client
 			Logging.getLogger().warning(e.toString());
         }
         
-        this.connectbox.close();
+        this.connectbox.closeDialog();
     }
     
     /**
@@ -183,17 +179,23 @@ public class Client
     {        
         try
         {            
-            if(this.publicIp == null)
+            if(config.getPublicIp() == null)
+            {
                 this.realinfos = new ConnectInfo(userName, serverName,
                     InetAddress.getLocalHost().getHostAddress(),
                     listenPort, "nokey", "client");
+			}
             else
-                this.realinfos = new ConnectInfo(userName, serverName, this.publicIp,
+            {
+                this.realinfos = new ConnectInfo(userName, serverName, config.getPublicIp(),
                     listenPort, "nokey", "client");
+			}
             
-            if(this.proxyHost != null)
-                this.myinfos = new ConnectInfo(userName, serverName, this.proxyHost,
-                    this.proxyPort, "nokey", "client");
+            if(config.getProxyHost() != null)
+            {
+                this.myinfos = new ConnectInfo(userName, serverName, config.getProxyHost(),
+					config.getProxyPort(), "nokey", "client");
+			}
             else
                 this.myinfos = realinfos;
         }
@@ -233,51 +235,29 @@ public class Client
     {
         this.communicator = new Communicator(serverName);
     }
-    
-    /**
-     * Tell the client wich proxy to use
-     *
-     * @param host the proxy adress
-     * @param port the proxy adress
-     */
-    protected void setProxy(String host, int port)
-    {
-		Logging.getLogger().info("Using a proxy connection : " + host + ":" + port);
-        this.proxyHost = host;
-        this.proxyPort = port;
-    }
-    
-    /**
-     * Force the use of an IP address.
-     * Usefull for the proxy or if using multiple network interfaces
-     *
-     * @param ip the adress to use
-     */
-    protected void setPublicIp(String ip)
-    {
-		Logging.getLogger().info("Forced use of the IP adress " + ip);
-        this.publicIp = ip;
-    }
+        
     
     /**
      * Tells the client that a plugin has been launched.
      */
-    protected void registerPlugin()
+    protected void registerPlugin(Plugin p)
     {
-        this.pluginsRegistered++;
+    	Logging.getLogger().fine("registering : " + p.getName());
+        this.registeredPlugins.add(p);
     }
     
     /**
      * Tells a client that a plugin has been closed.
      */
-    protected void deregisterPlugin()
+    protected void unregisterPlugin(Plugin p)
     {
-        this.pluginsRegistered--;
+		Logging.getLogger().fine("unregistering : " + p.getName());
+        this.registeredPlugins.remove(p);
         
-        if(this.pluginsRegistered <= 0)
-        {
-            cleanExit();
-        }
+		//if no more plugins are running, or if we quit the startup plugin,
+		//exits the client cleanly
+        if(registeredPlugins.isEmpty() || p.getName().equals(startupPlugin))
+        	cleanExit();
     }
     
     /**
@@ -299,14 +279,16 @@ public class Client
             ObjectConnection oc = communicator.sendMessageTo(serverInfos, "Server",
                 "CONNECT_DEL " + myinfos.getName());
             oc.close();
+
+			Logging.getLogger().info("Exiting cleanly.");
+			Runtime.getRuntime().halt(0);
         }
         catch(Exception e)
         {
-            //we can't do much there
-        }
-        
-		Logging.getLogger().info("Exiting cleanly.");
-        Runtime.getRuntime().halt(0);
+            Logging.getLogger().warning("Can't send exit message to server");
+            e.printStackTrace();
+			Runtime.getRuntime().halt(1);
+        }        
     }
     
     /**
@@ -319,8 +301,9 @@ public class Client
         this.users = users;
         this.communicator.flushConnectInfosCache();
         
-        for(int i = 0; i < this.userListListeners.size(); i++)
-            ((UserListListener)this.userListListeners.elementAt(i)).userListChanged(users);
+        Iterator i = this.userListListeners.iterator();
+        while(i.hasNext())
+            ((UserListListener)i.next()).userListChanged(users);
     }
     
     /**
@@ -341,7 +324,7 @@ public class Client
      */
     public void addUserListListener(UserListListener ull)
     {
-        this.userListListeners.addElement(ull);
+        this.userListListeners.add(ull);
     }
     
     /**
@@ -363,28 +346,7 @@ public class Client
     {       
         return users;
     }
-    
-    /**
-     * Set the language to use
-     *
-     * @param lang the language
-     */
-    protected void setLang(String lang)
-    {
-        this.language = lang;
-        Translation.setLocale(lang);
-    }
-    
-    /**
-     * Get the language to use
-     *
-     * @return the language
-     */
-    public String getLanguage()
-    {        
-        return this.language;
-    }
-    
+        
     /**
      * Get the startup plugin for the current user
      */
@@ -413,6 +375,16 @@ public class Client
 	private void setConfig(ClientConfig config)
 	{
 		this.config = config;
+		Translation.setLocale(config.getLanguage());
+		
+		if(config.getProxyHost() != null)
+		{
+			Logging.getLogger().info("Using a proxy connection : " + config.getProxyHost() 
+								+ ":" + config.getProxyPort());
+		}
+
+		if(config.getPublicIp() != null)
+			Logging.getLogger().info("Forced use of the IP adress " + config.getPublicIp());   		
 	}
 
 	/**
@@ -481,11 +453,6 @@ public class Client
         //initialization
         Client client = Client.getInstance();
 		client.setConfig(config);
-        client.setLang(config.getLanguage());
-        if(config.getProxyHost() != null)
-        	client.setProxy(config.getProxyHost(), config.getProxyPort());
-        if(config.getPublicIp() != null)
-        	client.setPublicIp(config.getPublicIp());       
         		
 		String login = config.getLogin();
 		String passwd = null;		
@@ -495,9 +462,6 @@ public class Client
 			passwd = args[1];
 		}
         
-        if(! client.showConnectBox(login, passwd, config.getServerHost(), config.getServerPort()))
-            System.exit(1);
-        
-        client.init();
+        client.showConnectBox(login, passwd, config.getServerHost(), config.getServerPort());
     }
 }

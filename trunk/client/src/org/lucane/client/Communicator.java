@@ -106,6 +106,8 @@ public class Communicator
 	  StringTokenizer stk = new StringTokenizer((String)list.elementAt(i), " ");
 	  String plugin = stk.nextToken();
 	  String version = stk.nextToken();
+
+	  parent.getConnectBox().setProgressValue(i, plugin + " v" + version);
 	  
       /* download the plugin if necessary */
       if(! PluginLoader.getInstance().hasPlugin(plugin, version, true))
@@ -118,7 +120,6 @@ public class Communicator
           nupdated++;
       }
 
-      parent.getConnectBox().setProgressValue(i);
     }
 
 	Logging.getLogger().info("updated " + nupdated + " plugins.");

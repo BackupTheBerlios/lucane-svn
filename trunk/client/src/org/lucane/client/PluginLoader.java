@@ -31,7 +31,7 @@ import java.util.jar.*;
 public class PluginLoader
 {
   private Client parent;
-  private Vector plugins;
+  private HashMap plugins;
   private static PluginLoader instance = null;
 
   /**
@@ -41,7 +41,6 @@ public class PluginLoader
    */
   public static PluginLoader getInstance()
   {
-
     if(instance == null)
       instance = new PluginLoader();
 
@@ -54,7 +53,7 @@ public class PluginLoader
   private PluginLoader()
   {
     this.parent = Client.getInstance();
-    this.plugins = new Vector();
+    this.plugins = new HashMap();
   }
 
   /**
@@ -90,6 +89,7 @@ public class PluginLoader
    */
   protected boolean hasPlugin(String name, String version, boolean load)
   {
+  	Plugin plugin;
     if(load == true)
     {
       try
@@ -105,12 +105,11 @@ public class PluginLoader
         String className = (new JarFile(baseURL + name + ".jar")).getManifest()
         					.getMainAttributes().getValue("Plugin-Class");
         
-        Plugin p = (Plugin)Class.forName(className, true, loader).newInstance();
-        p.setLocale(Client.getInstance().getLanguage());
-        this.plugins.add(p);
-		Logging.getLogger().info(
-              "Loaded plugin " + p.getName() + " v. " + 
-              p.getVersion());
+        plugin = (Plugin)Class.forName(className, true, loader).newInstance();
+        plugin.setLocale(Client.getInstance().getConfig().getLanguage());
+        this.plugins.put(plugin.getName(), plugin);
+		Logging.getLogger().info("Loaded plugin " + plugin.getName() + " v. " + 
+              plugin.getVersion());
       }
       catch(Exception e)
       {
@@ -118,19 +117,9 @@ public class PluginLoader
       }
     }
 
-    boolean has = false;
-    for(int i = 0; i < this.plugins.size(); i++)
-    {
-      if(((Plugin)this.plugins.elementAt(i)).getName().equals(name) && 
-         (((Plugin)this.plugins.elementAt(i)).getVersion().equals(version) 
-         || version.equals("")))
-      {
-        has = true;
-        break;
-      }
-    }
 
-    return has;
+	plugin = (Plugin)this.plugins.get(name);
+	return plugin != null && (plugin.getVersion().equals(version) || version.length() == 0);
   }
 
   /**
@@ -144,52 +133,29 @@ public class PluginLoader
    */
   public void load(ObjectConnection oc, Message message)
   {
-    Logging.getLogger().finest("PluginLoader::load() SOURCE:" + message.getSender());
-	Logging.getLogger().finest("PluginLoader::load() DEST:" + message.getApplication());
-	Logging.getLogger().finest("PluginLoader::load() COMMAND:" + message.getData());
+  	String name = message.getApplication();
+	Logging.getLogger().fine("Trying to load plugin " + name);
 
-    for(int i = 0; i < this.plugins.size(); i++)
-    {
-      if(((Plugin)this.plugins.elementAt(i)).getName().equals(message.getApplication()))
-      {
-		Logging.getLogger().fine("Trying to load plugin " + 
-              ((Plugin)this.plugins.elementAt(i)).getName());
-
-        Plugin p = ((Plugin)this.plugins.elementAt(i)).init(new ConnectInfo[0], false);
-        p.setLocale(Client.getInstance().getLanguage());
-        p.load(oc, message.getSender(), (String)message.getData());
-        (new Thread(p)).start();
-		Logging.getLogger().info("Plugin " + ((Plugin)this.plugins.elementAt(i)).getName() + " loaded.");
-
-        break;
-      }
-    }
+    Plugin p = ((Plugin)this.plugins.get(name)).init(new ConnectInfo[0], false);
+    p.setLocale(Client.getInstance().getConfig().getLanguage());
+    p.load(oc, message.getSender(), (String)message.getData());
+    (new Thread(p)).start();
+	Logging.getLogger().info("Plugin " + name + " loaded.");
   }
 
   /**
    * Runs the requested Plugin in a new Thread
    * 
-   * @param plugin_name the Plugin to run
+   * @param name the Plugin to run
    * @param friends the connexions associated with the plugin
    */
-  public void run(String plugin_name, ConnectInfo[] friends)
+  public void run(String name, ConnectInfo[] friends)
   {
-    for(int i = 0; i < this.plugins.size(); i++)
-    {
-      if(((Plugin)this.plugins.elementAt(i)).getName().equals(plugin_name))
-      {
-		Logging.getLogger().fine("Trying to run plugin " + 
-              ((Plugin)this.plugins.elementAt(i)).getName());
-
-        Plugin p = ((Plugin)this.plugins.elementAt(i)).init(friends, true);
-        p.setLocale(Client.getInstance().getLanguage());
-        (new Thread(p)).start();
-        Logging.getLogger().fine("Plugin " + ((Plugin)this.plugins.elementAt(i)).getName()
-         + " started.");
-
-        break;
-      }
-    }
+	Logging.getLogger().fine("Trying to run plugin " + name);
+	Plugin p = ((Plugin)this.plugins.get(name)).init(friends, true);
+    p.setLocale(Client.getInstance().getConfig().getLanguage());
+    (new Thread(p)).start();
+    Logging.getLogger().fine("Plugin " + name + " started.");
   }
 
   /**
@@ -203,15 +169,13 @@ public class PluginLoader
   }
 
   /**
-   * Get a plugin in the list. Used with getNumberOfPlugins() to
-   * iterate through the plugin list.
+   * Get the list of plugins
    * 
-   * @param index the index of the plugin
-   * @return the corresponding Plugin
+   * @return an iterator
    */
-  public Plugin getPluginAt(int index)
+  public Iterator getPluginIterator()
   {
-    return (Plugin)this.plugins.elementAt(index);
+    return this.plugins.values().iterator();
   }
   
   /**
@@ -222,12 +186,6 @@ public class PluginLoader
    */
   public Plugin getPlugin(String name)
   {
-  	for(int i = 0; i < this.plugins.size(); i++)
-  	{
-  		Plugin p = (Plugin)this.plugins.elementAt(i); 
-  		if(p.getName().equals(name))
-  			return p;
-  	}
-  	return null;
+  	return (Plugin)this.plugins.get(name);
   }
 }

@@ -1,6 +1,7 @@
 /*
  * Lucane - a collaborative platform
  * Copyright (C) 2002  Gautier Ringeisen <gautier_ringeisen@hotmail.com>
+ * Copyright (C) 2004  Vincent Fiack <vfiack@mail15.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,95 +29,104 @@ import javax.swing.*;
 /**
  * Connection Dialog
  */
-class ConnectBox extends JFrame implements KeyListener, ActionListener
+class ConnectBox
+implements KeyListener, ActionListener
 {
-    private boolean wait;
+	private JDialog dialog;
+	
     private boolean isConnected;
     private String serverName;
 	private int serverPort;
+
     private JTextField tbName;
     private JPasswordField tbPasswd;
     private JButton btOk;
     private JButton btCancel;
     private JProgressBar pbStatus;
-    private JPanel pnlMain;
     
     /**
      * Constructor
      *
-     * @param defaultLogin the default login
-     * @param passwd the password to validate or null
      * @param serverName the server
      * @param serverPort the server port
      */
-    public ConnectBox(String defaultLogin, String passwd, String serverName, int serverPort)
+    public ConnectBox(String serverName, int serverPort)
     {
-        super(Translation.tr("connectBoxTitle"));
-        this.wait = true;
+        dialog = new JDialog((Frame)null, Translation.tr("connectBoxTitle"), true);
         this.isConnected = false;
         this.serverName = serverName;
         this.serverPort = serverPort;
         
-        pnlMain = new JPanel(new GridLayout(3, 2, 2, 2));
-        tbName = new JTextField();
-        tbPasswd = new JPasswordField();
+        JPanel pnlMain = new JPanel(new GridLayout(3, 2, 2, 2));
+        this.tbName = new JTextField();
+		this.tbPasswd = new JPasswordField();
         
-        btOk = new JButton(Translation.tr("connectBoxConnect"));
-        btCancel = new JButton(Translation.tr("connectBoxCancel"));
-		btOk.setIcon(Client.getIcon("ok.png"));
-		btCancel.setIcon(Client.getIcon("cancel.png"));
+		this.btOk = new JButton(Translation.tr("connectBoxConnect"));
+		this.btCancel = new JButton(Translation.tr("connectBoxCancel"));
+		this.btOk.setIcon(Client.getIcon("ok.png"));
+		this.btCancel.setIcon(Client.getIcon("cancel.png"));
         
-        pbStatus = new JProgressBar(0, 100);
-        pbStatus.setValue(0);
+		this.pbStatus = new JProgressBar(0, 100);
+		this.pbStatus.setValue(0);
+		this.pbStatus.setFont(this.pbStatus.getFont().deriveFont(9f));
+		this.pbStatus.setString("");
+		this.pbStatus.setStringPainted(true);
+		
         pnlMain.add(new JLabel(Translation.tr("connectBoxLogin")));
         pnlMain.add(tbName);
         pnlMain.add(new JLabel(Translation.tr("connectBoxPasswd")));
         pnlMain.add(tbPasswd);
         pnlMain.add(btOk);
         pnlMain.add(btCancel);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        dialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         btOk.addActionListener(this);
         btCancel.addActionListener(this);
         btOk.addKeyListener(this);
         btCancel.addKeyListener(this);
         tbPasswd.addKeyListener(this);
         tbName.addKeyListener(this);
-        tbName.setText(defaultLogin);
-        getContentPane().setLayout(new BorderLayout(4, 4));
-        getContentPane().add(pnlMain, BorderLayout.CENTER);
-        getContentPane().add(pbStatus, BorderLayout.SOUTH);
-        
-        setSize(280, 120);
-        setResizable(false);
-		setIconImage(Client.getIcon("lucane.png").getImage());
-		
-		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-		setLocation((d.width-getWidth())/2, (d.height-getHeight())/2);
-        setEnabled(true);
-        setVisible(true);
 
-		//-- auto connection
-		if(passwd != null)
-		{
-        	tbPasswd.setText(passwd);
-			tryToConnect();
-		}
+        
+        dialog.getContentPane().setLayout(new BorderLayout(4, 4));
+        dialog.getContentPane().add(pnlMain, BorderLayout.CENTER);
+        dialog.getContentPane().add(pbStatus, BorderLayout.SOUTH);
+                
+        dialog.pack();
+        dialog.setSize(dialog.getWidth(), 120);
+        dialog.setResizable(false);	
     }
     
     /**
-     * Does the client have to wait ?
-     *
-     * @return true if it has to wait
+     * Show the modal dialog
+     * 
+     * @param defaultLogin the login to display
+     * @param passwd if non null, autoconnect
      */
-    public boolean waiting()
-    {      
-        return wait;
-    }
+    public void showModalDialog(String defaultLogin, String passwd)
+    {
+		//center dialog
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		dialog.setLocation((d.width-dialog.getWidth())/2, (d.height-dialog.getHeight())/2);		
+
+		tbName.setText(defaultLogin);
+		
+		//-- auto connection
+		if(passwd != null)
+		{
+			tbPasswd.setText(passwd);
+			dialog.setEnabled(false);
+			tryToConnect(Client.getInstance());
+		}
+		else
+			dialog.show();
+    }   
     
     /**
      * Is the connection accepted ?
      *
-     * @return tru if the connection is accepted
+     * @return true if the connection is accepted
      */
     public boolean connectionAccepted()
     {
@@ -127,10 +137,12 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
      * Set the value of the progressbar
      *
      * @param v the new value
+     * @param str the message
      */
-    public void setProgressValue(int v)
+    public void setProgressValue(int v, String str)
     {
         pbStatus.setValue(v);
+        pbStatus.setString(str);
     }
     
     /**
@@ -148,22 +160,19 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
     /**
      * Close the box
      */
-    public void close()
+    public void closeDialog()
     {
-        setEnabled(false);
-        setVisible(false);
+        dialog.setVisible(false);
+        dialog.dispose();
     }
-    
-    public void keyPressed(KeyEvent ev){}
-    public void keyReleased(KeyEvent ev) {}
-    
+        
     /**
      * Key listener. 
      * Push the OK button
      */
     public void keyTyped(KeyEvent ev)
     {       
-        if (ev.getKeyChar() == '\n')
+        if (ev.getKeyChar() == KeyEvent.VK_ENTER) 
         {
             if (ev.getSource() == btCancel)
                 btCancel.doClick();
@@ -171,6 +180,8 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
                 btOk.doClick();
         }
     }
+	public void keyPressed(KeyEvent ev) {}
+	public void keyReleased(KeyEvent ev) {}
     
     /**
      * Action Listener
@@ -178,44 +189,37 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
     public void actionPerformed(ActionEvent ev)
     {              
         if ((JButton) ev.getSource() == btOk)
-        {            
-			tryToConnect();
-        }
-        else if ((JButton) ev.getSource() == btCancel)
         {
-            wait = false;
-        }
+        	Thread connection = new Thread(new Runnable() {
+				public void run() {
+					tryToConnect(Client.getInstance());
+				}
+        	});
+        	connection.start();
+		}
+        else if ((JButton) ev.getSource() == btCancel)
+            closeDialog();
     }
 
-	private void tryToConnect()
+	/**
+	 * Connect to the server and authenticate
+	 */
+	private void tryToConnect(Client parent)
 	{
         String msg;
         pbStatus.setIndeterminate(true);
         try
         {                
-        	Client parent = Client.getInstance();
             Listener lstnr = parent.createNewListener();
-            
-            int configPort = parent.getConfig().getListenerPort();
-            int realPort = lstnr.getPort();
-            if(configPort != 0 &&  realPort != configPort)
-            {
-            	boolean start = DialogBox.question("Lucane Groupware", 
-            			Translation.tr("question.startWithOtherPort"));
-            	if(!start)
-            		Client.getInstance().cleanExit();            		
-            }
-            
             parent.setMyInfos(tbName.getText(), serverName, lstnr.getPort());
             parent.createNewCommunicator(serverName);
-            msg = resquestForConnection();
+            msg = resquestForConnection(parent);
             
             if (msg.startsWith("AUTH_ACCEPTED"))
             {                    
                 //decipher the private key
                 try
-                {
-                    
+                {                    
                     String privkey = msg.substring(14); //"AUTH_ACCEPTED "
                     String passwd = new String(tbPasswd.getPassword());
                     Communicator.getInstance().setPrivateKey(privkey, passwd);
@@ -225,8 +229,9 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
 					Logging.getLogger().warning(Translation.tr("connectBoxPrivKeyError"));
                 }
                 
-                wait = false;
                 isConnected = true;
+                parent.init();
+				closeDialog();
             }
             else
             {
@@ -248,9 +253,8 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
      *
      * @return the server's answer
      */
-    private String resquestForConnection()
+    private String resquestForConnection(Client parent)
     {
-        Client parent = Client.getInstance();
         StringTokenizer stk;
         String msg;
         String passwd = new String(tbPasswd.getPassword());
@@ -293,8 +297,7 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
      * @return the userfriendly message
      */
     private String getErrorMsg(String msg)
-    {
-        
+    {        
         if (msg.equals("BAD_MESSAGE"))
             return Translation.tr("connectBoxBadMessage1") + "\n" + Translation.tr("connectBoxBadMessage2");
         else if (msg.equals("NO_CONNECTION"))
