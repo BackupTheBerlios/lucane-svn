@@ -265,7 +265,7 @@ public class TodolistService extends Service {
 			st.close();
 			
 			st = conn.prepareStatement(
-			"SELECT MAX(id) FROM todolistItems");
+			"SELECT MAX(id) FROM todolistitems");
 			res = st.executeQuery();
 			int id=1;
 			if (res.next());
