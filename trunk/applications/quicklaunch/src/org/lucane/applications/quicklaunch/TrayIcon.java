@@ -37,4 +37,27 @@ public class TrayIcon
 		this.icon.setVisible(visible);
 	}
 
+	private void showBalloon(String message, String title, int timeout, int flags)
+	throws Exception
+	{
+		this.icon.showBalloon(message, title, timeout, flags);
+	}
+	
+	public void showInfo(String message, String title)
+	throws Exception
+	{
+		showBalloon(message, title, 5000, WindowsTrayIcon.BALLOON_INFO);
+	}
+	
+	public void showWarning(String message, String title)
+	throws Exception
+	{
+		showBalloon(message, title, 5000, WindowsTrayIcon.BALLOON_WARNING);
+	}
+	
+	public void showError(String message, String title)
+	throws Exception
+	{
+		showBalloon(message, title, 10000, WindowsTrayIcon.BALLOON_ERROR);
+	}
 }
