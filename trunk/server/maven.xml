@@ -4,7 +4,7 @@
 
   <property name="dist.dir" value="../../dist/server" />
   <property name="dist.lib.dir" value="${dist.dir}/lib" />
-  <property name="dist.tools.dir" value="${dist.dir}/tools" />
+  <property name="dist.bin.dir" value="${dist.dir}/bin" />
   <property name="dist.etc.dir" value="${dist.dir}/etc" />
 
   <goal name="mkdist">
@@ -21,17 +21,9 @@
       </fileset>
     </copy>
 
-    <copy todir="${dist.tools.dir}">
-      <fileset dir="tools">
-        <include name="*.bat" />
-        <include name="*.sh" />
-      </fileset>
-    </copy>
-
-    <copy todir="${dist.dir}">
-      <fileset dir=".">
-        <include name="server.*" />
-        <include name="lucane-service*" />
+    <copy todir="${dist.bin.dir}">
+      <fileset dir="bin">
+        <exclude name="**/.svn" />
       </fileset>
     </copy>
   </goal>
