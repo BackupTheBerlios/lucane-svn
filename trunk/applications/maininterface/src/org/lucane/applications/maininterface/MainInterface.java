@@ -35,8 +35,7 @@ public class MainInterface
   implements ActionListener,
              UserListListener
 {
-
-  private final static int NB_BUTTONS = 8;
+  private final int NB_BUTTONS = 8;
 
   /* plugins... */
   private Vector buttons;
@@ -120,35 +119,33 @@ public class MainInterface
     Vector list = parent.getUserList();
     lstUsers.setListData(list);
 
-    sortAndDisplayApps();
+    displayAppsInMenu();
+    displayAppsAsButtons();
 
     parent.addUserListListener(this);
     
     frame.setIconImage(this.getImageIcon().getImage());
     frame.setSize(350, 400);
-    frame.setVisible(true);
+    
+    SwingUtilities.invokeLater(new Runnable() {
+    	public void run() {
+			frame.show();
+		}	
+    });
   }
   
-  private void sortAndDisplayApps()
+  private void displayAppsInMenu()
   {
-  	int[] uses = new int[ploader.getNumberOfPlugins()];
-
-  	for(int i = 0; i < ploader.getNumberOfPlugins(); i++)
+	Iterator plugins = ploader.getPluginIterator();
+  	for(int i=0;plugins.hasNext();i++)
   	{
-  		Plugin p = ploader.getPluginAt(i);
+  		Plugin p = (Plugin)plugins.next();
   		
-  		// how many times was this app launched ?
-  		try {
-  			uses[i] = Integer.parseInt(this.getLocalConfig().get(p.getName()));
-  		} catch(Exception e) {
-  			uses[i] = 0;
-  		}
-
   		// add to the Applications menu
   		if(! p.getCategory().equals("Invisible"))
   		{
   			int j;
-  			ImageIcon icon = null;
+  			ImageIcon icon = null;			
 
   			//resize icon
   			try {
@@ -189,65 +186,46 @@ public class MainInterface
   			}
   		}
   	}
-
-  	//-- sort and display apps in buttons
-  	int[] positions = new int[NB_BUTTONS];
-  	int max;
-  	int cur;
-  	int i = 0;
-
-  	while(i < NB_BUTTONS && i < uses.length)
-  	{
-  		cur = -1;
-  		max = -1;
-
-  		for(int j = 0; j < uses.length; j++)
-  		{
-  			if(uses[j] > max)
-  			{
-  				boolean already = false;
-
-  				for(int k = 0; k < i && ! already; k++)
-  				{
-  					if(positions[k] == j)
-  						already = true;
-  				}
-
-  				Plugin p = ploader.getPluginAt(j);
-
-  				if(! p.getCategory().equals("Invisible") && ! already)
-  				{
-  					max = uses[j];
-  					cur = j;
-  				}
-  			}
-  		}
-
-  		if(cur >= 0)
-  		{
-  			positions[i] = cur;
-  			
-  			Plugin p = ploader.getPluginAt(cur);
-  			ImageIcon iic = null;
-
-  			try {
-  				iic = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
-  			} catch(Exception e) {
-  				DialogBox.error(tr("error") + e);
-  			}
-
-  			JButton mybutton = new JButton(iic);
-  			mybutton.addActionListener(this);
-  			buttons.addElement(mybutton);
-  			names.addElement(p.getName());
-  			mybutton.setHorizontalAlignment(SwingConstants.LEFT);
-  			mybutton.setText(p.getTitle());
-  			mybutton.setToolTipText(p.getToolTip());
-  			pnlPlugins.add(mybutton);
-  		}
-
-  		i++;
-  	}  	
+  }
+  
+  private void displayAppsAsButtons()
+  {
+	//-- sort and display apps in buttons
+	Iterator plugins = ploader.getPluginIterator();
+	ArrayList pluginUse = new ArrayList();
+	while(plugins.hasNext())
+	{
+		Plugin p = (Plugin)plugins.next();
+		pluginUse.add(new PluginUse(p, getLocalConfig().get(p.getName())));
+	}
+	Collections.sort(pluginUse, Collections.reverseOrder());
+	  
+	int nbButtons = NB_BUTTONS;
+	for(int i=0;i<nbButtons && i<pluginUse.size(); i++)
+	{
+		Plugin p = ((PluginUse)pluginUse.get(i)).getPlugin();
+		if(! p.getCategory().equals("Invisible"))
+		{
+			ImageIcon iic = null;
+	
+			try {
+				iic = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
+			} catch(Exception e) {
+				DialogBox.error(tr("error") + e);
+			}
+	
+			JButton mybutton = new JButton(iic);
+			mybutton.addActionListener(this);
+			buttons.addElement(mybutton);
+			names.addElement(p.getName());
+			mybutton.setHorizontalAlignment(SwingConstants.LEFT);
+			mybutton.setText(p.getTitle());
+			mybutton.setToolTipText(p.getToolTip());
+			pnlPlugins.add(mybutton);
+		}
+		else
+			nbButtons++;
+	}
   }
 
   public void userListChanged(Vector logins)
@@ -260,7 +238,9 @@ public class MainInterface
   {
     if(ae.getSource() == mnuExit)
     {
+      this.frame.dispose();
       cleanExit();
+      return;
     }
 
     String name = "";
@@ -305,13 +285,6 @@ public class MainInterface
   {
 	Logging.getLogger().finer("MainInterface::cleanExit()");
     parent.removeUserListListener(this);
-    exit();
-    
-    //if we are the main plugin, let's exit everyone
-    if(Client.getInstance().getStartupPlugin().equals(this.getName()))
-    {	
-    	while(true)
-    		exit();
-    }
+    exit();    
   }
 }
