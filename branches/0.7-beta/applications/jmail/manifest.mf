@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.jmail.JMailPlugin
+Service-Class: org.lucane.applications.jmail.JMailService

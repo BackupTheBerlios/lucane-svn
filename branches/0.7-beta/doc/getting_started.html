@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns='http://www.w3.org/1999/xhtml'>
+<head>
+<meta http-equiv='content-type' content='text/html; charset=iso-8859-15' />
+<title>Lucane Groupware - Documentation</title>
+<link type='text/css' rel='stylesheet' href='style.css' />
+</head>
+<body>
+
+<h1>Starter's guide</h1>
+
+Lucane is made of several modules :
+<ul>
+  <li>a client</li>
+  <li>a server</li>
+  <li>a proxy</li>
+</ul>
+
+
+<h2>Client setup</h2>
+There is only one configuration file 
+<ul>
+  <li>etc/client-config.xml</li>
+</ul>
+<p>This is a self-described xml file. If you only want to test lucane with
+the client and
+server on the same host, you don't need to change anything here.</p>
+
+<p>Here is a description of all parameters : (bold means mandatory)</p>
+<ul>
+  <li><b>server</b> : the server to use (host and port)</li>
+  <li>login : the default login to display in the connection box</li>
+  <li>language : the locale to use (en, fr, ..). You can set up a special font here</li>
+  <li>proxy : only useful if you not in the same network than the server</li>
+  <li>listener : used to force the use of a special port for the listener 
+  (if you are behing a firewall for example)</li>
+  <li>public-ip : only useful to set which network interface to use if you
+have more than one</li>
+</ul>
+
+<p>Once the configuration file is customized, you can start the client
+by "<tt>client.sh</tt>" or "<tt>client.bat</tt>".
+The server should of course be connected.</p>
+
+<p>The client will automatically download the applications you can use.
+They'll be updated every time it will be needed without any client-side
+intervention</p>
+
+
+<h2>Server setup</h2>
+The server is also easy to install, the main configuration file is :
+<ul>
+  <li>etc/server-config.xml</li>
+</ul>
+
+<p>Here is a description of all parameters : (bold means mandatory)</p>
+<ul>
+  <li><b>database</b>
+    <ul>
+      <li><b>jdbc</b> : the driver to use</li>
+      <li><b>dblayer</b> : the database abstraction layer to use</li>
+    </ul>
+  </li>
+  <li><b>store</b> : the backend to use to store user, groups, plugins and
+services</li>
+</ul>
+
+<p>The databases engines tested are HSQLdb, MySQL and Postgres. 
+SQL Server has been reported to work.
+The others haven't been tested
+and aren't activated in the default distribution.<br/>
+If you don't want to use a custom database, leave the config file as
+it is to use HSQLdb.</p>
+
+<p>The store can use the database or a ldap server. 
+To use ldap, see the <a href="ldap_store.html">ldap store</a> guide.
+</p>
+
+<p>You can start the server
+by "<tt>server.sh</tt>" or "<tt>server.bat</tt>".</p>
+
+<h2>Proxy setup</h2>
+<p>You will only need the proxy if you have several networks that aren't
+directly visible.
+This is the case if you are using NAT for example.
+The proxy does not need any configuration. Simply start it on the gateway
+by typing "<tt>proxy.sh</tt>" or "<tt>proxy.bat</tt>".
+</p>
+
+
+<h2>System configuration</h2>
+<p>To administrate the newly installed system, you will have to connect with
+the <tt>admin</tt> username and <tt>admin</tt> for password.
+The first thing to do will be to change this password.
+You will be able to start the administration interface and create users,
+groups,
+and give them the rights they need. Please take a look at the
+administration interface help
+for more information. That's rather straightforward.</p>
+
+<p></p>
+
+<h2>User accounts available by default</h2>
+<p>Several accounts are available for testing purposes :</p>
+<ul>
+  <li>admin : admin</li>
+  <li>granted : granted</li>
+  <li>guest : guest</li>
+</ul>
+
+</body>
+</html>
+
+

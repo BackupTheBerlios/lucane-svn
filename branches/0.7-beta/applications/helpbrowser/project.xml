@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-helpbrowser</id>
+  <name>Lucane Groupware - Help browser</name>
+  <package>org.lucane.applications.helpbrowser</package>
+
+  <shortDescription>Lucane Help browser</shortDescription>
+
+</project>

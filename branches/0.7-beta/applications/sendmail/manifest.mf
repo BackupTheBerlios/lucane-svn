@@ -1,0 +1,2 @@
+Plugin-Class: org.lucane.applications.sendmail.MailClient
+Service-Class: org.lucane.applications.sendmail.SendMailService

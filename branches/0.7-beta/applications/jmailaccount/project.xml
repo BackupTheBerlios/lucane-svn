@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-jmailaccount</id>
+  <name>Lucane Groupware - JMailAccount</name>
+  <package>org.lucane.applications.jmailaccount</package>
+
+  <shortDescription>Lucane JMail Account</shortDescription>
+</project>
