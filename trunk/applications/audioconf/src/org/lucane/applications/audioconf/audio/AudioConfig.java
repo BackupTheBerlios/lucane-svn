@@ -20,20 +20,29 @@ package org.lucane.applications.audioconf.audio;
 
 import java.io.Serializable;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import org.xiph.speex.*;
 
 /**
  * Configuration for audio stream
  */
 public class AudioConfig implements Serializable
 {
-	//-- speex frame rates
-	public static final int NARROWBAND = 8000;
-	public static final int WIDEBAND = 16000;
-	public static final int ULTRA_WIDEBAND = 32000;
+	//-- speex buffer size
+	private static final int[][] SPEEX_BUFFERS = {
+		{8, 12, 17, 23, 23, 30, 30, 40, 40, 48, 64},
+		{12, 17, 22, 27, 35, 45, 54, 62, 72, 88, 108},
+		{13, 21, 26, 32, 39, 49, 59, 67, 77, 93, 113}
+	};
+	
+	//-- speex modes - frame rates
+	public static final int NARROWBAND = 1;
+	public static final int WIDEBAND = 2;
+	public static final int ULTRA_WIDEBAND = 3;
 	
 	//-- attributes
-	private int frameRate;
+	private int mode;
+	private int quality;
 	private int channels;
 	
 	/**
@@ -41,9 +50,10 @@ public class AudioConfig implements Serializable
 	 * 
 	 * @param frameRate the frame rate to use
 	 */
-	public AudioConfig(int frameRate)
+	public AudioConfig(int mode, int quality)
 	{
-		this.frameRate = frameRate;
+		this.mode = mode;
+		this.quality = quality;
 		this.channels = 2;
 	}
 	
@@ -54,8 +64,8 @@ public class AudioConfig implements Serializable
 	 */
 	public int getFrameRate()
 	{
-		return this.frameRate;
-	}
+		return this.mode * 8000;
+	}	
 	
 	/**
 	 * Return the number of channels
@@ -67,6 +77,33 @@ public class AudioConfig implements Serializable
 		return this.channels;
 	}
 	
+	public int getQuality()
+	{
+		return this.quality;
+	}
+
+	public int getSpeexMode()
+	{
+		return this.mode -1;
+	}
+		
+	public int getPcmBufferSize()
+	{
+		return this.mode * 640;
+	}
+	
+	public int getSpeexBufferSize()
+	{
+		return SPEEX_BUFFERS[this.mode-1][this.quality];
+	}			
+	
+	public String toString()
+	{
+		return "" +this.mode;
+	}
+	
+	//-- factories
+	
 	/**
 	 * Factory to create AudioFormat with this configuration
 	 * 
@@ -76,17 +113,26 @@ public class AudioConfig implements Serializable
 	public AudioFormat createAudioFormat(AudioFormat.Encoding type)
 	{
 		return new AudioFormat(
-						type,
-						this.getFrameRate(), 
-						16, 
-						this.getChannels(), 
-						this.getChannels()*2, 
-						this.getFrameRate(), 
-						false);
+				type,
+				this.getFrameRate(), 
+				16, 
+				this.getChannels(), 
+				this.getChannels()*2, 
+				this.getFrameRate(), 
+				false);
 	}
 	
-	public String toString()
+	public SpeexEncoder createEncoder()
 	{
-		return "" +this.frameRate;
+		SpeexEncoder encoder = new SpeexEncoder();
+		encoder.init(getSpeexMode(), getQuality(), getFrameRate(), getChannels());
+		return encoder;
+	}
+	
+	public SpeexDecoder createDecoder()
+	{
+		SpeexDecoder decoder = new SpeexDecoder();
+		decoder.init(getSpeexMode(), getFrameRate(), getChannels(), false);
+		return decoder;
 	}
 }

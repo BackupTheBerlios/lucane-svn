@@ -46,7 +46,7 @@ public class FileOutput implements AudioRecorderListener
 	{
 		try {
 			this.output = new FileOutputStream(this.filename);
-			System.out.println("recording 50 seconds...");			
+			System.out.println("recording 10 seconds...");			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -58,6 +58,7 @@ public class FileOutput implements AudioRecorderListener
 	public void audioRecorded(byte[] data, int length) 	
 	{
 		try {
+			System.out.println("recorded : " +length);
 			this.output.write(data, 0, length);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -83,7 +84,7 @@ public class FileOutput implements AudioRecorderListener
 	public static void main(String[] args)
 	throws Exception
 	{
-		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND);
+		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND, 3);
 		FileOutput fo = new FileOutput("test.spx");
 		AudioRecorder ar = new AudioRecorder(config);
 		ar.addAudioListener(fo);
@@ -91,7 +92,7 @@ public class FileOutput implements AudioRecorderListener
 		Thread t = new Thread(ar);
 		
 		t.start();
-		Thread.sleep(50*1000);
+		Thread.sleep(10*1000);
 		ar.stop();
 		
 		System.out.println(t.isAlive());

@@ -18,7 +18,6 @@
  */
 package org.lucane.applications.audioconf;
 
-import java.io.IOException;
 
 import org.lucane.applications.audioconf.audio.AudioConfig;
 import org.lucane.applications.audioconf.audio.AudioPlayer;
@@ -64,7 +63,7 @@ public class AudioConf extends Plugin
 		}
 		
 		this.connection = Communicator.getInstance().sendMessageTo(this.friend, this.getName(), "");
-		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND);
+		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND, 5);
 		AudioRecorder recorder = new AudioRecorder(config);
 		recorder.addAudioListener(new Streamer(this.connection));
 		Thread thread = new Thread(recorder);

@@ -20,21 +20,20 @@ package org.lucane.applications.audioconf.audio;
 
 import java.io.*;
 import javax.sound.sampled.*;
-import org.xiph.speex.spi.*;
+
+import org.xiph.speex.SpeexDecoder;
 
 /**
  * Audio player that plays speex streams
  */
 public class AudioPlayer implements Runnable
 {
-	//-- audio formats
-	private AudioFormat sourceFormat;
-	private AudioFormat targetFormat;
-	private AudioFileFormat fileFormat;
-
 	//-- sound system
-	private AudioInputStream audioInputStream;
 	private SourceDataLine dataLine;
+	private AudioFormat targetFormat;
+	
+	private AudioConfig audioConfig;
+	private InputStream source;
 
 	/**
 	 * Constructor.
@@ -44,33 +43,10 @@ public class AudioPlayer implements Runnable
 	 */
 	public AudioPlayer(AudioConfig config, InputStream source)
 	{
-		initAudioFormats(config);
-		initAudioInputStream(new BufferedInputStream(source));
-		initDataLine();
-	}
-
-	/**
-	 * Initialize audio formats
-	 *  
-	 * @param config the audio configuration
-	 */	
-	private void initAudioFormats(AudioConfig config)
-	{
-		this.sourceFormat = config.createAudioFormat(SpeexEncoding.SPEEX);
+		this.audioConfig = config;
+		this.source = source;
 		this.targetFormat = config.createAudioFormat(AudioFormat.Encoding.PCM_SIGNED);
-
-		this.fileFormat = new AudioFileFormat(SpeexFileFormatType.SPEEX, sourceFormat, AudioSystem.NOT_SPECIFIED);
-	}
-
-	/**
-	 * Initialize audio input stream
-	 * 
-	 * @param source the stream to play
-	 */
-	private void initAudioInputStream(BufferedInputStream source)
-	{
-		audioInputStream = new AudioInputStream(source, sourceFormat, fileFormat.getFrameLength());
-		audioInputStream = AudioSystem.getAudioInputStream(targetFormat, audioInputStream);
+		initDataLine();
 	}
 
 	/**
@@ -96,13 +72,6 @@ public class AudioPlayer implements Runnable
 		dataLine.flush();
 		dataLine.stop();
 		dataLine.close();
-
-		try	{
-			audioInputStream.close();
-		} catch(IOException ioe) {
-			//TODO handle this error
-			ioe.printStackTrace();
-		}
 	}
 
 	/**
@@ -113,20 +82,29 @@ public class AudioPlayer implements Runnable
 		dataLine.start();
 
 		int read = 1;
-		byte[] buffer = new byte[1024];
 
+		byte[] speex = new byte[audioConfig.getSpeexBufferSize()];
+		byte[] pcm = new byte[audioConfig.getPcmBufferSize()];
+		SpeexDecoder decoder = audioConfig.createDecoder();
+		
 		while (read != -1)
 		{
 			try	{
-				read = audioInputStream.read(buffer, 0, buffer.length);
+				read = source.read(speex, 0, speex.length);
+				decoder.processData(speex, 0, read);				
+				
+				int length = decoder.getProcessedDataByteSize();
+				decoder.getProcessedData(pcm, 0);
+				
+				if(length >= 0)
+					dataLine.write(pcm, 0, length);
+								
 			} catch (Exception e) {
 				//TODO differentiate STOP from other errors
 				e.printStackTrace();
 				break;
 			}
 			
-			if(read >= 0)
-				dataLine.write(buffer, 0, read);
 		}
 	}
 
@@ -136,10 +114,9 @@ public class AudioPlayer implements Runnable
 	public static void main(String[] args) throws Exception
 	{
 		File src = new File("test.spx");
-		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND);
+		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND, 3);
 		AudioPlayer ap = new AudioPlayer(config, new FileInputStream(src));
 		new Thread(ap).start();
-		Thread.sleep(5000);
-		ap.stop();
+		System.out.println("playing...");
 	}
 }

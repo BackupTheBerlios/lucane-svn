@@ -19,10 +19,10 @@
 package org.lucane.applications.audioconf.audio;
 
 import java.util.*;
-import java.io.*;
 
 import javax.sound.sampled.*;
-import org.xiph.speex.spi.*;
+
+import org.xiph.speex.SpeexEncoder;
 
 /**
  * Audio recorder that encodes directly in Speex
@@ -30,7 +30,6 @@ import org.xiph.speex.spi.*;
 public class AudioRecorder implements Runnable
 {
 	//-- attributes
-	private AudioInputStream audioStream;
 	private TargetDataLine dataLine;
 	private AudioFormat audioFormat;
 	private AudioConfig audioConfig;
@@ -53,10 +52,7 @@ public class AudioRecorder implements Runnable
 			dataLine = (TargetDataLine) AudioSystem.getLine(info);
 		} catch (LineUnavailableException lue) {
 			lue.printStackTrace();
-		}
-
-		audioStream = new Pcm2SpeexAudioInputStream(new AudioInputStream(dataLine), audioFormat,
-				AudioSystem.NOT_SPECIFIED);
+		}		
 	}
 	
 	/**
@@ -84,13 +80,8 @@ public class AudioRecorder implements Runnable
 	 */
 	public void stop()
 	{		
-		try {
-			dataLine.stop();
-			dataLine.close();
-			audioStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		dataLine.stop();
+		dataLine.close();
 		
 		//notify listeners
 		Iterator listeners = this.listeners.iterator();
@@ -117,22 +108,23 @@ public class AudioRecorder implements Runnable
 		
 		
 		//do the real recording
-		try	{
-			byte[] buffer = new byte[1024];
-			while(dataLine.isOpen())
+		byte[] pcm = new byte[audioConfig.getPcmBufferSize()];
+		byte[] speex = new byte[audioConfig.getSpeexBufferSize()];
+		SpeexEncoder encoder = audioConfig.createEncoder();
+		
+		while(dataLine.isOpen())
+		{	
+			int length = dataLine.read(pcm, 0, pcm.length);
+			encoder.processData(pcm, 0, pcm.length);
+			length = encoder.getProcessedDataByteSize();
+			encoder.getProcessedData(speex, 0);
+						
+			if(length > 0)
 			{	
-				int length = audioStream.read(buffer);
-				
-				if(length > 0)
-				{	
-					listeners = this.listeners.iterator();
-					while(listeners.hasNext())
-						((AudioRecorderListener)listeners.next()).audioRecorded(buffer, length);
-				}
-			}				
-		} catch (IOException e)	{
-			//TODO hande this error
-			e.printStackTrace();
-		}
+				listeners = this.listeners.iterator();
+				while(listeners.hasNext())
+					((AudioRecorderListener)listeners.next()).audioRecorded(speex, length);
+			}
+		}				
 	}
 }
