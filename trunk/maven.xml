@@ -78,7 +78,7 @@
       <env key="_WEB_SITE_URL" value="${pom.url}"/>
       <env key="_TRACKER_URL" value="http://developer.berlios.de/bugs/?group_id=1547"/>
       <env key="_FEATURE_REQUEST_URL" value="http://developer.berlios.de/feature/?group_id=1547"/>
-      <env key="_FORUM_URL" value="http://lucane.org/forum/index.php?forum=1_generalForum"/>
+      <env key="_FORUM_URL" value="http://lucane.org/forum/"/>
 
       <env key="_BASE_DIR" value="../../../../"/>
       <env key="_NSIS_FILE_DIR" value="trunk\setup\windows\src"/>
