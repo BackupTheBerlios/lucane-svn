@@ -426,28 +426,34 @@ public class Client
 	{
 		URL url=null;
 		try {
-			/* create the default url */
+			// create the default url
 			url=new URL("jar:file:///"
 					+ System.getProperty("user.dir").replace('\\', '/')
 					+ "/lib/lucane-client-" + Client.VERSION + ".jar!/icons/"
 					+ icon);
-
-			if (! new File(url.getPath()).canRead()) {
-				Icon ic = (IconUIResource)UIManager.getIcon("OptionPane.warningIcon");
-				BufferedImage image = new BufferedImage(ic.getIconWidth(), ic.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
-				Graphics g = image.getGraphics();
-				ic.paintIcon(new JLabel(), g, 0, 0);
-				return new ImageIcon(image);
-			} else {
-				return new ImageIcon(url);
-			}
-		} catch(Exception e) {
+		} catch(MalformedURLException mue) {
+			url = null;
+		}
+		
+		// check icon existence
+		try {
+			if(url != null && url.getContent() == null)
+				url = null;
+		} catch (IOException e) {
+			url = null;
+		}
+		
+		// if the icon does not exist, show a warning icon instead
+		if(url == null)
+		{
 			Icon ic = (IconUIResource)UIManager.getIcon("OptionPane.warningIcon");
 			BufferedImage image = new BufferedImage(ic.getIconWidth(), ic.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = image.getGraphics();
 			ic.paintIcon(new JLabel(), g, 0, 0);
 			return new ImageIcon(image);
-		}
+		} 
+				
+		return new ImageIcon(url);
 	}
 	
 	/**
