@@ -213,15 +213,28 @@ class TodolistItemsSorter implements Comparator {
 	public int compare(Object o1, Object o2) {
 		TodolistItem tli1 = (TodolistItem) o1;
 		TodolistItem tli2 = (TodolistItem) o2;
+		int res = 0;
 		switch (sortBy) {
 			case NAME :
-				return direction*(tli1.getName().compareTo(tli2.getName()));
+				res = direction*(tli1.getName().compareTo(tli2.getName()));
+				if (res == 0)
+					res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
+				if (res == 0)
+					res = direction*(tli2.getPriority()-tli1.getPriority());
 			case PRIORITY :
-				return direction*(tli2.getPriority()-tli1.getPriority());
+				res = direction*(tli2.getPriority()-tli1.getPriority());
+				if (res == 0)
+					res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
+				if (res == 0)
+					res = direction*(tli1.getName().compareTo(tli2.getName()));
 			case COMPLETED :
-				return direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
+				res = direction*((tli1.isCompleted()?1:0)-(tli2.isCompleted()?1:0));
+				if (res == 0)
+					res = direction*(tli1.getName().compareTo(tli2.getName()));
+				if (res == 0)
+					res = direction*(tli2.getPriority()-tli1.getPriority());
 		}
-		return 0;
+		return res;
 	}
 }
 
@@ -231,26 +244,29 @@ class ColoredCellRenderer extends DefaultTableCellRenderer {
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		Component cmp = super.getTableCellRendererComponent(table, value, isSelected,
 				hasFocus, row, column);
-		TodolistItem tli = (TodolistItem) ((TodolistItemTableModel)table.getModel()).getValueAt(row);
-		if (!tli.isCompleted()) {
-			switch (tli.getPriority()) {
-				case TodolistItem.PRIORITY_LOW :
-					cmp.setBackground(new Color(223, 255, 223));
-					break;
-				case TodolistItem.PRIORITY_MEDIUM :
-					cmp.setBackground(new Color(255, 255, 223));
-					break;
-				case TodolistItem.PRIORITY_HIGH :
-					cmp.setBackground(new Color(255, 223, 223));
-					break;
-				default :
-					cmp.setBackground(Color.white);
-					break;
+		if (!isSelected) {
+			TodolistItem tli = (TodolistItem) ((TodolistItemTableModel)table.getModel()).getValueAt(row);
+			if (!tli.isCompleted()) {
+				switch (tli.getPriority()) {
+					case TodolistItem.PRIORITY_LOW :
+						cmp.setBackground(new Color(223, 255, 223));
+						break;
+					case TodolistItem.PRIORITY_MEDIUM :
+						cmp.setBackground(new Color(255, 255, 223));
+						break;
+					case TodolistItem.PRIORITY_HIGH :
+						cmp.setBackground(new Color(255, 223, 223));
+						break;
+					default :
+						cmp.setBackground(Color.white);
+						break;
+				}
+			} else {
+				cmp.setBackground(new Color(223, 223, 223));
 			}
+			return cmp;
 		} else {
-			cmp.setBackground(new Color(223, 223, 223));
+			return cmp;
 		}
-		return cmp;
-		
 	}
 }
