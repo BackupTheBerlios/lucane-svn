@@ -65,17 +65,17 @@ public class SqlGroupStore extends GroupStore
         s.execute(query);        
         
         query = "CREATE TABLE " + USERLINKS + "("
-            + "group_ " + layer.resolveType("SMALLTEXT") + ", "
-            + "user " + layer.resolveType("SMALLTEXT") + ")";            
+            + "groupName " + layer.resolveType("SMALLTEXT") + ", "
+            + "userName " + layer.resolveType("SMALLTEXT") + ")";            
         s.execute(query);        
         
         query = "CREATE TABLE " + SERVICELINKS + "("
-            + "group_ " + layer.resolveType("SMALLTEXT") + ", "
+            + "groupName " + layer.resolveType("SMALLTEXT") + ", "
             + "service " + layer.resolveType("SMALLTEXT") + ")";            
         s.execute(query);        
         
         query = "CREATE TABLE " +PLUGINLINKS + "("
-            + "group_ " + layer.resolveType("SMALLTEXT") + ", "
+            + "groupName " + layer.resolveType("SMALLTEXT") + ", "
             + "plugin " + layer.resolveType("SMALLTEXT") + ")";            
         s.execute(query);                
         
@@ -253,7 +253,7 @@ public class SqlGroupStore extends GroupStore
     {
         Statement s = c.createStatement();
         ResultSet rs = s.executeQuery("SELECT service FROM " + SERVICELINKS 
-            + " WHERE group_='" + group.getName() + "'");
+            + " WHERE groupName='" + group.getName() + "'");
                     
         while(rs.next())
         {
@@ -271,7 +271,7 @@ public class SqlGroupStore extends GroupStore
     {
         Statement s = c.createStatement();
         ResultSet rs = s.executeQuery("SELECT plugin FROM " + PLUGINLINKS 
-            + " WHERE group_='" + group.getName() + "'");
+            + " WHERE groupName='" + group.getName() + "'");
                     
         while(rs.next())
         {
@@ -288,8 +288,8 @@ public class SqlGroupStore extends GroupStore
     throws Exception
     {
         Statement s = c.createStatement();
-        ResultSet rs = s.executeQuery("SELECT user FROM " + USERLINKS 
-            + " WHERE group_='" + group.getName() + "'");
+        ResultSet rs = s.executeQuery("SELECT userName FROM " + USERLINKS 
+            + " WHERE groupName='" + group.getName() + "'");
                     
         while(rs.next())
         {
@@ -338,17 +338,17 @@ public class SqlGroupStore extends GroupStore
 		s.execute(query);
 		
 		//delete user links
-		query = "DELETE FROM " + USERLINKS + " WHERE group_='"
+		query = "DELETE FROM " + USERLINKS + " WHERE groupName='"
 			+ group.getName() + "'";           
 		s.execute(query);
         
 		//delete services links
-		query = "DELETE FROM " +SERVICELINKS + " WHERE group_='"
+		query = "DELETE FROM " +SERVICELINKS + " WHERE groupName='"
 			+ group.getName() + "'";           
 		s.execute(query);
         
 		//delete plugins links
-		query = "DELETE FROM " + PLUGINLINKS + " WHERE group_='"
+		query = "DELETE FROM " + PLUGINLINKS + " WHERE groupName='"
 			+ group.getName() + "'";           
 		s.execute(query);
                

@@ -58,7 +58,7 @@ extends Service
 		  ", content " + layer.resolveType("TEXT") +
 		  ", creationDate " + layer.resolveType("BIGINT") +
 		  ", editionDate " + layer.resolveType("BIGINT") +
-		  ", public " + layer.resolveType("SMALLINT") +
+		  ", isPublic " + layer.resolveType("SMALLINT") +
 		  ", commentable " + layer.resolveType("SMALLINT") +
 		  ")");
 
@@ -195,7 +195,7 @@ extends Service
 				rs.getString(4), //content
 				rs.getString(5), //creationDate
 				rs.getString(6), //editionDate
-				rs.getString(7), //public
+				rs.getString(7), //isPublic
 				rs.getString(8)); //commentable
 		
 		result.add(n);			
@@ -212,7 +212,7 @@ extends Service
   {
 	ArrayList result = new ArrayList();
 	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT distinct author FROM notes WHERE public=1");
+	ResultSet rs = stmt.executeQuery("SELECT distinct author FROM notes WHERE isPublic=1");
 
 	while(rs.next())
 	{
@@ -231,7 +231,7 @@ extends Service
   {
 	ArrayList result = new ArrayList();
 	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM notes WHERE public=1 ORDER BY creationDate");
+	ResultSet rs = stmt.executeQuery("SELECT * FROM notes WHERE isPublic=1 ORDER BY creationDate");
 
 	for(int i=0;i<max.intValue() && rs.next();i++)
 	{
@@ -242,7 +242,7 @@ extends Service
 				rs.getString(4), //content
 				rs.getString(5), //creationDate
 				rs.getString(6), //editionDate
-				rs.getString(7), //public
+				rs.getString(7), //isPublic
 				rs.getString(8)); //commentable
 		
 		result.add(n);			
@@ -260,7 +260,7 @@ extends Service
 	ArrayList result = new ArrayList();
 	Statement stmt = connex.createStatement();
 	ResultSet rs = stmt.executeQuery("SELECT * FROM notes WHERE author='" + author 
-					+ "' AND public=1 ORDER BY creationDate");
+					+ "' AND isPublic=1 ORDER BY creationDate");
 
 	while(rs.next())
 	{
@@ -271,7 +271,7 @@ extends Service
 				rs.getString(4), //content
 				rs.getString(5), //creationDate
 				rs.getString(6), //editionDate
-				rs.getString(7), //public
+				rs.getString(7), //isPublic
 				rs.getString(8)); //commentable
 		
 		result.add(n);			

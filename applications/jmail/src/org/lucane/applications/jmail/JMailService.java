@@ -46,7 +46,7 @@ extends Service
 	  Connection connex = layer.openConnection();
 	  Statement stmt = connex.createStatement();
 	  stmt.execute("CREATE TABLE JMailAccounts(" +
-		  "user " + layer.resolveType("SMALLTEXT") +
+		  "userName " + layer.resolveType("SMALLTEXT") +
 		", address " + layer.resolveType("SMALLTEXT") +
 		", type " + layer.resolveType("SMALLTEXT") +
 		", inHost " + layer.resolveType("SMALLTEXT") +
@@ -98,7 +98,7 @@ extends Service
   	
   	Connection connex = layer.openConnection();  	
 	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM JMailAccounts WHERE user='" + user + "'");
+	ResultSet rs = stmt.executeQuery("SELECT * FROM JMailAccounts WHERE userName='" + user + "'");
 	if(rs.next())
 	{
 		String address = rs.getString(2);
@@ -122,4 +122,3 @@ extends Service
   
   
 }
-

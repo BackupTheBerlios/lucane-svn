@@ -62,9 +62,9 @@ extends Service
 			", title " + layer.resolveType("TEXT") +
 			", type " + layer.resolveType("TEXT") +
 			", organizer " + layer.resolveType("TEXT") +
-			", public " + layer.resolveType("SMALLINT") +
-			", start " + layer.resolveType("BIGINT") +
-			", end " + layer.resolveType("BIGINT") +
+			", isPublic " + layer.resolveType("SMALLINT") +
+			", startTime " + layer.resolveType("BIGINT") +
+			", endTime " + layer.resolveType("BIGINT") +
 			", recurrence " + layer.resolveType("INT") +
 			", description " + layer.resolveType("TEXT") + ")";
 		try {
@@ -115,7 +115,7 @@ extends Service
 		
 		Logging.getLogger().info("Creating CalAttendees table");
 		query = "create table CalAttendees(eventId " + layer.resolveType("INT") +
-			", user " + layer.resolveType("TEXT") +
+			", userName " + layer.resolveType("TEXT") +
 			", mandatory " + layer.resolveType("SMALLINT") +
 			", status " + layer.resolveType("TEXT") + ")";
 		try {
@@ -343,13 +343,13 @@ extends Service
 					
 		String query = "SELECT * FROM CalEvents WHERE "
 			+"organizer = '" + user + "' AND "
-			+ "start >= " + start + " AND end <= " + end;		
+			+ "startTime >= " + start + " AND endTime <= " + end;		
 		addEventsFromQuery(s, query, events, showAll);
 		
 		query = "SELECT e.* FROM CalEvents e, CalAttendees a WHERE "
 			+ "e.id = a.eventId AND "
-			+ "a.user = '" + user + "' AND "
-			+ "e.start >= " + start + " AND e.end <= " + end;		
+			+ "a.userName = '" + user + "' AND "
+			+ "e.startTime >= " + start + " AND e.endTime <= " + end;		
 		addEventsFromQuery(s, query, events, showAll);
 		
 		s.close();
@@ -570,3 +570,4 @@ extends Service
 		c.close();
 	}
 }
+

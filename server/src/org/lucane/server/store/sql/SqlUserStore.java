@@ -119,7 +119,7 @@ public class SqlUserStore extends UserStore
 			+ " WHERE login='" + user.getName() + "'");
 
 		s.execute("DELETE FROM " + SqlGroupStore.USERLINKS 
-			+ " WHERE user='" + user.getName() + "'");
+			+ " WHERE userName='" + user.getName() + "'");
 			
 		s.close();
 		c.close();							
