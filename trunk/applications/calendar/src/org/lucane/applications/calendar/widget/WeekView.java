@@ -136,7 +136,8 @@ public class WeekView extends JPanel
 	public void addEvent(int dayOfWeek, BasicEvent event)
 	{
 		if(!sundayFirst)
-			dayOfWeek--;
+			dayOfWeek = (dayOfWeek == 0 ? 6 : dayOfWeek-1);
+
 		getDayView(dayOfWeek).addEvent(event);
 	}
 	
