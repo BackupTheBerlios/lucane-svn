@@ -58,6 +58,11 @@ public class UserConcept extends Concept
 		return this.passwd;
 	}
 
+        public void setLocked(boolean locked)
+        {
+                this.locked = locked;
+        }
+        
 	public boolean isLocked()
 	{
 		return this.locked;
