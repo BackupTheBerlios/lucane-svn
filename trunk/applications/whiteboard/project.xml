@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-whiteboard</id>
+  <name>Lucane Groupware - White board</name>
+  <package>org.lucane.applications.whiteboard</package>
+
+  <shortDescription>Lucane Whiteboard</shortDescription>
+
+  <dependencies>
+    <dependency>
+      <groupId>jgraph</groupId>
+      <artifactId>jgraph</artifactId>
+      <version>4.0-java1.4</version>
+    </dependency>
+  </dependencies>
+  
+</project>
