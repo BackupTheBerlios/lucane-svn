@@ -115,16 +115,7 @@ implements ActionListener, KeyListener
 	
 	public void follow()
 	{
-		if(feedback == null)
-		{
-			try {
-				feedback = Applet.newAudioClip(new URL(getDirectory()+"feedback.wav"));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		feedback.play();
+		playFeedbackSound();
 		
 		dialog = new ManagedWindow(this, getTitle());
 		dialog.setExitPluginOnClose(true);
@@ -154,6 +145,24 @@ implements ActionListener, KeyListener
 		
 		dialog.show();
 		jsp.setDividerLocation(0.4);    
+	}
+	
+	private void playFeedbackSound()
+	{
+		//only play sound if not discarded in localconfig
+		if(getLocalConfig().getInt("play.sound", 1) != 0)
+		{
+			if(feedback == null)
+			{
+				try {
+					feedback = Applet.newAudioClip(new URL(getDirectory()+"feedback.wav"));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			feedback.play();
+		}
 	}
 	
 	public void actionPerformed(ActionEvent ae)
