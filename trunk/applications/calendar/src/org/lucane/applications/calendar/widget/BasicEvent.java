@@ -34,6 +34,13 @@ public interface BasicEvent
 	public String getTitle();
 
 	/**
+	 * Get the event description
+	 * 
+	 * @return the event description
+	 */
+	public String getDescription();
+	
+	/**
 	 * Get the event start hour
 	 * 
 	 * @return the event start hour

@@ -41,6 +41,18 @@ public class EventLabel extends JLabel
 		this.setBackground(event.getColor());
 		this.setOpaque(true);
 		
+		String start = event.getStartHour() + ":" + event.getStartMinute();
+		if(start.length() < 5)
+			start += "0";
+		String end = event.getEndHour() + ":" + event.getEndMinute();
+		if(end.length() < 5)
+			end += "0";
+
+		String tooltip = "<b>[" + start + "-" + end + "] " + event.getTitle();
+		tooltip += "</b>";
+		tooltip += event.getDescription();
+		this.setToolTipText("<html>" + tooltip + "</html>");
+				
 		this.setHorizontalAlignment(SwingConstants.LEFT);
 		this.setVerticalAlignment(SwingConstants.TOP);
 	}
