@@ -19,6 +19,7 @@
 
 package org.lucane.client.util;
 
+import java.awt.event.KeyListener;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
@@ -56,9 +57,15 @@ public class DefaultWindowManager implements WindowManager
 		if(!window.discardWidgetState())
 			WidgetState.restore(window.getOwner().getLocalConfig(), f);
 		
+		//window listener
 		Iterator listeners = window.getWindowListeners();
 		while(listeners.hasNext())
 			f.addWindowListener((WindowListener)listeners.next());		
+		
+		//key listener
+		listeners = window.getKeyListeners();
+		while(listeners.hasNext())
+			f.addKeyListener((KeyListener)listeners.next());		
 	}
 	
 	public void show(ManagedWindow window)

@@ -20,6 +20,7 @@
 package org.lucane.client.widgets;
 
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class ManagedWindow
 	private String name;
 	private ArrayList propertyListeners = new ArrayList();
 	private ArrayList windowListeners = new ArrayList();
+	private ArrayList keyListeners = new ArrayList();
 	private JRootPane rootPane = new JRootPane();
 	private String title = null;
 	private Image iconImage = null;
@@ -141,6 +143,16 @@ public class ManagedWindow
 	public Iterator getWindowListeners()
 	{
 		return this.windowListeners.iterator();
+	}
+	
+	public void addKeyListener(KeyListener listener) 
+	{
+		this.keyListeners.add(listener);
+	}
+	
+	public Iterator getKeyListeners()
+	{
+		return this.keyListeners.iterator();
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener listener) 

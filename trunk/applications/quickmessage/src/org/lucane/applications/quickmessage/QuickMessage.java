@@ -112,6 +112,7 @@ public class QuickMessage
     dialog.setPreferredSize(new Dimension(350, 200));
 	dialog.setIconImage(this.getImageIcon().getImage());
     dialog.show();
+    txtNew.requestFocus();
   }
 
   public void follow()
@@ -152,6 +153,7 @@ public class QuickMessage
 	dialog.setIconImage(this.getImageIcon().getImage());
     dialog.show();
     jsp.setDividerLocation(0.4);
+    txtNew.requestFocus();
    }
 
   public void actionPerformed(ActionEvent ae)
@@ -185,6 +187,10 @@ public class QuickMessage
     {
       ctrl = false;
       actionPerformed(null);
+    }
+    else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+    {
+      dialog.dispose();
     }
     else if(e.getKeyCode() == KeyEvent.VK_F1)
     {
