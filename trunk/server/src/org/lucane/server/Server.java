@@ -127,17 +127,38 @@ public class Server
 	 */
 	public void acceptConnections()
 	{
-		while(true)
+		while(!socket.isClosed())
 		{
 			try {
 				MessageHandler handler = new MessageHandler(socket.accept());
 				handler.start();
 			} catch (IOException ex) {
+				if(!socket.isClosed())
 				Logging.getLogger().warning("#Err > Unable to accept connections.");
 			}	
 		}
 	}	
 	
+	/**
+	 * Stop the server
+	 */
+	public void shutdown()
+	{
+		this.authenticator.disableLogin();
+		ConnectInfoManager.getInstance().kickAllUsers();	
+		Logging.getLogger().info("Users disconnected.");		
+		ServiceManager.getInstance().shutdownAllServices();
+		Logging.getLogger().info("Services shutdowned.");		
+		
+		try	{
+			this.socket.close();
+			Logging.getLogger().info("Socket closed.");		
+		} catch (IOException e)	{
+			Logging.getLogger().warning("Unable to close socket : " + e);
+		}
+		
+		System.exit(0);		
+	}	
 	
 	/**
 	 * Send the ConnectInfo associated with this name

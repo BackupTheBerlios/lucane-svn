@@ -120,7 +120,7 @@ public class Store
         //groups
         GroupConcept allUsers = new GroupConcept("AllUsers");
         GroupConcept grantedUsers = new GroupConcept("GrantedUsers");
-        GroupConcept admins = new GroupConcept("Admins");
+		GroupConcept admins = new GroupConcept("Admins");
         admins.addParent(allUsers);
         grantedUsers.addParent(allUsers);
         
@@ -130,6 +130,12 @@ public class Store
         admins.addUser(admin);
         getUserStore().storeUser(admin);
 
+		//shutdown user
+		UserConcept shutdown = new UserConcept("shutdown", MD5.encode("shutdown"), false, "org.lucane.applications.shutdown");
+		shutdown.generateKeys("shutdown");
+		admins.addUser(shutdown);
+		getUserStore().storeUser(shutdown);
+		
         //guest user
         UserConcept guest = new UserConcept("guest", MD5.encode("guest"), false, "org.lucane.applications.quicklaunch");
         guest.generateKeys("guest");
@@ -150,6 +156,15 @@ public class Store
         getPluginStore().storePlugin(administratorPlugin);
         getServiceStore().storeService(administratorService);
         
+		//shutdown application
+		 PluginConcept shutdownPlugin = new PluginConcept("org.lucane.applications.shutdown", "0.7");
+		 ServiceConcept shutdownService = new ServiceConcept("org.lucane.applications.shutdown", false);
+		 admins.addPlugin(shutdownPlugin);
+		 admins.addService(shutdownService);
+		 getPluginStore().storePlugin(shutdownPlugin);
+		 getServiceStore().storeService(shutdownService);
+
+
         //filemanager application
         PluginConcept filemanagerPlugin = new PluginConcept("org.lucane.applications.filemanager", "0.7");
         ServiceConcept filemanagerService = new ServiceConcept("org.lucane.applications.filemanager", false);

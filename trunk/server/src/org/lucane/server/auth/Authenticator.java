@@ -40,9 +40,26 @@ public abstract class Authenticator
 	
 	public abstract AuthResponse authenticate(AuthRequest request);
 	
+	private boolean loginDisabled = false;
+	
+	public void disableLogin()
+	{
+		this.loginDisabled = true;
+		Logging.getLogger().info("Login disabled");
+	}
+	
 	// for compatibility with the current implementation
 	public void authenticate(ObjectConnection oc, Message message, String data)
 	{
+		// check is login is still allowed
+		if(loginDisabled)
+		{
+			try {
+				oc.write("ACCESS_DENIED");
+			} catch(Exception e) {}
+			return;
+		}
+		
 		String passwd = "";
 		StringTokenizer stk = new StringTokenizer(data, " ");
 		try	{
@@ -71,7 +88,7 @@ public abstract class Authenticator
 		{
 			try {
 				oc.write("NOT_VALID_USER");
-			} catch(Exception e) {}
+			} catch(Exception e) {}			
 		}
 		
 		//login disabled

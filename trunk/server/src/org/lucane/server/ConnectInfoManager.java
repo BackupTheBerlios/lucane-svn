@@ -189,4 +189,22 @@ public class ConnectInfoManager
 		ConnectInfo complete = getConnectInfo(info.getName());		
 		return complete == null ? info : complete;
 	}
+
+	/**
+	 * Disconnect every user 
+	 */
+	public void kickAllUsers()
+	{
+		Iterator clients = getClientConnectInfos();
+		while(clients.hasNext())
+		{
+			ConnectInfo client = (ConnectInfo)clients.next();
+			try {
+				ObjectConnection oc = Server.getInstance().sendMessageTo(client, "Client", "DISCONNECT");
+				oc.close();
+			} catch (Exception e) {
+				Logging.getLogger().warning("Unable to kick : " + client.getName());
+			}
+		}
+	}
 }
