@@ -156,37 +156,42 @@ Section "Client" CLIENT
   SetOutPath "$INSTDIR\client"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\client\*"
-  File /oname="client.ico" "setup\windows\resources\lucane.ico"
+  File /oname="bin\client.ico" "setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" CLIENT_STARTMENU
+    SetOutPath "$INSTDIR\client\bin"
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
-    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Client.lnk" "$INSTDIR\client\client.bat" "" "$INSTDIR\client\client.ico"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Client.lnk" "$INSTDIR\client\bin\client.bat" "" "$INSTDIR\client\bin\client.ico"
   SectionEnd
   Section "-Quick launch icon" CLIENT_QUICKLAUNCH
-    CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" "" "$INSTDIR\client\client.ico"
+    SetOutPath "$INSTDIR\client\bin"
+    CreateShortCut "$QUICKLAUNCH\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\bin\client.bat" "" "$INSTDIR\client\bin\client.ico"
   SectionEnd
   Section "-Desktop icon" CLIENT_DESKTOP
-    CreateShortCut "$DESKTOP\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\client.bat" "" "$INSTDIR\client\client.ico"
+    SetOutPath "$INSTDIR\client\bin"
+    CreateShortCut "$DESKTOP\${PRODUCT_NAME} client.lnk" "$INSTDIR\client\bin\client.bat" "" "$INSTDIR\client\bin\client.ico"
   SectionEnd
 
 Section "Server" SERVER
   SetOutPath "$INSTDIR\server"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\server\*"
-  File /oname="server.ico" "setup\windows\resources\lucane.ico"
+  File /oname="bin\server.ico" "setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" SERVER_STARTMENU
+    SetOutPath "$INSTDIR\server\bin"
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
-    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Server.lnk" "$INSTDIR\server\server.bat" "" "$INSTDIR\server\server.ico"
+    CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Server.lnk" "$INSTDIR\server\bin\server.bat" "" "$INSTDIR\server\bin\server.ico"
   SectionEnd
 
 Section "Proxy" PROXY
   SetOutPath "$INSTDIR\proxy"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\proxy\*"
-  File /oname="proxy.ico" "setup\windows\resources\lucane.ico"
+  File /oname="bin\proxy.ico" "setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" PROXY_STARTMENU
+    SetOutPath "$INSTDIR\proxy"
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
     CreateShortCut "$SMPROGRAMS\${ICONS_GROUP}\Proxy.lnk" "$INSTDIR\proxy\proxy.bat" "" "$INSTDIR\proxy\proxy.ico"
   SectionEnd
@@ -354,6 +359,14 @@ Function ValidateLanguage
     !insertmacro setLanguage "pl"
     goto end
     no4:
+
+  #----- Spanish -----
+  ReadINIStr ${TEMP1} "$PLUGINSDIR\language.ini" "Field 6" "state"
+
+  StrCmp ${TEMP1} 0 no5
+    !insertmacro setLanguage "es"
+    goto end
+    no5:
 
   end:
 
