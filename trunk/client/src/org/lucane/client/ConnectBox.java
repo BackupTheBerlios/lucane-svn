@@ -46,7 +46,7 @@ implements KeyListener, ActionListener, WindowListener
     private JPasswordField tbPasswd;
     private JButton btOk;
     private JButton btCancel;
-    private JProgressBar pbStatus;
+    private JProgressBar pbStatus = null;
     
     /**
      * Constructor
@@ -56,45 +56,48 @@ implements KeyListener, ActionListener, WindowListener
      */
     public ConnectBox(String serverName, int serverPort)
     {
-        dialog = new JDialog((Frame)null, Translation.tr("connectBoxTitle"), true);
         this.isConnected = false;
         this.serverName = serverName;
         this.serverPort = serverPort;
+    }
+    
+    private void initGui()
+    {
+		dialog = new JDialog((Frame)null, Translation.tr("connectBoxTitle"), true);       
+		JPanel pnlMain = new JPanel(new BorderLayout());
         
-        JPanel pnlMain = new JPanel(new BorderLayout());
+		ImageIcon logo = Client.getIcon("login_logo.png");
         
-        ImageIcon logo = Client.getIcon("login_logo.png");
-        
-        JLabel jLblLogo = new JLabel();
+		JLabel jLblLogo = new JLabel();
 		jLblLogo.setBackground(Color.WHITE);
-        jLblLogo.setIcon(logo);
+		jLblLogo.setIcon(logo);
 		
-        pnlMain.add(jLblLogo, BorderLayout.CENTER);
+		pnlMain.add(jLblLogo, BorderLayout.CENTER);
         
-        FocusListener fl = new FocusListener() {
-            public void focusGained(FocusEvent fe) {
-                JTextField jtf = (JTextField)fe.getComponent();
-                jtf.setSelectionStart(0);
-                jtf.setSelectionEnd(jtf.getText().length());
-            }
-            public void focusLost(FocusEvent fe) {}
-        };
+		FocusListener fl = new FocusListener() {
+			public void focusGained(FocusEvent fe) {
+				JTextField jtf = (JTextField)fe.getComponent();
+				jtf.setSelectionStart(0);
+				jtf.setSelectionEnd(jtf.getText().length());
+			}
+			public void focusLost(FocusEvent fe) {}
+		};
         
-        this.tbName = new JTextField();
-        tbName.addFocusListener(fl);
-        this.tbPasswd = new JPasswordField();
-        tbPasswd.addFocusListener(fl);
+		this.tbName = new JTextField();
+		tbName.addFocusListener(fl);
+		this.tbPasswd = new JPasswordField();
+		tbPasswd.addFocusListener(fl);
         
-        this.btOk = new JButton(Translation.tr("connectBoxConnect"));
-        this.btCancel = new JButton(Translation.tr("connectBoxCancel"));
-        this.btOk.setIcon(Client.getIcon("ok.png"));
-        this.btCancel.setIcon(Client.getIcon("cancel.png"));
+		this.btOk = new JButton(Translation.tr("connectBoxConnect"));
+		this.btCancel = new JButton(Translation.tr("connectBoxCancel"));
+		this.btOk.setIcon(Client.getIcon("ok.png"));
+		this.btCancel.setIcon(Client.getIcon("cancel.png"));
         
-        this.pbStatus = new JProgressBar(0, 100);
-        this.pbStatus.setValue(0);
-        this.pbStatus.setFont(this.pbStatus.getFont().deriveFont(9f));
-        this.pbStatus.setString("");
-        this.pbStatus.setStringPainted(true);
+		this.pbStatus = new JProgressBar(0, 100);
+		this.pbStatus.setValue(0);
+		this.pbStatus.setFont(this.pbStatus.getFont().deriveFont(9f));
+		this.pbStatus.setString("");
+		this.pbStatus.setStringPainted(true);
         
 		JPanel pnlInput = new JPanel(new GridLayout(2, 2, 2, 2));
 		pnlInput.add(new JLabel(Translation.tr("connectBoxLogin")));
@@ -111,25 +114,25 @@ implements KeyListener, ActionListener, WindowListener
 		pnlLogin.add(pnlInput, BorderLayout.CENTER);
 		pnlLogin.add(pnlButtons, BorderLayout.SOUTH);
 
-        pnlMain.add(pnlLogin, BorderLayout.SOUTH);
+		pnlMain.add(pnlLogin, BorderLayout.SOUTH);
         
-        dialog.addWindowListener(this);
+		dialog.addWindowListener(this);
         
-        btOk.addActionListener(this);
-        btCancel.addActionListener(this);
-        btOk.addKeyListener(this);
-        btCancel.addKeyListener(this);
-        tbPasswd.addKeyListener(this);
-        tbName.addKeyListener(this);
+		btOk.addActionListener(this);
+		btCancel.addActionListener(this);
+		btOk.addKeyListener(this);
+		btCancel.addKeyListener(this);
+		tbPasswd.addKeyListener(this);
+		tbName.addKeyListener(this);
         
         
-        dialog.getContentPane().setLayout(new BorderLayout(4, 4));
-        dialog.getContentPane().add(pnlMain, BorderLayout.CENTER);
-        dialog.getContentPane().add(pbStatus, BorderLayout.SOUTH);
+		dialog.getContentPane().setLayout(new BorderLayout(4, 4));
+		dialog.getContentPane().add(pnlMain, BorderLayout.CENTER);
+		dialog.getContentPane().add(pbStatus, BorderLayout.SOUTH);
         
 		dialog.pack();
 		dialog.setResizable(false);
-    }
+	}
     
     /**
      * Show the modal dialog
@@ -137,23 +140,17 @@ implements KeyListener, ActionListener, WindowListener
      * @param defaultLogin the login to display
      * @param passwd if non null, autoconnect
      */
-    public void showModalDialog(String defaultLogin, String passwd)
+    public void showModalDialog(String defaultLogin)
     {
+    	initGui();
+    	
         //center dialog
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         dialog.setLocation((d.width-dialog.getWidth())/2, (d.height-dialog.getHeight())/2);
 
         tbName.setText(defaultLogin);
         
-        //-- auto connection
-        if(passwd != null)
-        {
-            tbPasswd.setText(passwd);
-            dialog.setEnabled(false);
-            tryToConnect(Client.getInstance());
-        }
-        else
-            dialog.show();
+        dialog.show();
     }   
     
     /**
@@ -174,6 +171,9 @@ implements KeyListener, ActionListener, WindowListener
      */
     public void setProgressValue(int v, String str)
     {
+		if(pbStatus == null)
+			return;
+			
         pbStatus.setValue(v);
         pbStatus.setString(str);
     }
@@ -185,6 +185,9 @@ implements KeyListener, ActionListener, WindowListener
      */
     public void setProgressMax(int m)
     {
+    	if(pbStatus == null)
+    		return;
+    		
         pbStatus.setMaximum(m + 1);
         pbStatus.setIndeterminate(false);
         pbStatus.setValue(1);
@@ -235,6 +238,48 @@ implements KeyListener, ActionListener, WindowListener
         }
     }
 
+	/**
+	 * Connect to the server and authenticate
+	 */
+	protected void tryToConnect(Client parent, String user, String passwd)	
+	{
+		 String msg;
+		 try
+		 {                
+			 Listener lstnr = parent.createNewListener();
+			 parent.setMyInfos(user, serverName, lstnr.getPort());
+			 parent.createNewCommunicator(serverName);
+			 msg = requestForConnection(parent, passwd);
+            
+			 if (msg.startsWith("AUTH_ACCEPTED"))
+			 {                    
+				 //decipher the private key
+				 try
+				 {                    
+					 String privkey = msg.substring(14); //"AUTH_ACCEPTED "
+					 Communicator.getInstance().setPrivateKey(privkey, passwd);
+				 }
+				 catch (Exception e)
+				 {
+					 Logging.getLogger().warning(Translation.tr("connectBoxPrivKeyError"));
+				 }
+                
+				 isConnected = true;
+				 Client.getInstance().init();
+			 }
+			 else
+			 {
+				 Logging.getLogger().severe(getErrorMsg(msg));
+			 }
+		 }
+		 catch (Exception e)
+		 {
+				Logging.getLogger().severe(Translation.tr("connectBoxBadDataError"));
+			e.printStackTrace();
+		 }
+	}
+
+
     /**
      * Connect to the server and authenticate
      */
@@ -247,7 +292,7 @@ implements KeyListener, ActionListener, WindowListener
             Listener lstnr = parent.createNewListener();
             parent.setMyInfos(tbName.getText(), serverName, lstnr.getPort());
             parent.createNewCommunicator(serverName);
-            msg = resquestForConnection(parent);
+            msg = requestForConnection(parent);
             
             if (msg.startsWith("AUTH_ACCEPTED"))
             {                    
@@ -282,16 +327,21 @@ implements KeyListener, ActionListener, WindowListener
         }
     }
     
+	private String requestForConnection(Client parent)
+	{
+		return this.requestForConnection(parent, new String(tbPasswd.getPassword()));
+	}
+
+   
     /**
      * Ask the server to authenticate the client
      *
      * @return the server's answer
      */
-    private String resquestForConnection(Client parent)
+    private String requestForConnection(Client parent, String passwd)
     {
         StringTokenizer stk;
         String msg;
-        String passwd = new String(tbPasswd.getPassword());
         msg = "AUTH "
             + MD5.encode(passwd)
             + " "

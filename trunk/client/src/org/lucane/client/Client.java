@@ -116,7 +116,10 @@ public class Client
     protected void showConnectBox(String defaultLogin, String passwd, String serverName, int serverPort)
     {
         this.connectbox = new ConnectBox(serverName, serverPort);
-        connectbox.showModalDialog(defaultLogin, passwd);
+        if(passwd == null)
+        	connectbox.showModalDialog(defaultLogin);
+        else
+        	connectbox.tryToConnect(this, defaultLogin, passwd);
     }
     
     /**
@@ -250,7 +253,11 @@ public class Client
      */
     protected void disconnect()
     {
-    	DialogBox.info(Translation.tr("msg.disconnected"));
+    	try {
+	    	DialogBox.info(Translation.tr("msg.disconnected"));
+		} catch(UnsatisfiedLinkError ule) {
+			//awt isn't available.
+		}
     	cleanExit();
     }
     
@@ -259,21 +266,15 @@ public class Client
      */
     protected void cleanExit()
     {        
-        try
-        {            
+        try  {            
             ObjectConnection oc = communicator.sendMessageTo(serverInfos, "Server",
                 "CONNECT_DEL " + myinfos.getName());
             oc.close();
-
-			Logging.getLogger().info("Exiting cleanly.");
-			Runtime.getRuntime().halt(0);
-        }
-        catch(Exception e)
-        {
+        } catch(Exception e) {
             Logging.getLogger().warning("Can't send exit message to server");
-            e.printStackTrace();
-			Runtime.getRuntime().halt(1);
         }        
+		Logging.getLogger().info("Exiting cleanly.");
+		Runtime.getRuntime().halt(0);
     }
     
     /**
@@ -444,10 +445,11 @@ public class Client
             System.exit(1);
         }
         
-	//look and feel
-	try {
-		UIManager.setLookAndFeel(config.getLooknfeel());
-	} catch(Exception e) {}
+		//look and feel
+		try {
+			UIManager.setLookAndFeel(config.getLooknfeel());
+		} catch(Throwable t) {}
+	
         UIManager.getDefaults().put("ClassLoader", Client.class.getClassLoader());
 		
 

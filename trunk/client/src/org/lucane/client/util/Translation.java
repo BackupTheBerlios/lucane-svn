@@ -61,8 +61,12 @@ public class Translation
             }
         }
         
-        if(Translation.bundle != null)
-        	Translation.changeUIMessages();            
+        try {
+	        if(Translation.bundle != null)
+    	    	Translation.changeUIMessages();            
+		} catch(UnsatisfiedLinkError ule) {
+			//awt is not available
+		}
     }
     
     /**
@@ -98,6 +102,7 @@ public class Translation
      * Change the messages for Swing objects
      */
     private static void changeUIMessages()
+    throws UnsatisfiedLinkError
 	{
     	String[] messages = {
     			"FileChooser.acceptAllFileFilterText",
