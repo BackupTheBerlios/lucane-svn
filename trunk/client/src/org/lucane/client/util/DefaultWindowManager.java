@@ -53,7 +53,7 @@ public class DefaultWindowManager implements WindowManager
 		else
 			f.setSize(window.getPreferredSize());
 		
-		if(window.discardWidgetState())
+		if(!window.discardWidgetState())
 			WidgetState.restore(window.getOwner().getLocalConfig(), f);
 		
 		Iterator listeners = window.getWindowListeners();

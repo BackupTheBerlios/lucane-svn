@@ -32,6 +32,7 @@ import javax.swing.event.MenuListener;
 
 import org.lucane.client.Client;
 import org.lucane.client.Plugin;
+import org.lucane.client.PluginLoader;
 import org.lucane.client.widgets.ManagedWindow;
 
 public class WindowMenu extends JMenu
@@ -56,27 +57,22 @@ implements MenuListener, ActionListener
 	public void menuDeselected(MenuEvent e) {}
 	public void menuSelected(MenuEvent e) 
 	{
-		//get all running plugins
-		//could be better if PluginLoader could give them
-		ArrayList pluginList = new ArrayList();
-		Iterator windows = Client.getInstance().getWindowManager().getAllWindows();		
-		while(windows.hasNext())
-		{
-			ManagedWindow window = (ManagedWindow)windows.next();
-			if(!pluginList.contains(window.getOwner()))
-				pluginList.add(window.getOwner());
-		}
-		
 		//create the menu
 		toggleButtons.clear();
 		this.removeAll();
-		Iterator plugins = pluginList.iterator();
+		Iterator plugins = PluginLoader.getInstance().getRunningPlugins();
 		while(plugins.hasNext())
 		{
 			Plugin plugin = (Plugin)plugins.next();
 			
 			//zap startup plugin
 			if(plugin.getName().equals(Client.getInstance().getStartupPlugin()))
+				continue;
+
+			Iterator windows = Client.getInstance().getWindowManager().getWindowsFor(plugin);
+			
+			//if the plugin has no window, we don't care
+			if(!windows.hasNext())
 				continue;
 			
 			JMenu menu = new JMenu(plugin.getTitle());
@@ -90,7 +86,6 @@ implements MenuListener, ActionListener
 			menu.add(toggle);
 			menu.addSeparator();
 			
-			windows = Client.getInstance().getWindowManager().getWindowsFor(plugin);
 			while(windows.hasNext())
 			{
 				ManagedWindow window = (ManagedWindow)windows.next();

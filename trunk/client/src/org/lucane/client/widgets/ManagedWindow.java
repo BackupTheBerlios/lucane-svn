@@ -58,9 +58,9 @@ public class ManagedWindow
 		return this.owner;
 	}
 	
-	public void setDiscardWidgetState(boolean widgetState)
+	public void setDiscardWidgetState(boolean discard)
 	{
-		this.discardWidgetState = widgetState;
+		this.discardWidgetState = discard;
 	}
 	
 	public boolean discardWidgetState()
