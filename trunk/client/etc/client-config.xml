@@ -21,7 +21,7 @@
   <proxy host="localhost" port="5119" />
   -->
   
-  <!-- listener port if you want to enforce a port for the client -->
+  <!-- if you want to enforce a port for the client -->
   <!--
   <listener port="1951" />
   -->
