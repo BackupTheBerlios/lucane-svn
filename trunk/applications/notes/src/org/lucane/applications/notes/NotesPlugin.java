@@ -26,7 +26,7 @@ import org.lucane.applications.notes.gui.main.*;
 
 
 public class NotesPlugin
-extends Plugin
+extends StandalonePlugin
 {
   private ConnectInfo service;
   private MainFrame mainFrame;
@@ -36,7 +36,6 @@ extends Plugin
     this.service = Communicator.getInstance().getConnectInfo("org.lucane.applications.notes");
     this.starter = true;
   }
-
 
   public Plugin init(ConnectInfo[] friends, boolean starter)
   {

@@ -29,7 +29,7 @@ import org.lucane.common.*;
 import org.lucane.common.concepts.*;
 import org.lucane.applications.administrator.gui.*;
 
-public class AdministratorPlugin extends Plugin
+public class AdministratorPlugin extends StandalonePlugin
 {
 	private ConnectInfo service;
 	private ArrayList allGroups = null;

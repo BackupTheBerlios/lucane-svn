@@ -28,7 +28,7 @@ import javax.swing.*;
 
 
 public class PasswdChanger
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener
 {
 

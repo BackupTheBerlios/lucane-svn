@@ -28,7 +28,7 @@ import org.lucane.common.ObjectConnection;
 
 
 public class JMailAdminPlugin
-  extends Plugin
+  extends StandalonePlugin
 {
 	private ConnectInfo service;
 

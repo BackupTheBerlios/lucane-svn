@@ -28,7 +28,7 @@ import java.util.HashMap;
 
 import javax.swing.*;
 
-public class MailClient extends Plugin implements ActionListener
+public class MailClient extends StandalonePlugin implements ActionListener
 {
 	/* dialog components */
 	private JFrame frame;

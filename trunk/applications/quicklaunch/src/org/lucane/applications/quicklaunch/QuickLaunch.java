@@ -27,11 +27,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 import java.util.*;
+
 import javax.swing.*;
 
 
 public class QuickLaunch
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener
 {
 	private static final String MAIN_INTERFACE = "org.lucane.applications.maininterface";
@@ -77,62 +78,67 @@ public class QuickLaunch
 		return;
 	}
 	
-	HashMap categories = new HashMap();
-
-	//create menu list	
-    for(int i=0; i<PluginLoader.getInstance().getNumberOfPlugins(); i++)
-    {
-      Plugin p = PluginLoader.getInstance().getPluginAt(i);
-
-      JMenu category = (JMenu)categories.get(p.getCategory());
-      if(category == null)
-      {
-      	category = new JMenu(p.getCategory());
-      	categories.put(p.getCategory(), category);
-      }
-      
-      ImageIcon icon = new ImageIcon();
-	    try {
-	      icon = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
-	      icon = new ImageIcon(icon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
-	    } catch(Exception e) {
-	      //error at icon loading
-	    }
-	
-		JMenuItem menu = new JMenuItem(p.getTitle(), icon);
-		menu.setName(p.getName());
-		menu.setToolTipText(p.getToolTip());
-		menu.addActionListener(this);
-		category.add(menu);
-    }
-
-	//copy menu to tray
-	Iterator keys = categories.keySet().iterator();
-	while(keys.hasNext())
-	{
-		Object key = keys.next();
-		if(!key.equals("Invisible"))
-			this.trayIcon.add((JMenuItem)categories.get(key));
-	}
-		
-	this.trayIcon.addSeparator();
-	
-	//open main interface
-	JMenuItem menu = new JMenuItem(tr("open"));
-	menu.setName("org.lucane.applications.maininterface");
-	menu.addActionListener(this);
-	this.trayIcon.add(menu);
-	
-	//exit
-	menu = new JMenuItem(tr("exit"));
-	menu.setName("exit");
-	menu.addActionListener(this);
-	this.trayIcon.add(menu);
+	addMenuToTray();
 	
 	this.trayIcon.setVisible(true);
 	this.trayIcon.showInfo(tr("lucane.is.ready"), "Lucane Groupware");
   }
 
+  private void addMenuToTray()
+  {
+  	HashMap categories = new HashMap();
+  	
+  	//create menu list	
+  	for(int i=0; i<PluginLoader.getInstance().getNumberOfPlugins(); i++)
+  	{
+  		Plugin p = PluginLoader.getInstance().getPluginAt(i);
+
+  		JMenu category = (JMenu)categories.get(p.getCategory());
+  		if(category == null)
+  		{
+  			category = new JMenu(p.getCategory());
+  			categories.put(p.getCategory(), category);
+  		}
+  		
+  		ImageIcon icon = new ImageIcon();
+  		try {
+  			icon = new ImageIcon(new URL(p.getDirectory() + p.getIcon()));
+  			icon = new ImageIcon(icon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
+  		} catch(Exception e) {
+  			//error at icon loading
+  		}
+  		
+  		JMenuItem menu = new JMenuItem(p.getTitle(), icon);
+  		menu.setName(p.getName());
+  		menu.setToolTipText(p.getToolTip());
+  		menu.addActionListener(this);
+  		category.add(menu);
+  	}
+
+  	//copy menu to tray
+  	Iterator keys = categories.keySet().iterator();
+  	while(keys.hasNext())
+  	{
+  		Object key = keys.next();
+  		if(!key.equals("Invisible"))
+  			this.trayIcon.add((JMenuItem)categories.get(key));
+  	}
+  	
+  	this.trayIcon.addSeparator();
+  	
+  	//open main interface
+  	JMenuItem menu = new JMenuItem(tr("open"));
+  	menu.setName("org.lucane.applications.maininterface");
+  	menu.addActionListener(this);
+  	this.trayIcon.add(menu);
+  	
+  	//exit
+  	menu = new JMenuItem(tr("exit"));
+  	menu.setName("exit");
+  	menu.addActionListener(this);
+  	this.trayIcon.add(menu);  	
+  }
+  
   public void actionPerformed(ActionEvent ae)
   {
   	JMenuItem src = (JMenuItem)ae.getSource();
@@ -152,7 +158,6 @@ public class QuickLaunch
 	this.trayIcon.setVisible(false);
 
     while(true)
-      exit();
-      
+      exit();      
   }
 }

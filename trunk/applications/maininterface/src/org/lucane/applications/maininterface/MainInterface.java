@@ -31,7 +31,7 @@ import javax.swing.*;
 
 
 public class MainInterface
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener,
              UserListListener
 {

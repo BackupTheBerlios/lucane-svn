@@ -32,7 +32,7 @@ import javax.swing.tree.*;
 
 
 public class Forum
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener,
              ListSelectionListener,
              TreeSelectionListener

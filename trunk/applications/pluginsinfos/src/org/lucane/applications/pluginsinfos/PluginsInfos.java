@@ -28,7 +28,7 @@ import javax.swing.*;
 
 
 public class PluginsInfos
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener
 {
 

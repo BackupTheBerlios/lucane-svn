@@ -29,7 +29,7 @@ import javax.swing.tree.*;
 
 
 public class HelpBrowser
-  extends Plugin
+  extends StandalonePlugin
   implements TreeSelectionListener,
              ActionListener
 {

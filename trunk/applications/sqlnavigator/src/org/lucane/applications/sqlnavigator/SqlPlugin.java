@@ -27,7 +27,7 @@ import org.lucane.client.*;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 
-public class SqlPlugin extends Plugin
+public class SqlPlugin extends StandalonePlugin
 {
 	private ConnectInfo service;	
 	public Navigator navigator;

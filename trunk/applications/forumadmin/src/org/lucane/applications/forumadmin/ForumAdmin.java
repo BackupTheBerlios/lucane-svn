@@ -29,7 +29,7 @@ import javax.swing.*;
 
 
 public class ForumAdmin
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener
 {
 

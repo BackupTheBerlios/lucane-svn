@@ -30,7 +30,7 @@ import javax.swing.*;
 
 
 public class FileManager
-  extends Plugin
+  extends StandalonePlugin
   implements ActionListener,
              MouseListener
 {

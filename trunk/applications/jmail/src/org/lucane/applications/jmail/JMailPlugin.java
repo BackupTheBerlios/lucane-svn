@@ -31,7 +31,7 @@ import org.lucane.applications.jmail.base.*;
 
 
 public class JMailPlugin
-  extends Plugin
+  extends StandalonePlugin
 {
 	private ConnectInfo service;
 	private Profile profile;

@@ -29,7 +29,7 @@ import org.lucane.applications.calendar.gui.CalendarFrame;
 //TODO activate resources
 //TODO activate optional attendees
 
-public class CalendarPlugin extends Plugin
+public class CalendarPlugin extends StandalonePlugin
 {
 	private ConnectInfo service;
 	

@@ -121,6 +121,15 @@ public abstract class Plugin
   {
     return tr("title");
   }
+  
+  /**
+   * Can the plugin be run without any users ?
+   * @return true if the plugin is standalone
+   */
+  public boolean isStandalone()
+  {
+  	return false;
+  }
 
   /**
    * Used by the PluginLoader to initialize the plugin with adequate parameters
