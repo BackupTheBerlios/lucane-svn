@@ -39,6 +39,7 @@ import javax.swing.UIManager;
 public class Client
 {   
 	private static final String CONFIG_FILE = "etc/client-config.xml";
+	private static final String LOG_FILE = "logs/lucane.log";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
 	public static final String VERSION = "0.7.1-beta";
 	
@@ -434,7 +435,7 @@ public class Client
 		Translation.setLocale("en");
 		
 		try {
-			Logging.init("lucane.log", "ALL");
+			Logging.init(LOG_FILE, "ALL");
 		} catch(IOException ioe) {
 			System.err.println("Unable to init logging, exiting.");
 			System.exit(1);

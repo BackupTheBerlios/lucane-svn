@@ -4,6 +4,8 @@
 
   <property name="dist.dir" value="../../dist/client" />
   <property name="dist.lib.dir" value="${dist.dir}/lib" />
+  <property name="dist.bin.dir" value="${dist.dir}/bin" />
+  <property name="dist.logs.dir" value="${dist.dir}/logs" />
   <property name="dist.etc.dir" value="${dist.dir}/etc" />
 
   <goal name="mkdist">
@@ -20,12 +22,13 @@
       </fileset>
     </copy>
 
-    <copy todir="${dist.dir}">
-      <fileset dir=".">
-        <include name="*.sh" />
-        <include name="*.bat" />
+    <copy todir="${dist.bin.dir}">
+      <fileset dir="bin">
+        <exclude name="**/.svn" />
       </fileset>
     </copy>
+    
+    <mkdir dir="${dist.logs.dir}" />
   </goal>
   
 </project>
