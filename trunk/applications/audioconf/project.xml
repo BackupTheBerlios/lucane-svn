@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<project>
+  <extend>${basedir}/../project.xml</extend>
+  <id>app-audioconf</id>
+  <name>Lucane Groupware - AudioConf</name>
+  <package>org.lucane.applications.audioconf</package>
+
+  <shortDescription>Lucane AudioConf</shortDescription>
+
+</project>
