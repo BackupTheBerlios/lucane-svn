@@ -23,11 +23,16 @@ import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import java.net.*;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.UIManager;
+import javax.swing.plaf.IconUIResource;
 
 
 /**
@@ -426,10 +431,22 @@ public class Client
 					+ System.getProperty("user.dir").replace('\\', '/')
 					+ "/lib/lucane-client-" + Client.VERSION + ".jar!/icons/"
 					+ icon);
-			
-			return new ImageIcon(url);
-		} catch(Exception e) {    
-			return new ImageIcon();
+
+			if (! new File(url.getPath()).canRead()) {
+				Icon ic = (IconUIResource)UIManager.getIcon("OptionPane.warningIcon");
+				BufferedImage image = new BufferedImage(ic.getIconWidth(), ic.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+				Graphics g = image.getGraphics();
+				ic.paintIcon(new JLabel(), g, 0, 0);
+				return new ImageIcon(image);
+			} else {
+				return new ImageIcon(url);
+			}
+		} catch(Exception e) {
+			Icon ic = (IconUIResource)UIManager.getIcon("OptionPane.warningIcon");
+			BufferedImage image = new BufferedImage(ic.getIconWidth(), ic.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics g = image.getGraphics();
+			ic.paintIcon(new JLabel(), g, 0, 0);
+			return new ImageIcon(image);
 		}
 	}
 	
