@@ -39,7 +39,7 @@ public class ManagedWindow
 	private JRootPane rootPane = new JRootPane();
 	private String title = null;
 	private Image iconImage = null;
-	private boolean resizeable = false; 
+	private boolean resizeable = true; 
 	private Dimension maximumSize = null;
 	private Dimension minimumSize = null;
 	private Dimension preferredSize = null;

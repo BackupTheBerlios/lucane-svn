@@ -20,6 +20,8 @@ package org.lucane.applications.rssreader;
 
 import java.awt.Dimension;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import org.lucane.applications.rssreader.gui.*;
@@ -57,6 +59,15 @@ public class RssReader extends StandalonePlugin
 		frame.setPreferredSize(new Dimension(600, 600));
 		frame.restoreState();
 		frame.show();
+	}
+	
+	public void openUrl(URL url)
+	{
+		try	{
+			BrowserLauncher.openURL(url.toString());
+		} catch (IOException e)	{
+			e.printStackTrace();
+		}
 	}
 	
 	public void addChannel(ChannelInfo channel)

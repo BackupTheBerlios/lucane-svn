@@ -29,16 +29,16 @@ import javax.swing.event.*;
 
 import org.jperdian.rss2.RssException;
 import org.jperdian.rss2.dom.RssChannel;
+import org.jperdian.rss2.dom.RssItem;
 import org.lucane.applications.rssreader.RssReader;
 import org.lucane.applications.rssreader.rss.ChannelInfo;
 import org.lucane.client.Client;
-import org.lucane.client.util.PluginExitWindowListener;
 import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.client.widgets.ManagedWindow;
 
 public class MainFrame extends ManagedWindow
-implements ListSelectionListener, ActionListener
+implements ListSelectionListener, ActionListener, MouseListener
 {
 	private JButton btnRefresh;
 	private JButton btnAddChannel;
@@ -89,6 +89,7 @@ implements ListSelectionListener, ActionListener
 		
 		items = new JList(rssItems);
 		items.setCellRenderer(new ItemRenderer());
+		items.addMouseListener(this);
 		
 		
 		split = new JSplitPane();
@@ -171,11 +172,31 @@ implements ListSelectionListener, ActionListener
 				}	catch (MalformedURLException mue) {
 					DialogBox.error(plugin.tr("err.wrongUrl")+ mue);
 				}	catch (RssException re) {
-					DialogBox.error(plugin.tr("err.rssError") + re);
+					//TODO call proxy config from here
+					//if(re.getCause() != null && re.getCause() instanceof ConnectException)
+					//	re.getCause().printStackTrace();
+					
+					DialogBox.error(plugin.tr("err.rssError") + re);					
 				}							
 			}
 		};
 
 		new Thread(refresh).start();
+	}
+
+	public void mousePressed(MouseEvent me) {}
+	public void mouseReleased(MouseEvent me) {}
+	public void mouseEntered(MouseEvent me) {}
+	public void mouseExited(MouseEvent me) {}
+	public void mouseClicked(MouseEvent me)
+	{
+		if(me.getButton() == MouseEvent.BUTTON1 && me.getClickCount() == 2)
+		{
+			RssItem item = (RssItem)items.getSelectedValue();
+			if(item == null)
+				return;
+				
+			plugin.openUrl(item.getLink());	
+		}		
 	}
 }

@@ -89,7 +89,7 @@ public class MdiWindowManager implements WindowManager
 		final JInternalFrame f = (JInternalFrame)windows.get(window);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				f.hide();
+				f.setVisible(false);
 			}	
 		});	
 	}

@@ -29,7 +29,7 @@ import org.lucane.applications.rssreader.rss.ChannelInfo;
 import org.lucane.client.Client;
 
 public class ChannelDialog extends JDialog
-implements ActionListener
+implements ActionListener, KeyListener
 {
 	private JButton btnAdd;
 	private JButton btnCancel;
@@ -41,7 +41,7 @@ implements ActionListener
 	public ChannelDialog(MainFrame main, RssReader plugin)
 	{
 		super((JFrame)null, plugin.tr("addChannel"));
-		
+	
 		this.main = main;
 		this.plugin = plugin;
 		
@@ -51,7 +51,9 @@ implements ActionListener
 		btnCancel.addActionListener(this);
 		name = new JTextField();
 		url = new JTextField();
-		
+		name.addKeyListener(this);
+		url.addKeyListener(this);
+			
 		JPanel labels = new JPanel(new GridLayout(2, 1));
 		labels.add(new JLabel(plugin.tr("lbl.channelName")));
 		labels.add(new JLabel(plugin.tr("lbl.channelUrl")));
@@ -85,5 +87,15 @@ implements ActionListener
 			main.refreshChannelList();
 		}
 		dispose();
+	}
+
+	public void keyReleased(KeyEvent ke) {} 
+	public void keyTyped(KeyEvent ke) {}
+	public void keyPressed(KeyEvent ke) 
+	{
+		if(ke.getKeyCode() == KeyEvent.VK_ENTER)
+			actionPerformed(new ActionEvent(btnAdd, 0, null));
+		else if(ke.getKeyCode() == KeyEvent.VK_ESCAPE)
+			actionPerformed(new ActionEvent(btnCancel, 0, null));
 	}
 }
