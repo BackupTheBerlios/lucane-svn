@@ -27,6 +27,7 @@ import java.util.*;
 
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.applications.calendar.CalendarPlugin;
+import org.lucane.applications.calendar.pdf.MonthExporter;
 import org.lucane.applications.calendar.widget.*;
 import org.lucane.applications.calendar.Event;
 
@@ -47,6 +48,8 @@ implements ActionListener
 	private Calendar calendar;
 	private transient CalendarPlugin plugin;
 	
+	private JButton pdfExport;
+	
 	private String userName;
 	
 	public MonthPanel(CalendarPlugin plugin, CalendarListener listener, String userName)
@@ -62,17 +65,23 @@ implements ActionListener
 			previousMonth = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "previous.png")));
 			nextYear = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "nnext.png")));
 			nextMonth = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "next.png")));
+			
+			pdfExport = new JButton(tr("pdf.export"), new ImageIcon(new URL(plugin.getDirectory() + "pdf.png")));
 		} catch(Exception e) {
 			previousYear = new JButton("<<");
 			previousMonth = new JButton("<");
 			nextYear = new JButton(">>");
-			nextMonth = new JButton(">");			
+			nextMonth = new JButton(">");	
+			
+			pdfExport = new JButton(tr("pdf.export"));		
 		}
 		
 		previousYear.addActionListener(this);
 		previousMonth.addActionListener(this);
 		nextYear.addActionListener(this);
 		nextMonth.addActionListener(this);
+		
+		pdfExport.addActionListener(this);
 		
 		month = new JComboBox();
 		year = new JComboBox();		
@@ -120,9 +129,10 @@ implements ActionListener
 		middle.add(month, BorderLayout.CENTER);
 		middle.add(year, BorderLayout.EAST);
 		
-		JPanel next = new JPanel(new GridLayout(1, 2));
+		JPanel next = new JPanel(new GridLayout(1, 3));
 		next.add(nextMonth);
 		next.add(nextYear);
+		next.add(pdfExport);
 		
 		bar.add(previous, BorderLayout.WEST);
 		bar.add(middle, BorderLayout.CENTER);
@@ -131,7 +141,7 @@ implements ActionListener
 	}
 	
 	public void actionPerformed(ActionEvent ae)
-	{
+	{	
 		//-- buttons
 		if(ae.getSource() == previousYear)
 			calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)-1);
@@ -156,7 +166,24 @@ implements ActionListener
 				calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR)+1);
 			}
 			calendar.set(Calendar.MONTH, nextMonth);
-		}			
+		}	
+		else if(ae.getSource() == pdfExport)
+		{
+			JFileChooser fc = new JFileChooser();
+			int returnVal = fc.showOpenDialog(null);
+
+			if(returnVal == JFileChooser.APPROVE_OPTION)
+			{
+				MonthExporter exporter = new MonthExporter(plugin, this.calendar);
+				try	{
+					exporter.exportMonth(fc.getSelectedFile().getAbsolutePath());
+					DialogBox.info(tr("pdf.generated"));
+				} catch (Exception e) {
+					DialogBox.error(tr("err.pdf.generation"));
+					e.printStackTrace();
+				}
+			}		
+		}
 		
 		//-- combos
 		if(ae.getSource() == month)

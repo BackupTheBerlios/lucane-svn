@@ -6,5 +6,11 @@
   <package>org.lucane.applications.calendar</package>
 
   <shortDescription>Lucane Calendar</shortDescription>
-
+  <dependencies>
+    <dependency>
+      <groupId>itext</groupId>
+      <artifactId>itext</artifactId>
+      <version>0.99</version>
+    </dependency>    
+  </dependencies>
 </project>
