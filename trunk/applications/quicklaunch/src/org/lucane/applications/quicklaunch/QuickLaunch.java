@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
- 
+ */ 
 package org.lucane.applications.quicklaunch;
 
 import org.lucane.client.*;
@@ -84,6 +83,19 @@ public class QuickLaunch
 	this.trayIcon.showInfo(tr("lucane.is.ready"), "Lucane Groupware");
   }
 
+  public void actionPerformed(ActionEvent ae)
+  {
+  	JMenuItem src = (JMenuItem)ae.getSource();
+  	
+  	if(src.getName().equals("exit"))
+  	{
+  		cleanExit();
+  		return;
+  	}
+  	
+  	runPlugin(src.getName());
+  }
+  
   private void addMenuToTray()
   {
   	HashMap categories = new HashMap();
@@ -138,20 +150,28 @@ public class QuickLaunch
   	menu.addActionListener(this);
   	this.trayIcon.add(menu);  	
   }
-  
-  public void actionPerformed(ActionEvent ae)
-  {
-  	JMenuItem src = (JMenuItem)ae.getSource();
-  	  	
-  	if(src.getName().equals("exit"))
-  	{
-      cleanExit();
-      return;
-	}
-	
-	PluginLoader.getInstance().run(src.getName(), new ConnectInfo[0]);
-  }
 
+  private void runPlugin(String pluginName)
+  {
+  	ConnectInfo[] friends;  	
+  	Plugin plugin = PluginLoader.getInstance().getPlugin(pluginName);
+  	
+  	// get users
+  	if(plugin.isStandalone())
+  		friends = new ConnectInfo[0];
+  	else
+  	{	
+  		ListBox userList = new ListBox(null, plugin.getTitle(), tr("msg.selectUsers"), Client.getInstance().getUserList());
+  		Object[] users = userList.selectItems();
+  		friends = new ConnectInfo[users.length];
+  		for(int i=0;i<friends.length;i++)
+  			friends[i] = Communicator.getInstance().getConnectInfo((String)users[i]);
+  	}
+  	
+  	// run the plugin
+  	PluginLoader.getInstance().run(pluginName, friends);  	
+  }
+  
   private void cleanExit()
   {
 	Logging.getLogger().finer("QuickLaunch::cleanExit()");

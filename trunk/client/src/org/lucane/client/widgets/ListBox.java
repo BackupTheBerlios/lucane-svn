@@ -96,6 +96,24 @@ public class ListBox  extends JDialog
   }
 
   /**
+   * Get the selected items
+   * 
+   * @return the selected items
+   */
+  public Object[] selectItems()
+  {
+  	if(list.size() == 0)
+  		return new Object[0];
+
+  	this.show();
+
+  	if(accept)
+  		return lstSelection.getSelectedValues();
+  	else
+  		return new Object[0];  	
+  }
+
+  /**
    * A button has been clicked (oh my god!)
    * 
    * @param ev yet another event...
