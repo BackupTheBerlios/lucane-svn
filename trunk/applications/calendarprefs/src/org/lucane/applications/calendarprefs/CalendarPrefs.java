@@ -54,12 +54,14 @@ public class CalendarPrefs
 		Color workedColor = getColor("worked", new Color(255, 255, 222));
 		int workStart = prefs.getInt("workStart", 8);
 		int workEnd = prefs.getInt("workEnd", 18);
+		int firstDayOfWeek = prefs.getInt("sundayFirst", 0);
 		
   		ui = new UIFactory();  		
 		ui.setUnworkedColor(unworkedColor);
 		ui.setWorkedColor(workedColor);
 		ui.setWorkStart(workStart);
 		ui.setWorkEnd(workEnd);
+		ui.setFirstDayOfWeek(firstDayOfWeek);
 		
   		frame = ui.createMainFrame(this);
   		frame.show();
@@ -92,6 +94,8 @@ public class CalendarPrefs
 	  		prefs.set("unworked.r", String.valueOf(ui.getUnworkedColor().getRed()));
 	  		prefs.set("unworked.g", String.valueOf(ui.getUnworkedColor().getGreen()));
 	  		prefs.set("unworked.b", String.valueOf(ui.getUnworkedColor().getBlue()));
+	  		
+	  		prefs.set("sundayFirst", String.valueOf(ui.getFirstDayOfWeek()));
 	  		
 	  		try {
 				prefs.save();

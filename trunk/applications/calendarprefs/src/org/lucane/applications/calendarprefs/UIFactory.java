@@ -30,11 +30,13 @@ public class UIFactory
 	private Color unworkedColor; 
 	private int initialWorkStart;
 	private int initialWorkEnd;
+	private int initalFirstDayOfWeek;
 		
 	private JButton worked;
 	private JButton unworked;
 	private JSlider workStart;
 	private JSlider workEnd;
+	private JComboBox firstDayOfWeek;
 	
 	
 	public JFrame createMainFrame(CalendarPrefs plugin)
@@ -43,7 +45,7 @@ public class UIFactory
 		frame.setIconImage(plugin.getImageIcon().getImage());			
 		frame.getContentPane().setLayout(new BorderLayout());
 
-		JPanel content = new JPanel(new GridLayout(4, 2));
+		JPanel content = new JPanel(new GridLayout(5, 2));
 		
 		// hours
 		workStart = new JSlider(0, 24, initialWorkStart);
@@ -63,7 +65,7 @@ public class UIFactory
 		content.add(workStart);
 		content.add(new JLabel(plugin.tr("lbl.workEnd")));
 		content.add(workEnd);
-		
+				
 		
 		// colors
 		worked = new JButton("");
@@ -78,7 +80,16 @@ public class UIFactory
 		content.add(new JLabel(plugin.tr("lbl.workedColor")));
 		content.add(worked);
 		content.add(new JLabel(plugin.tr("lbl.unworkedColor")));
-		content.add(unworked);			
+		content.add(unworked);		
+		
+		// first day of week
+		firstDayOfWeek = new JComboBox(new Object[]{
+				plugin.tr("monday"),
+				plugin.tr("sunday"),
+		});
+		firstDayOfWeek.setSelectedIndex(initalFirstDayOfWeek);
+		content.add(new JLabel(plugin.tr("lbl.firstDayOfWeek")));
+		content.add(firstDayOfWeek);
 		
 		// buttons
 		JButton ok = new JButton(plugin.tr("btn.ok"), Client.getIcon("ok.png"));
@@ -101,6 +112,16 @@ public class UIFactory
 		frame.pack();
 		
 		return frame;
+	}
+	
+	public void setFirstDayOfWeek(int day)
+	{
+		this.initalFirstDayOfWeek = day;
+	}
+	
+	public int getFirstDayOfWeek()
+	{
+		return this.firstDayOfWeek.getSelectedIndex();
 	}
 	
 	public void setWorkedColor(Color color)
