@@ -38,12 +38,7 @@ extends Service
 
   public void init(Server parent)
   {
-	try {
-	  layer = parent.getDBLayer();
-	  connex = layer.openConnection();
-	} catch(SQLException se) {
-		Logging.getLogger().warning("Unable to open connection");
-	}
+	  layer = parent.getDBLayer();	  
   }
 
   public void install()
@@ -114,6 +109,9 @@ extends Service
     if(note.getEditionDate() != null)
       editionDate = note.getEditionDate().getTime();
 
+  	connex = layer.openConnection();
+
+    
     //new note, fetch a new id
     if(note.getId() == null)
     {
@@ -151,12 +149,17 @@ extends Service
 	insert.execute();
 	insert.close();    
     
+
+	connex.close();
+	
     return note;
   }
 
   private void deleteNote(String noteId)
     throws Exception
   {
+ 	connex = layer.openConnection();
+
 	PreparedStatement delete = connex.prepareStatement("DELETE FROM notes WHERE id=?");
 	delete.setString(1, noteId);
 	delete.execute();
@@ -166,11 +169,15 @@ extends Service
 	delete.setString(1, noteId);
 	delete.execute();
 	delete.close();
+	
+	connex.close();
   }
 
   private Object[] getPersonnalNotes(String author)
     throws Exception
   {
+ 	connex = layer.openConnection();
+
   	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
 		"SELECT * FROM notes WHERE author=? ORDER BY author");
@@ -194,6 +201,7 @@ extends Service
 
 	rs.close();
 	select.close();
+	connex.close();
 	
     return result.toArray();
   }
@@ -201,6 +209,8 @@ extends Service
   private Object[] getPublishedAuthors()
     throws Exception
   {
+ 	connex = layer.openConnection();
+
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
 		"SELECT distinct author FROM notes WHERE isPublic=1");
@@ -214,6 +224,7 @@ extends Service
 
 	rs.close();
 	select.close();
+	connex.close();
 	
 	return result.toArray();
   }
@@ -221,6 +232,8 @@ extends Service
   private Object[] getRecentPublishedNotes(Integer max)
     throws Exception
   {
+ 	connex = layer.openConnection();
+
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
 		"SELECT * FROM notes WHERE isPublic=1 ORDER BY creationDate");
@@ -244,6 +257,7 @@ extends Service
 
 	rs.close();
 	select.close();
+	connex.close();
 	
 	return result.toArray();
   }
@@ -251,6 +265,8 @@ extends Service
   private Object[] getPublishedNotesByAuthor(String author)
     throws Exception
   {
+ 	connex = layer.openConnection();
+
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
 		"SELECT * FROM notes WHERE author=? AND isPublic=1 ORDER BY creationDate");
@@ -274,6 +290,7 @@ extends Service
 
 	rs.close();
 	select.close();
+	connex.close();
 	
 	return result.toArray();
   }
@@ -284,6 +301,8 @@ extends Service
   private synchronized void saveComment(Comment comment)
     throws Exception
   {
+ 	connex = layer.openConnection();
+
 	//fetch a new id
     try {
 	  PreparedStatement select = connex.prepareStatement(
@@ -309,11 +328,15 @@ extends Service
 	insert.setLong(6, comment.getCreationDate().getTime());
 	insert.execute();
 	insert.close();  	
+	
+	connex.close();
   }
 
   private Object[] getCommentsForNote(String idNote)
     throws Exception
   {
+ 	connex = layer.openConnection();
+
 	ArrayList result = new ArrayList();
 	PreparedStatement select = connex.prepareStatement(
 		"SELECT * FROM notes_comments WHERE idnote=? ORDER BY creationDate");
@@ -335,6 +358,7 @@ extends Service
 
 	rs.close();
 	select.close();
+	connex.close();
 	
 	return result.toArray();
   }
