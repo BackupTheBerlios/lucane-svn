@@ -35,26 +35,7 @@ public class SqlPluginStore extends PluginStore
 	throws Exception
 	{
 		this.layer = Server.getInstance().getDBLayer();
-		
-		if(!layer.hasTable(TABLENAME))
-			createTable();
 	}
-		
-	private void createTable()
-	throws SQLException
-	{
-		String query = "CREATE TABLE " + TABLENAME + "("
-			+ "name " + layer.resolveType("SMALLTEXT") + ", "
-			+ "version " + layer.resolveType("SMALLTEXT") + ", "
-			+ "description " + layer.resolveType("TEXT") + ")";
-			
-		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		s.execute(query);
-		s.close();
-		c.close();
-	}
-	
 	
 	//-- interface
 	public void storePlugin(PluginConcept plugin)

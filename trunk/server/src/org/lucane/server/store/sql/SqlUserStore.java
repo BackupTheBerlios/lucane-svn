@@ -35,28 +35,6 @@ public class SqlUserStore extends UserStore
 	throws Exception
 	{
 		this.layer = Server.getInstance().getDBLayer();
-		
-		if(!layer.hasTable(TABLENAME))
-			createTable();
-	}
-		
-	private void createTable()
-	throws SQLException
-	{
-		String query = "CREATE TABLE " + TABLENAME + "("
-			+ "login " + layer.resolveType("SMALLTEXT") + ", "
-			+ "passwd " + layer.resolveType("SMALLTEXT") + ", "
-			+ "locked " + layer.resolveType("SMALLINT") + ", "
-			+ "startup " + layer.resolveType("TEXT") + ", "
-			+ "pubkey " + layer.resolveType("TEXT") + ", "
-			+ "privkey " + layer.resolveType("TEXT") + ", "
-			+ "description " + layer.resolveType("TEXT") + ")";
-			
-		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		s.execute(query);
-		s.close();
-		c.close();
 	}
 	
 	//-- interface	

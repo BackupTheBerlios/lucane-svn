@@ -44,43 +44,15 @@ public class SqlGroupStore extends GroupStore
         this.store = store;
         
         if(!layer.hasTable(TABLENAME))
-            createTables();
-    }
-        
-    private void createTables()
-    throws SQLException
-    {
-        Connection c = layer.openConnection();
-        Statement s = c.createStatement();
-        String query;
+        {
+        	//TODO !! make version as a constant !!
+        	String dbDescription = "jar:file:///"
+        			+ System.getProperty("user.dir").replace('\\', '/')
+					+ "/lib/lucane-server-0.6.3.jar!/"
+					+ "db-sqlstore.xml";
 
-        query = "CREATE TABLE " + TABLENAME + "("
-            + "name " + layer.resolveType("SMALLTEXT") + ", "
-            + "description " + layer.resolveType("TEXT") + ")";            
-        s.execute(query);
-
-        query = "CREATE TABLE " + GROUPLINKS + "("
-            + "parent " + layer.resolveType("SMALLTEXT") + ", "
-            + "child " + layer.resolveType("SMALLTEXT") + ")";            
-        s.execute(query);        
-        
-        query = "CREATE TABLE " + USERLINKS + "("
-            + "groupName " + layer.resolveType("SMALLTEXT") + ", "
-            + "userName " + layer.resolveType("SMALLTEXT") + ")";            
-        s.execute(query);        
-        
-        query = "CREATE TABLE " + SERVICELINKS + "("
-            + "groupName " + layer.resolveType("SMALLTEXT") + ", "
-            + "service " + layer.resolveType("SMALLTEXT") + ")";            
-        s.execute(query);        
-        
-        query = "CREATE TABLE " +PLUGINLINKS + "("
-            + "groupName " + layer.resolveType("SMALLTEXT") + ", "
-            + "plugin " + layer.resolveType("SMALLTEXT") + ")";            
-        s.execute(query);                
-        
-        s.close();
-        c.close();
+        	layer.createFromXml(dbDescription);
+        }
     }
     
     //-- interface

@@ -35,24 +35,6 @@ public class SqlServiceStore extends ServiceStore
 	throws Exception
 	{
 		this.layer = Server.getInstance().getDBLayer();
-		
-		if(!layer.hasTable(TABLENAME))
-			createTable();
-	}
-		
-	private void createTable()
-	throws SQLException
-	{
-		String query = "CREATE TABLE " + TABLENAME + "("
-			+ "name " + layer.resolveType("SMALLTEXT") + ", "
-			+ "installed " + layer.resolveType("SMALLINT") + ", "
-			+ "description " + layer.resolveType("TEXT") + ")";
-			
-		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		s.execute(query);
-		s.close();
-		c.close();
 	}
 	
 	//-- interface

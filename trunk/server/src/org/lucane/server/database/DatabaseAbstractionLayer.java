@@ -18,9 +18,14 @@
  */
 package org.lucane.server.database;
 
+import org.lucane.common.Logging;
 import org.lucane.server.ServerConfig;
+import org.w3c.dom.*;
+
 import java.lang.reflect.*;
 import java.sql.*;
+
+import javax.xml.parsers.*;
 
 /**
  * Database abstraction layer.
@@ -98,6 +103,81 @@ public abstract class DatabaseAbstractionLayer
   public String escape(String query)
   {
   	return query.replaceAll("'", "\\'");
+  }
+  
+  /**
+   * Create tables from a xml file describing a database subset
+   * 
+   * @param xmlfile the path to the xml description
+   */
+  public void createFromXml(String xmlfile)
+  throws Exception
+  {
+  	 DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+  	 Document document = builder.parse(xmlfile);
+  	
+  	 //-- root element
+  	 Node node = document.getFirstChild();                                                                               
+  	 while(node != null && node.getNodeType() != Node.ELEMENT_NODE)
+  		node = node.getNextSibling();
+  	
+  	 if(node == null || !node.getNodeName().equals("database"))
+  		throw new Exception("root element is different from 'database'");
+  	 
+  	 
+  	 //-- tables
+  	 Connection c = openConnection();
+  	 node = node.getFirstChild();
+  	 while(node != null)
+  	 {	
+  	 	if(node.getNodeName().equals("table"))
+  	 		createTableFromNode(c, node);
+  	 	
+  	 	node = node.getNextSibling();
+  	 }
+  	 c.close();
+  	 
+  	 Logging.getLogger().info("Created tables from '" +xmlfile + "'.");  	 
+  }
+  
+  /**
+   * Create a table from a xml node
+   * 
+   * @param c an already opened connection
+   * @param node the node describing the table
+   */
+  private void createTableFromNode(Connection c, Node node)
+  throws SQLException
+  {
+  	StringBuffer query =new StringBuffer("CREATE TABLE ");
+  	String tableName = node.getAttributes().getNamedItem("name").getNodeValue();
+    query.append(tableName);
+    query.append("(");
+    
+    //-- columns
+    node = node.getFirstChild();
+    while(node != null)
+    {
+    	if(node.getNodeName().equals("column"))
+    	{
+    		String columnName = node.getAttributes().getNamedItem("name").getNodeValue();
+    		String columnType = node.getAttributes().getNamedItem("type").getNodeValue();
+    		query.append(columnName);
+    		query.append(" ");
+    		query.append(resolveType(columnType));
+    		query.append(", ");
+    	}
+    	node = node.getNextSibling();
+    }
+    query.delete(query.length()-2, query.length());
+    query.append(")");
+    
+    //-- execution
+    Statement s = c.createStatement();
+    s.execute(query.toString());
+    s.close();
+    
+    Logging.getLogger().fine("Created table " +tableName + " from xml.");
   }
 
   /**
