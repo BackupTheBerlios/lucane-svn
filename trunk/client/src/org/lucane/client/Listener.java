@@ -50,6 +50,9 @@ class Listener
     this.parent = Client.getInstance();
 
     port = parent.getConfig().getListenerPort();
+    if(port == 0)
+    	port = rnd.nextInt(62000) + 1025;
+    
     while(! ok)
     {
       try

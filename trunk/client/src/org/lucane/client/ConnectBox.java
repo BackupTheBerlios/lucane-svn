@@ -195,6 +195,17 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
         {                
         	Client parent = Client.getInstance();
             Listener lstnr = parent.createNewListener();
+            
+            int configPort = parent.getConfig().getListenerPort();
+            int realPort = lstnr.getPort();
+            if(configPort != 0 &&  realPort != configPort)
+            {
+            	boolean start = DialogBox.question("Lucane Groupware", 
+            			Translation.tr("question.startWithOtherPort"));
+            	if(!start)
+            		Client.getInstance().cleanExit();            		
+            }
+            
             parent.setMyInfos(tbName.getText(), serverName, lstnr.getPort());
             parent.createNewCommunicator(serverName);
             msg = resquestForConnection();
