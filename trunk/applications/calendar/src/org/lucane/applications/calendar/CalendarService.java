@@ -56,13 +56,7 @@ extends Service
 		try {
 			String dbDescription = getDirectory()	+ "db-calendar.xml";
 			layer.getTableCreator().createFromXml(dbDescription);
-			
-			String query = "insert into CalEventTypes values ('default', 170, 140, 220)";
-			Connection c = layer.openConnection();
-			Statement st = c.createStatement();
-			st.execute(query);
-			st.close();
-			c.close();
+			this.addType("default", 170, 140, 220);
 		} catch (Exception e) {
 			Logging.getLogger().severe("Unable to install CalendarService !");
 			e.printStackTrace();
@@ -147,13 +141,15 @@ extends Service
 		int id = 0;
 
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		ResultSet r = s.executeQuery("SELECT max(id)+1 FROM CalEvents");
+		PreparedStatement select = c.prepareStatement(
+			"SELECT max(id)+1 FROM CalEvents");
+				
+		ResultSet r = select.executeQuery();
 		if(r.next())
 			id = r.getInt(1);	
 
 		r.close();
-		s.close();
+		select.close();
 		c.close();
 
 		return id;
@@ -163,31 +159,32 @@ extends Service
 	throws Exception
 	{
 		Logging.getLogger().fine("Storing event : " + event.getTitle());
-		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
 		
 		if(event.getId() < 0)
 			event.setId(getNextId());
 		else
 			removeEvent(event);
-			
-		
-		String query = "INSERT INTO CalEvents VALUES("
-			+ "'" + event.getId() +  "', "
-			+ "'" + event.getTitle() +  "', "
-			+ "'" + event.getType() +  "', "
-			+ "'" + event.getOrganizer() +  "', "
-			+ "'" + (event.isPublic() ? 1 : 0) +  "', "
-			+ "'" + event.getStartTime() +  "', "
-			+ "'" + event.getEndTime() +  "', "
-			+ "'" + event.getRecurrence() +  "', "
-			+ "'" + event.getDescription() +  "')";
-		s.execute(query);		
 
+		Connection c = layer.openConnection();			
+		PreparedStatement insert = c.prepareStatement(
+			"INSERT INTO CalEvents VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+		
+		insert.setInt(1, event.getId());
+		insert.setString(2, event.getTitle());
+		insert.setString(3, event.getType());
+		insert.setString(4, event.getOrganizer());
+		insert.setInt(5, event.isPublic() ? 1 : 0);
+		insert.setLong(6, event.getStartTime());
+		insert.setLong(7, event.getEndTime());
+		insert.setInt(8, event.getRecurrence());
+		insert.setString(9, event.getDescription());
+
+		insert.execute();
+		insert.close();
+		
 		storeAttendees(event);
 		storeResources(event);
 
-		s.close();
 		c.close();
 	}	
 
@@ -195,22 +192,21 @@ extends Service
 	throws Exception
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		String query;
+		PreparedStatement insert = c.prepareStatement(
+			"INSERT INTO CalAttendees VALUES(?, ?, ?, ?)");
 
 		Iterator attendees = event.getAttendees();
 		while(attendees.hasNext())
 		{
 			Attendee attendee = (Attendee)attendees.next();
-			query = "INSERT INTO CalAttendees VALUES("
-				+ "'" + event.getId() + "', "
-				+ "'" + attendee.getUser() + "', "
-				+ "'" + (attendee.isMandatory() ? 1 : 0) + "', "
-				+ "'" + attendee.getStatus() + "')";
-			s.execute(query);
+			insert.setInt(1, event.getId());
+			insert.setString(2, attendee.getUser());
+			insert.setInt(3, attendee.isMandatory() ? 1 : 0);
+			insert.setInt(4, attendee.getStatus());
+			insert.execute();
 		}
 
-		s.close();
+		insert.close();
 		c.close();
 	}
 	
@@ -218,20 +214,19 @@ extends Service
 	throws Exception
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		String query;
+		PreparedStatement insert = c.prepareStatement(
+			"INSERT INTO CalResources VALUES(?, ?)");
 
 		Iterator resources = event.getResources();
 		while(resources.hasNext())
 		{
 			String resource = (String)resources.next();
-			query = "INSERT INTO CalResources VALUES("
-				+ "'" + event.getId() + "', "
-				+ "'" + resource + "')";
-			s.execute(query);
+			insert.setInt(1, event.getId());
+			insert.setString(2, resource);
+			insert.execute();			
 		}
 
-		s.close();
+		insert.close();
 		c.close();
 	}
 
@@ -245,16 +240,23 @@ extends Service
 
 		Logging.getLogger().fine("Removing event : " + event.getTitle());
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
+		PreparedStatement delete;
+		
+		delete = c.prepareStatement("DELETE FROM CalEvents WHERE id=?");
+		delete.setInt(1, event.getId());
+		delete.execute();
+		delete.close();
 					
-		String query = "DELETE FROM CalEvents WHERE id='" + event.getId() + "'";
-		s.execute(query);		
-		query = "DELETE FROM CalAttendees WHERE eventId='" + event.getId() + "'";
-		s.execute(query);		
-		query = "DELETE FROM CalResources WHERE eventId='" + event.getId() + "'";
-		s.execute(query);		
+		delete = c.prepareStatement("DELETE FROM CalAttendees WHERE eventId=?");
+		delete.setInt(1, event.getId());
+		delete.execute();
+		delete.close();
 
-		s.close();
+		delete = c.prepareStatement("DELETE FROM CalResources WHERE eventId=?");
+		delete.setInt(1, event.getId());
+		delete.execute();
+		delete.close();
+
 		c.close();
 	}
 	
@@ -263,32 +265,44 @@ extends Service
 	private ArrayList getEventsForUser(String user, boolean showAll, long start, long end)
 	throws Exception
 	{
-		ArrayList events = new ArrayList();
-		
+		ArrayList events = new ArrayList();				
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-					
-		String query = "SELECT * FROM CalEvents WHERE "
-			+"organizer = '" + user + "' AND "
-			+ "startTime >= " + start + " AND endTime <= " + end;		
-		addEventsFromQuery(s, query, events, showAll);
 		
-		query = "SELECT e.* FROM CalEvents e, CalAttendees a WHERE "
-			+ "e.id = a.eventId AND "
-			+ "a.userName = '" + user + "' AND "
-			+ "e.startTime >= " + start + " AND e.endTime <= " + end;		
-		addEventsFromQuery(s, query, events, showAll);
+		//events where the user is organizer
+		PreparedStatement select = c.prepareStatement(
+			"SELECT * FROM CalEvents WHERE " +
+			"organizer = ? AND startTime >= ? AND endTime <= ?");
 		
-		s.close();
+		select.setString(1, user);
+		select.setLong(2, start);
+		select.setLong(3, end);
+		ResultSet rs = select.executeQuery();
+		addEventsFromQuery(rs, events, showAll);
+		rs.close();
+		select.close();
+	
+		//events where the user is an attendee
+		select = c.prepareStatement(
+			"SELECT * FROM CalEvents e, CalAttendees a WHERE " +
+			"e.id = a.eventId AND " +
+			"a.userName = ? AND e.startTime >= ? AND e.endTime <= ?");
+		
+		select.setString(1, user);
+		select.setLong(2, start);
+		select.setLong(3, end);
+		rs = select.executeQuery();
+		addEventsFromQuery(rs, events, showAll);
+		rs.close();
+		select.close();
+		
 		c.close();
 
 		return events;
 	}
 	
-	private void addEventsFromQuery(Statement s, String query, ArrayList events, boolean showAll)
+	private void addEventsFromQuery(ResultSet r, ArrayList events, boolean showAll)
 	throws Exception
 	{
-		ResultSet r = s.executeQuery(query);
 		while(r.next())
 		{
 			int id = r.getInt(1);
@@ -324,13 +338,13 @@ extends Service
 		ArrayList events = new ArrayList();
 		
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
+		PreparedStatement select = c.prepareStatement(
+			"SELECT e.* FROM CalEvents e, CalResources r WHERE " +
+			"e.id = r.eventId AND r.object = ?");
 					
-		String query = "SELECT e.* FROM CalEvents e, CalResources r WHERE "
-			+ "e.id = r.eventId AND "
-			+ "r.object = '" + object + "'";
+		select.setString(1, object);
 
-		ResultSet r = s.executeQuery(query);
+		ResultSet r = select.executeQuery();
 		while(r.next())
 		{
 			int id = r.getInt(1);
@@ -359,7 +373,7 @@ extends Service
 			}
 		}
 		
-		s.close();
+		select.close();
 		c.close();
 		
 		return events;
@@ -371,18 +385,17 @@ extends Service
 		ArrayList resources = new ArrayList();
 		
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-					
-		String query = "SELECT * FROM CalObjects";
+		PreparedStatement select = c.prepareStatement(
+			"SELECT * FROM CalObjects");				
 
-		ResultSet r = s.executeQuery(query);
+		ResultSet r = select.executeQuery();
 		while(r.next())
 		{
 			String object = r.getString(1);
 			resources.add(object);
 		}
 		
-		s.close();
+		select.close();
 		c.close();
 		
 		return resources;
@@ -403,12 +416,12 @@ extends Service
 	throws Exception
 	{
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
+		PreparedStatement select = c.prepareStatement(
+			"SELECT * FROM CalEventTypes WHERE type = ?");
 					
-		String query = "SELECT * FROM CalEventTypes WHERE type = '"
-			+ event.getType() + "'";		
-
-		ResultSet r = s.executeQuery(query);
+		select.setString(1, event.getType());
+	
+		ResultSet r = select.executeQuery();
 		if(r.next())
 		{
 			int red = r.getInt(2);
@@ -421,7 +434,7 @@ extends Service
 		}
 		
 		r.close();
-		s.close();
+		select.close();
 		c.close();
 	}
 	
@@ -430,16 +443,15 @@ extends Service
 	{
 		ArrayList types = new ArrayList();
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-		
-		String query = "SELECT * FROM CalEventTypes;";		
+		PreparedStatement select = c.prepareStatement(
+			"SELECT * FROM CalEventTypes");
 
-		ResultSet r = s.executeQuery(query);
+		ResultSet r = select.executeQuery();
 		while(r.next())
 			types.add(r.getString(1));
 		
 		r.close();
-		s.close();
+		select.close();
 		c.close();
 		
 		return types;
@@ -450,12 +462,12 @@ extends Service
 	{
 		ArrayList attendees = new ArrayList();
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
+		PreparedStatement select = c.prepareStatement(
+			"SELECT * FROM CalAttendees WHERE eventId = ?");
 					
-		String query = "SELECT * FROM CalAttendees WHERE eventId = "
-			+ event.getId();		
+		select.setInt(1, event.getId());
 
-		ResultSet r = s.executeQuery(query);
+		ResultSet r = select.executeQuery();
 		while(r.next())
 		{
 			String user = r.getString(2);
@@ -469,7 +481,7 @@ extends Service
 		event.setAttendees(attendees);
 		
 		r.close();
-		s.close();
+		select.close();
 		c.close();
 	}
 	
@@ -478,12 +490,12 @@ extends Service
 	{
 		ArrayList resources = new ArrayList();
 		Connection c = layer.openConnection();
-		Statement s = c.createStatement();
-					
-		String query = "SELECT * FROM CalResources WHERE eventId = "
-			+ event.getId();		
+		PreparedStatement select = c.prepareStatement(
+			"SELECT * FROM CalResources WHERE eventId = ?");
 
-		ResultSet r = s.executeQuery(query);
+		select.setInt(1, event.getId());		
+
+		ResultSet r = select.executeQuery();
 		while(r.next())
 		{
 			String object = r.getString(2);
@@ -493,8 +505,24 @@ extends Service
 		event.setResources(resources);
 		
 		r.close();
-		s.close();
+		select.close();
+		c.close();
+	}
+	
+	private void addType(String name, int red, int green, int blue)
+	throws Exception
+	{
+		Connection c = layer.openConnection();
+		PreparedStatement insert = c.prepareStatement(
+			"INSERT INTO CalEventTypes VALUES(?, ?, ?, ?)");
+			
+		insert.setString(1, name);
+		insert.setInt(2, red);
+		insert.setInt(3, green);
+		insert.setInt(4, blue);
+		
+		insert.execute();
+		insert.close();
 		c.close();
 	}
 }
-
