@@ -46,7 +46,7 @@ public class Client
 	private static final String CONFIG_FILE = "etc/client-config.xml";
 	private static final String LOG_FILE = "logs/lucane.log";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
-	public static final String VERSION = "0.7.1-beta";
+	public static final String VERSION = "0.7.1";
 	
 	private ConnectInfo myinfos;    //can be masked by the proxy
 	private ConnectInfo realinfos;  //has the real infos

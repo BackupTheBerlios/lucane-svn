@@ -41,7 +41,7 @@ public class Server
 	private static final String CONFIG_FILE = "etc/server-config.xml";
 	private static final String LOG_FILE = "logs/lucane.log";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
-	public static final String VERSION = "0.7.1-beta";
+	public static final String VERSION = "0.7.1";
 	
 	//-- instance management
 	private static Server instance = null;

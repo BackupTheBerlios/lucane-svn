@@ -150,7 +150,7 @@ public class Store
         getUserStore().storeUser(granted);
         
         //administrator application
-        PluginConcept administratorPlugin = new PluginConcept("org.lucane.applications.administrator", "0.7.1-beta");
+        PluginConcept administratorPlugin = new PluginConcept("org.lucane.applications.administrator", "0.7.1");
         ServiceConcept administratorService = new ServiceConcept("org.lucane.applications.administrator", false);
         admins.addPlugin(administratorPlugin);
         admins.addService(administratorService);
@@ -158,7 +158,7 @@ public class Store
         getServiceStore().storeService(administratorService);
         
 		//shutdown application
-		 PluginConcept shutdownPlugin = new PluginConcept("org.lucane.applications.shutdown", "0.7.1-beta");
+		 PluginConcept shutdownPlugin = new PluginConcept("org.lucane.applications.shutdown", "0.7.1");
 		 ServiceConcept shutdownService = new ServiceConcept("org.lucane.applications.shutdown", false);
 		 admins.addPlugin(shutdownPlugin);
 		 admins.addService(shutdownService);
@@ -169,7 +169,7 @@ public class Store
 
 
         //filemanager application
-        PluginConcept filemanagerPlugin = new PluginConcept("org.lucane.applications.filemanager", "0.7.1-beta");
+        PluginConcept filemanagerPlugin = new PluginConcept("org.lucane.applications.filemanager", "0.7.1");
         ServiceConcept filemanagerService = new ServiceConcept("org.lucane.applications.filemanager", false);
         grantedUsers.addPlugin(filemanagerPlugin);
         allUsers.addService(filemanagerService);
@@ -177,7 +177,7 @@ public class Store
         getServiceStore().storeService(filemanagerService);
           
         //forum application
-        PluginConcept forumPlugin = new PluginConcept("org.lucane.applications.forum", "0.7.1-beta");
+        PluginConcept forumPlugin = new PluginConcept("org.lucane.applications.forum", "0.7.1");
         ServiceConcept forumService = new ServiceConcept("org.lucane.applications.forum", false);
         allUsers.addPlugin(forumPlugin);
         allUsers.addService(forumService);
@@ -185,7 +185,7 @@ public class Store
         getServiceStore().storeService(forumService);
         
         //forumadmin application
-        PluginConcept forumadminPlugin = new PluginConcept("org.lucane.applications.forumadmin", "0.7.1-beta");
+        PluginConcept forumadminPlugin = new PluginConcept("org.lucane.applications.forumadmin", "0.7.1");
         ServiceConcept forumadminService = new ServiceConcept("org.lucane.applications.forumadmin", false);
         admins.addPlugin(forumadminPlugin);
         admins.addService(forumadminService);
@@ -193,12 +193,12 @@ public class Store
         getServiceStore().storeService(forumadminService);
         
         //helpbrowser application
-        PluginConcept helpbrowserPlugin = new PluginConcept("org.lucane.applications.helpbrowser", "0.7.1-beta");
+        PluginConcept helpbrowserPlugin = new PluginConcept("org.lucane.applications.helpbrowser", "0.7.1");
         allUsers.addPlugin(helpbrowserPlugin);
         getPluginStore().storePlugin(helpbrowserPlugin);
                 
         //maininterface application
-        PluginConcept maininterfacePlugin = new PluginConcept("org.lucane.applications.maininterface", "0.7.1-beta");
+        PluginConcept maininterfacePlugin = new PluginConcept("org.lucane.applications.maininterface", "0.7.1");
         ServiceConcept maininterfaceService = new ServiceConcept("org.lucane.applications.maininterface", false);
         allUsers.addPlugin(maininterfacePlugin);
         allUsers.addService(maininterfaceService);
@@ -208,13 +208,13 @@ public class Store
         getServiceStore().storeService(maininterfaceService);
         
 		//quicklaunch application
-		PluginConcept quicklaunchPlugin = new PluginConcept("org.lucane.applications.quicklaunch", "0.7.1-beta");
+		PluginConcept quicklaunchPlugin = new PluginConcept("org.lucane.applications.quicklaunch", "0.7.1");
 		allUsers.addPlugin(quicklaunchPlugin);
 		admins.addPlugin(quicklaunchPlugin);		
 		getPluginStore().storePlugin(quicklaunchPlugin);
         
         //notes application
-        PluginConcept notesPlugin = new PluginConcept("org.lucane.applications.notes", "0.7.1-beta");
+        PluginConcept notesPlugin = new PluginConcept("org.lucane.applications.notes", "0.7.1");
         ServiceConcept notesService = new ServiceConcept("org.lucane.applications.notes", false);
         allUsers.addPlugin(notesPlugin);
         allUsers.addService(notesService);
@@ -222,7 +222,7 @@ public class Store
         getServiceStore().storeService(notesService);
                 
         //passwdchanger application
-        PluginConcept passwdchangerPlugin = new PluginConcept("org.lucane.applications.passwdchanger", "0.7.1-beta");
+        PluginConcept passwdchangerPlugin = new PluginConcept("org.lucane.applications.passwdchanger", "0.7.1");
         ServiceConcept passwdchangerService = new ServiceConcept("org.lucane.applications.passwdchanger", false);
         grantedUsers.addPlugin(passwdchangerPlugin);
 		grantedUsers.addService(passwdchangerService);
@@ -232,33 +232,33 @@ public class Store
         getServiceStore().storeService(passwdchangerService);
 
         //pluginsinfos application
-        PluginConcept pluginsinfosPlugin = new PluginConcept("org.lucane.applications.pluginsinfos", "0.7.1-beta");
+        PluginConcept pluginsinfosPlugin = new PluginConcept("org.lucane.applications.pluginsinfos", "0.7.1");
         allUsers.addPlugin(pluginsinfosPlugin);
         getPluginStore().storePlugin(pluginsinfosPlugin);
        
         //quickmessage application
-        PluginConcept quickmessagePlugin = new PluginConcept("org.lucane.applications.quickmessage", "0.7.1-beta");
+        PluginConcept quickmessagePlugin = new PluginConcept("org.lucane.applications.quickmessage", "0.7.1");
 		allUsers.addPlugin(quickmessagePlugin);
 		admins.addPlugin(quickmessagePlugin);
         getPluginStore().storePlugin(quickmessagePlugin);
               
         //reunion application
-        PluginConcept reunionPlugin = new PluginConcept("org.lucane.applications.reunion", "0.7.1-beta");
+        PluginConcept reunionPlugin = new PluginConcept("org.lucane.applications.reunion", "0.7.1");
         allUsers.addPlugin(reunionPlugin);
         getPluginStore().storePlugin(reunionPlugin);
         
         //sendfile application
-        PluginConcept sendfilePlugin = new PluginConcept("org.lucane.applications.sendfile", "0.7.1-beta");
+        PluginConcept sendfilePlugin = new PluginConcept("org.lucane.applications.sendfile", "0.7.1");
         allUsers.addPlugin(sendfilePlugin);
         getPluginStore().storePlugin(sendfilePlugin);
 
 		//audioconf application
-		PluginConcept audioconfPlugin = new PluginConcept("org.lucane.applications.audioconf", "0.7.1-beta");
+		PluginConcept audioconfPlugin = new PluginConcept("org.lucane.applications.audioconf", "0.7.1");
 		allUsers.addPlugin(audioconfPlugin);
 		getPluginStore().storePlugin(audioconfPlugin);
 
 		//kick application
-		PluginConcept kickPlugin = new PluginConcept("org.lucane.applications.kick", "0.7.1-beta");
+		PluginConcept kickPlugin = new PluginConcept("org.lucane.applications.kick", "0.7.1");
 		admins.addPlugin(kickPlugin);
 		getPluginStore().storePlugin(kickPlugin);
                 
@@ -268,7 +268,7 @@ public class Store
         getServiceStore().storeService(sendmailService);
 
 		//sqlnavigator application
-		PluginConcept sqlnavigatorPlugin = new PluginConcept("org.lucane.applications.sqlnavigator", "0.7.1-beta");
+		PluginConcept sqlnavigatorPlugin = new PluginConcept("org.lucane.applications.sqlnavigator", "0.7.1");
 		ServiceConcept sqlnavigatorService = new ServiceConcept("org.lucane.applications.sqlnavigator", false);
 		admins.addPlugin(sqlnavigatorPlugin);
 		admins.addService(sqlnavigatorService);
@@ -276,7 +276,7 @@ public class Store
 		getServiceStore().storeService(sqlnavigatorService);
 
 		//calendar application
-		PluginConcept calendarPlugin = new PluginConcept("org.lucane.applications.calendar", "0.7.1-beta");
+		PluginConcept calendarPlugin = new PluginConcept("org.lucane.applications.calendar", "0.7.1");
 		ServiceConcept calendarService = new ServiceConcept("org.lucane.applications.calendar", false);
 		allUsers.addPlugin(calendarPlugin);
 		allUsers.addService(calendarService);
@@ -284,12 +284,12 @@ public class Store
 		getServiceStore().storeService(calendarService);
 		
 		//calendarprefs application
-		PluginConcept calendarprefsPlugin = new PluginConcept("org.lucane.applications.calendarprefs", "0.7.1-beta");
+		PluginConcept calendarprefsPlugin = new PluginConcept("org.lucane.applications.calendarprefs", "0.7.1");
 		allUsers.addPlugin(calendarprefsPlugin);
 		getPluginStore().storePlugin(calendarprefsPlugin);
 
 		//reminder application
-		PluginConcept reminderPlugin = new PluginConcept("org.lucane.applications.reminder", "0.7.1-beta");
+		PluginConcept reminderPlugin = new PluginConcept("org.lucane.applications.reminder", "0.7.1");
 		ServiceConcept reminderService = new ServiceConcept("org.lucane.applications.reminder", false);
 		allUsers.addPlugin(reminderPlugin);
 		allUsers.addService(reminderService);
@@ -297,7 +297,7 @@ public class Store
 		getServiceStore().storeService(reminderService);
 		
 		//jmail
-		PluginConcept jmailPlugin = new PluginConcept("org.lucane.applications.jmail", "0.7.1-beta");
+		PluginConcept jmailPlugin = new PluginConcept("org.lucane.applications.jmail", "0.7.1");
 		ServiceConcept jmailService = new ServiceConcept("org.lucane.applications.jmail", false);
 		allUsers.addPlugin(jmailPlugin);
 		allUsers.addService(jmailService);
@@ -305,7 +305,7 @@ public class Store
 		getServiceStore().storeService(jmailService);
 
 		//jmail account
-		PluginConcept jmailaccountPlugin = new PluginConcept("org.lucane.applications.jmailaccount", "0.7.1-beta");
+		PluginConcept jmailaccountPlugin = new PluginConcept("org.lucane.applications.jmailaccount", "0.7.1");
 		ServiceConcept jmailaccountService = new ServiceConcept("org.lucane.applications.jmailaccount", false);
 		allUsers.addPlugin(jmailaccountPlugin);
 		allUsers.addService(jmailaccountService);
@@ -313,7 +313,7 @@ public class Store
 		getServiceStore().storeService(jmailaccountService);
 
 		//jmail admin
-		PluginConcept jmailadminPlugin = new PluginConcept("org.lucane.applications.jmailadmin", "0.7.1-beta");
+		PluginConcept jmailadminPlugin = new PluginConcept("org.lucane.applications.jmailadmin", "0.7.1");
 		ServiceConcept jmailadminService = new ServiceConcept("org.lucane.applications.jmailadmin", false);
 		admins.addPlugin(jmailadminPlugin);
 		admins.addService(jmailadminService);
@@ -321,7 +321,7 @@ public class Store
 		getServiceStore().storeService(jmailadminService);
 		
         //todolist application
-        PluginConcept todolistPlugin = new PluginConcept("org.lucane.applications.todolist", "0.7.1-beta");
+        PluginConcept todolistPlugin = new PluginConcept("org.lucane.applications.todolist", "0.7.1");
         ServiceConcept todolistService = new ServiceConcept("org.lucane.applications.todolist", false);
         allUsers.addPlugin(todolistPlugin);
         allUsers.addService(todolistService);
@@ -329,7 +329,7 @@ public class Store
         getServiceStore().storeService(todolistService);
         
         //rssreader application
-        PluginConcept rssreaderPlugin = new PluginConcept("org.lucane.applications.rssreader", "0.7.1-beta");
+        PluginConcept rssreaderPlugin = new PluginConcept("org.lucane.applications.rssreader", "0.7.1");
         ServiceConcept rssreaderService = new ServiceConcept("org.lucane.applications.rssreader", false);
         allUsers.addPlugin(rssreaderPlugin);
         allUsers.addService(rssreaderService);
