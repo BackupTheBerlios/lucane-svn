@@ -19,6 +19,8 @@
 package org.lucane.applications.administrator.gui;
 
 import java.awt.*;
+import java.util.Iterator;
+
 import javax.swing.*;
 
 import org.lucane.applications.administrator.AdministratorPlugin;
@@ -33,9 +35,10 @@ public class ApplicationPanel extends JPanel
 		JPanel content = new JPanel(new GridLayout(0, 2));
 		PluginLoader ploader = PluginLoader.getInstance();
 	
-		for(int i=0; i<ploader.getNumberOfPlugins(); i++)
+		Iterator plugins = PluginLoader.getInstance().getPluginIterator();
+		while(plugins.hasNext())
 		{
-			Plugin p = ploader.getPluginAt(i);
+			Plugin p = (Plugin)plugins.next();
 			if(p.getCategory().equalsIgnoreCase(plugin.getCategory())
 					&& !p.getTitle().equals(plugin.getTitle()))
 			{
