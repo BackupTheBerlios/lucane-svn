@@ -140,7 +140,7 @@ public class Server
 	 * 
 	 * @param name the user wanted
 	 */
-	public void getConnectInfo(String name, ObjectConnection oc)
+	public void sendConnectInfo(String name, ObjectConnection oc)
 	{
 		ConnectInfo ci = ConnectInfoManager.getInstance().getConnectInfo(name);
 		if(ci != null)
@@ -160,7 +160,7 @@ public class Server
 	/**
 	 * Send the connected users list
 	 */
-	public void getUserList(ObjectConnection oc)
+	public void sendUserList(ObjectConnection oc)
 	{
 		//get into vector
 		Vector v = new Vector();		
@@ -212,7 +212,7 @@ public class Server
 	 * 
 	 * @param data the plugin name
 	 */
-	public void sendPlugin(ObjectConnection oc, String data)
+	public void sendPluginFile(ObjectConnection oc, String data)
 	{
 		DataInputStream dis = null;
 		try
@@ -242,7 +242,7 @@ public class Server
 	 * 
 	 * @param source the user
 	 */
-	public void getStartupPlugin(ObjectConnection oc, String source)
+	public void sendStartupPlugin(ObjectConnection oc, String source)
 	{
 		try
 		{
@@ -257,7 +257,7 @@ public class Server
 	/**
 	 * Send the user list to all users
 	 */
-	public void sendUserList()
+	public void sendUserListToEveryone()
 	{
 		//create user list as string
 		StringBuffer userList = new StringBuffer("USER_LIST");

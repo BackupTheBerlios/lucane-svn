@@ -285,7 +285,7 @@ public class MessageHandler extends Thread
 			catch (Exception e)
 			{
 			}
-			Server.getInstance().getConnectInfo(data, oc);
+			Server.getInstance().sendConnectInfo(data, oc);
 		}
 		else if (command.equals("CONNECT_LIST"))
 		{
@@ -296,7 +296,7 @@ public class MessageHandler extends Thread
 			catch (Exception e)
 			{
 			}
-			Server.getInstance().getUserList(oc);
+			Server.getInstance().sendUserList(oc);
 		}
 		else if (command.equals("PLUGIN_LIST"))
 		{
@@ -318,7 +318,7 @@ public class MessageHandler extends Thread
 			catch (Exception e)
 			{
 			}
-			Server.getInstance().sendPlugin(oc, data);
+			Server.getInstance().sendPluginFile(oc, data);
 		}
 		else if (command.equals("STARTUP_PLUGINS"))
 		{
@@ -329,7 +329,7 @@ public class MessageHandler extends Thread
 			catch (Exception e)
 			{
 			}
-			Server.getInstance().getStartupPlugin(oc, message.getSender().getName());
+			Server.getInstance().sendStartupPlugin(oc, message.getSender().getName());
 		}
 		else
 		{

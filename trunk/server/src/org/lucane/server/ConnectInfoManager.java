@@ -88,7 +88,7 @@ public class ConnectInfoManager
 			}
 		}
 		
-		Server.getInstance().sendUserList();
+		Server.getInstance().sendUserListToEveryone();
 	}
 	
 	public Iterator getAllConnectInfos()

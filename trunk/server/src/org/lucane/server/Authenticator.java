@@ -97,7 +97,7 @@ public class Authenticator
 			}
 			
 			//send the user list to everyone
-			Server.getInstance().sendUserList();
+			Server.getInstance().sendUserListToEveryone();
 		}
 		
 		//wrong password or user
