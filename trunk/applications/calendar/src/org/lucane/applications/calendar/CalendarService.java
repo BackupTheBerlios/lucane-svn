@@ -19,7 +19,6 @@
 
 package org.lucane.applications.calendar;
 
-import java.awt.Color;
 import java.sql.*;
 import java.util.*;
 
@@ -326,7 +325,7 @@ extends Service
 			else 
 			{
 				Event event = new Event(id, "private", "private", "", isPublic, mystart, myend, recurrence, "");
-				event.setColor(Color.GRAY);
+				event.setColor(150, 150, 150);
 				events.add(event);
 			}
 		}		
@@ -368,7 +367,7 @@ extends Service
 			else 
 			{
 				Event event = new Event(id, "private", "private", "", isPublic, mystart, myend, recurrence, "");
-				event.setColor(Color.GRAY);
+				event.setColor(150, 150, 150);
 				events.add(event);
 			}
 		}
@@ -428,9 +427,7 @@ extends Service
 			int green = r.getInt(3);
 			int blue = r.getInt(4);
 			
-			
-			Color color = new Color(red, green, blue);
-			event.setColor(color);
+			event.setColor(red, green, blue);
 		}
 		
 		r.close();

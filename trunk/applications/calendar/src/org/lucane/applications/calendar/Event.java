@@ -36,7 +36,9 @@ public class Event implements Serializable, BasicEvent
 	//-- attributes
 	private int id;
 	private String type;
-	private Color color; 
+	private int colorRed; 
+	private int colorGreen; 
+	private int colorBlue; 
 	private String title;
 	private String organizer;
 	private boolean isPublic;
@@ -65,7 +67,9 @@ public class Event implements Serializable, BasicEvent
 		this.description = description;
 		this.attendees = new ArrayList();
 		this.resources = new ArrayList();
-		this.color = Color.BLUE;
+		this.colorRed = 30;
+		this.colorGreen = 30;
+		this.colorBlue = 200;
 	}
 	
 	//-- setters
@@ -109,7 +113,16 @@ public class Event implements Serializable, BasicEvent
 	
 	public void setColor(Color color)
 	{
-		this.color = color;
+		this.colorRed = color.getRed();
+		this.colorGreen = color.getGreen();
+		this.colorBlue = color.getBlue();
+	}
+	
+	public void setColor(int r, int g, int b)
+	{
+		this.colorRed = r;
+		this.colorGreen = g;
+		this.colorBlue = b;
 	}
 	
 	//-- getters
@@ -206,7 +219,7 @@ public class Event implements Serializable, BasicEvent
 	
 	public Color getColor() 
 	{
-		return this.color;
+		return new Color(colorRed, colorGreen, colorBlue);
 	}
 	
 	public String toString()

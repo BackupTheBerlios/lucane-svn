@@ -2,13 +2,13 @@
 
   <!-- concepts -->
   <table name="groups">
-    <column name="name" type="smalltext" />
+    <column name="name" type="smalltext" notnull="true" />
     <column name="description" type="text" />    
     <primary-key columns="name" />
   </table>
   
   <table name="users">
-    <column name="login" type="smalltext" />
+    <column name="login" type="smalltext" notnull="true" />
     <column name="passwd" type="smalltext" />
     <column name="locked" type="smallint" />
     <column name="startup" type="text" />
@@ -19,14 +19,14 @@
   </table>
 
   <table name="plugins">
-    <column name="name" type="smalltext" />
+    <column name="name" type="smalltext" notnull="true" />
     <column name="version" type="smalltext" />
     <column name="description" type="text" />
     <primary-key columns="name" />    
   </table>
 
   <table name="services">
-    <column name="name" type="smalltext" />
+    <column name="name" type="smalltext" notnull="true" />
     <column name="installer" type="smallint" />
     <column name="description" type="text" />
     <primary-key columns="name" />    
@@ -34,26 +34,26 @@
 
   <!-- links -->
   <table name="groupLinks">
-    <column name="parent" type="smalltext" />
-    <column name="child" type="smalltext" />
+    <column name="parent" type="smalltext" notnull="true" />
+    <column name="child" type="smalltext" notnull="true" />
     <primary-key columns="parent, child" />    
   </table>
 
   <table name="userLinks">
-    <column name="groupName" type="smalltext" />
-    <column name="userName" type="smalltext" />
+    <column name="groupName" type="smalltext" notnull="true" />
+    <column name="userName" type="smalltext" notnull="true" />
     <primary-key columns="groupName, userName" />    
   </table>
 
   <table name="serviceLinks">
-    <column name="groupName" type="smalltext" />
-    <column name="service" type="smalltext" />
+    <column name="groupName" type="smalltext" notnull="true" />
+    <column name="service" type="smalltext" notnull="true" />
     <primary-key columns="groupName, service" />    
   </table>
 
    <table name="pluginLinks">
-     <column name="groupName" type="smalltext" />
-     <column name="plugin" type="smalltext" />
+     <column name="groupName" type="smalltext" notnull="true" />
+     <column name="plugin" type="smalltext" notnull="true" />
      <primary-key columns="groupName, plugin" />
    </table>
 

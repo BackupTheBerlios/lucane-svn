@@ -1,7 +1,7 @@
 <database>
 
   <table name="notes">
-    <column name="id" type="int" />
+    <column name="id" type="int" notnull="true" />
     <column name="author" type="smalltext" />
     <column name="title" type="smalltext" />
     <column name="content" type="text" />
@@ -13,7 +13,7 @@
   </table>
 
   <table name="notes_comments">
-    <column name="id" type="int" />
+    <column name="id" type="int" notnull="true" />
     <column name="idnote" type="int" />
     <column name="author" type="smalltext" />
     <column name="title" type="smalltext" />

@@ -250,6 +250,14 @@ public class Client
 	}          
 	
 	/**
+	 * Flags the client as connected
+	 */
+	private void setConnected(boolean connected)
+	{
+		this.isConnected = connected;
+	}
+	
+	/**
 	 * Disconnected by the server
 	 */
 	protected void disconnect()
@@ -473,6 +481,9 @@ public class Client
 		
 		client.showConnectBox(login, passwd, config.getServerHost(), config.getServerPort());
 		if(client.getConnectBox().connectionAccepted())
+		{
+			client.setConnected(true);
 			client.startMainPlugin();
+		}
 	}
 }

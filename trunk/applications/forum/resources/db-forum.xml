@@ -1,12 +1,12 @@
 <database>
 
   <table name="forum">
-    <column name="name" type="smalltext" />
+    <column name="name" type="smalltext" notnull="true" />
     <primary-key columns="name" />
   </table>
 
   <table name="forumMessage">  
-    <column name="id" type="int" />
+    <column name="id" type="int" notnull="true" />
     <column name="idref" type="int" />
     <column name="forum" type="smalltext" />
     <column name="author" type="smalltext" />

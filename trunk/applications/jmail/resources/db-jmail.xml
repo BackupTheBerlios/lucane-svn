@@ -1,7 +1,7 @@
 <database>
 
   <table name="JMailAccounts">
-    <column name="userName" type="smalltext" />
+    <column name="userName" type="smalltext" notnull="true" />
     <column name="address" type="smalltext" />
     <column name="type" type="smalltext" />
     <column name="inHost" type="smalltext" />

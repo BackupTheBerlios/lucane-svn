@@ -25,16 +25,24 @@ public class DefaultTableCreator extends TableCreator
 	  query.append("(");
     
 	  //-- columns
-	  node = node.getFirstChild();
+	  node = node.getFirstChild();	  
 	  while(node != null)
 	  {
 		  if(node.getNodeName().equals("column"))
 		  {
 			  String columnName = node.getAttributes().getNamedItem("name").getNodeValue();
 			  String columnType = node.getAttributes().getNamedItem("type").getNodeValue();
+			  String columnNotNull = "false";
+			  if(node.getAttributes().getNamedItem("notnull") != null)
+			  	columnNotNull = node.getAttributes().getNamedItem("notnull").getNodeValue();
+			  
 			  query.append(columnName);
 			  query.append(" ");
 			  query.append(layer.resolveType(columnType));
+			  
+			  if(Boolean.valueOf(columnNotNull).booleanValue())
+			  	query.append(" NOT NULL");
+			  
 			  query.append(", ");
 		  }
 		  else if(node.getNodeName().equals("primary-key"))

@@ -1,7 +1,7 @@
 <database>
 
   <table name="CalEvents">
-    <column name="id" type="int" />
+    <column name="id" type="int" notnull="true" />
     <column name="title" type="smalltext" />
     <column name="type" type="smalltext" />
     <column name="organizer" type="smalltext" />
@@ -14,7 +14,7 @@
   </table>
 
   <table name="CalEventTypes">
-    <column name="type" type="smalltext" />
+    <column name="type" type="smalltext" notnull="true" />
     <column name="red" type="smallint" />
     <column name="green" type="smallint" />
     <column name="blue" type="smallint" />
@@ -22,21 +22,21 @@
   </table>
 
   <table name="CalObjects">
-    <column name="name" type="smalltext" />
+	  <column name="name" type="smalltext" notnull="true" />
     <primary-key columns="name" />
   </table>
   
   <table name="CalAttendees">
-    <column name="eventId" type="int" />
-    <column name="userName" type="smalltext" />
+    <column name="eventId" type="int" notnull="true" />
+    <column name="userName" type="smalltext" notnull="true" />
     <column name="mandatory" type="smallint" />
     <column name="status" type="smalltext" />
     <primary-key columns="eventId, userName" />
   </table>  
 
   <table name="CalResources">
-    <column name="eventId" type="int" />
-    <column name="object" type="smalltext" />
+    <column name="eventId" type="int" notnull="true" />
+    <column name="object" type="smalltext" notnull="true" />
     <primary-key columns="eventId, object" />
   </table>  
 </database>
