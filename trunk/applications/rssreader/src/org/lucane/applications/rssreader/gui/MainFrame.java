@@ -1,6 +1,7 @@
 package org.lucane.applications.rssreader.gui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.*;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 
@@ -11,24 +12,49 @@ import org.jperdian.rss2.RssException;
 import org.jperdian.rss2.dom.RssChannel;
 import org.lucane.applications.rssreader.RssReader;
 import org.lucane.applications.rssreader.rss.ChannelInfo;
+import org.lucane.client.Client;
 import org.lucane.client.widgets.DialogBox;
 
 public class MainFrame extends JFrame
-implements ListSelectionListener
+implements ListSelectionListener, ActionListener
 {
+	private JButton btnRefresh;
+	private JButton btnAddChannel;
+	private JButton btnRemoveChannel;
+	private JButton btnClose;
+	
 	private JList channels;
 	private JList items;
 	private DefaultListModel rssChannels;
 	private DefaultListModel rssItems;
 	private JProgressBar status;
+	private RssReader plugin;
 	
 	public MainFrame(RssReader plugin)
 	{
 		super(plugin.getTitle());
 		
+		this.plugin = plugin;
+		
 		this.rssChannels = new DefaultListModel();
 		this.rssItems = new DefaultListModel();
 		
+		btnRefresh = new JButton(plugin.tr("btn.refresh"), Client.getIcon("refresh.png"));
+		btnRefresh.addActionListener(this);
+		btnAddChannel = new JButton(plugin.tr("btn.addChannel"), Client.getIcon("add.png"));
+		btnAddChannel.addActionListener(this);
+		btnRemoveChannel = new JButton(plugin.tr("btn.removeChannel"), Client.getIcon("remove.png"));
+		btnRemoveChannel.addActionListener(this);
+		btnClose = new JButton(plugin.tr("btn.close"), Client.getIcon("cancel.png"));
+		btnClose.addActionListener(this);
+		
+		JPanel buttonPanel = new JPanel(new BorderLayout());
+		JPanel buttons = new JPanel(new GridLayout(1, 4));
+		buttons.add(btnRefresh);
+		buttons.add(btnAddChannel);
+		buttons.add(btnRemoveChannel);
+		buttons.add(btnClose);
+		buttonPanel.add(buttons, BorderLayout.WEST);
 		
 		JPanel channelPanel = new JPanel(new BorderLayout());
 		channels = new JList(rssChannels);
@@ -48,7 +74,36 @@ implements ListSelectionListener
 		split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
 		split.setDividerLocation(120);
 		
+		getContentPane().add(buttonPanel, BorderLayout.NORTH);
 		getContentPane().add(split, BorderLayout.CENTER);
+		
+		addWindowListener(plugin);
+	}
+
+	public void actionPerformed(ActionEvent ae) 
+	{
+		if(ae.getSource().equals(btnClose))
+		{
+			dispose();
+			plugin.exit();
+		}
+		else if(ae.getSource().equals(btnRefresh))
+			valueChanged(null);
+		else if(ae.getSource().equals(btnRemoveChannel))
+		{
+			ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
+			if(channel == null)
+				return;
+			
+			plugin.removeChannel(channel);
+		}
+		else if(ae.getSource().equals(btnAddChannel))
+		{
+			new ChannelDialog(this, plugin).show();
+		}
+		
+		if(ae.getSource().equals(btnRemoveChannel) || ae.getSource().equals(btnAddChannel))
+			refreshChannelList();
 	}
 
 	public void valueChanged(ListSelectionEvent lse)
@@ -56,7 +111,6 @@ implements ListSelectionListener
 		final ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
 		if(channel == null)
 			return;
-
 		
 		Runnable refresh = new Runnable() {
 			public void run() {
@@ -80,8 +134,11 @@ implements ListSelectionListener
 		new Thread(refresh).start();
 	}
 	
-	public void addChannel(ChannelInfo info)
+	public void refreshChannelList() 
 	{
-		rssChannels.addElement(info);
-	}
+		rssChannels.clear();
+		Iterator i = plugin.getChannels().iterator();
+		while(i.hasNext())
+			rssChannels.addElement(i.next());		
+	}	
 }

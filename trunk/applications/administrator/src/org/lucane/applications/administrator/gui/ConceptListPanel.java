@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import org.lucane.client.Client;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.concepts.*;
 import org.lucane.applications.administrator.AdministratorPlugin;
@@ -57,7 +58,7 @@ implements ActionListener
 		JPanel temp = new JPanel(new BorderLayout());
 		
 		try {
-			refresh = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "refresh.png")));
+			refresh = new JButton(Client.getIcon("refresh.png"));
 		} catch(Exception e) {
 			refresh = new JButton("R");
 		}

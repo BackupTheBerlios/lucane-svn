@@ -1,1 +1,2 @@
 Plugin-Class: org.lucane.applications.rssreader.RssReader
+Service-Class: org.lucane.applications.rssreader.RssService

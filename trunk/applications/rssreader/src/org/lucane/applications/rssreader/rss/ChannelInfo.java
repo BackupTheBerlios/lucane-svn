@@ -30,4 +30,14 @@ public class ChannelInfo implements Serializable
 		RssClient client = new RssClient(new URL(url));
 		return client.getData();
 	}
+	
+	public String getName()
+	{
+		return this.name;
+	}
+	
+	public String getUrl()
+	{
+		return this.url;
+	}
 }

@@ -312,8 +312,11 @@ public class Store
         
         //rssreader application
         PluginConcept rssreaderPlugin = new PluginConcept("org.lucane.applications.rssreader", "0.7");
+        ServiceConcept rssreaderService = new ServiceConcept("org.lucane.applications.rssreader", false);
         allUsers.addPlugin(rssreaderPlugin);
+        allUsers.addService(rssreaderService);
         getPluginStore().storePlugin(rssreaderPlugin);
+        getServiceStore().storeService(rssreaderService);
         
         getGroupStore().storeGroup(allUsers);
         getGroupStore().storeGroup(grantedUsers);

@@ -1,0 +1,10 @@
+<database>
+
+  <table name="rssChannels">
+    <column name="user" type="smalltext" />
+    <column name="name" type="smalltext" />
+    <column name="url" type="smalltext" />
+    <primary-key columns="user, name" />
+  </table>
+  
+</database>
