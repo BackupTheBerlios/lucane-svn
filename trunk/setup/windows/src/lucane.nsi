@@ -64,13 +64,13 @@ SetCompressor lzma
 
 # MUI Settings
 !define MUI_HEADERIMAGE
-!define MUI_HEADERIMAGE_BITMAP "trunk\setup\windows\resources\install-small.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "trunk\setup\windows\resources\uninstall-small.bmp"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\install-big.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\uninstall-big.bmp"
+!define MUI_HEADERIMAGE_BITMAP "setup\windows\resources\install-small.bmp"
+!define MUI_HEADERIMAGE_UNBITMAP "setup\windows\resources\uninstall-small.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "setup\windows\resources\install-big.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "setup\windows\resources\uninstall-big.bmp"
 !define MUI_ABORTWARNING
-!define MUI_ICON "trunk\setup\windows\resources\Orange-Full-MoNKi\Icons\orange-install-NSIS.ico"
-!define MUI_UNICON "trunk\setup\windows\resources\Orange-Full-MoNKi\Icons\orange-uninstall-NSIS.ico"
+!define MUI_ICON "setup\windows\resources\Orange-Full-MoNKi\Icons\orange-install-NSIS.ico"
+!define MUI_UNICON "setup\windows\resources\Orange-Full-MoNKi\Icons\orange-uninstall-NSIS.ico"
 
 # Welcome page
 !insertmacro MUI_PAGE_WELCOME
@@ -138,7 +138,7 @@ Function .onInit
 
   #splash screen
   #SetOutPath $TEMP
-  #File /oname=spltmp.bmp "trunk\setup\windows\resources\splash.bmp"
+  #File /oname=spltmp.bmp "setup\windows\resources\splash.bmp"
   #splash::show 1000 $TEMP\spltmp
   #Pop $0
   #Delete $TEMP\spltmp.bmp
@@ -156,7 +156,7 @@ Section "Client" CLIENT
   SetOutPath "$INSTDIR\client"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\client\*"
-  File /oname="client.ico" "trunk\setup\windows\resources\lucane.ico"
+  File /oname="client.ico" "setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" CLIENT_STARTMENU
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
@@ -173,7 +173,7 @@ Section "Server" SERVER
   SetOutPath "$INSTDIR\server"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\server\*"
-  File /oname="server.ico" "trunk\setup\windows\resources\lucane.ico"
+  File /oname="server.ico" "setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" SERVER_STARTMENU
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
@@ -184,7 +184,7 @@ Section "Proxy" PROXY
   SetOutPath "$INSTDIR\proxy"
   SetOverwrite ifnewer
   File /r "${DIST_DIR}\proxy\*"
-  File /oname="proxy.ico" "trunk\setup\windows\resources\lucane.ico"
+  File /oname="proxy.ico" "setup\windows\resources\lucane.ico"
 SectionEnd
   Section "-Start menu icon" PROXY_STARTMENU
     CreateDirectory "$SMPROGRAMS\${ICONS_GROUP}"
