@@ -46,4 +46,17 @@
     />
   </goal>
 
+  <goal
+    name="site-lucane">
+
+    <maven:reactor
+      basedir="${basedir}"
+      includes="**/project.xml"
+      excludes="project.xml,applications/project.xml"
+      goals="site"
+      banner="Creating site: "
+      ignoreFailures="false"
+    />
+  </goal>
+
 </project>

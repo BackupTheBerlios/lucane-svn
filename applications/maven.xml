@@ -4,5 +4,5 @@
 
   <goal name="mkdist" prereqs="jar:install">
   </goal>
-  
+
 </project>
