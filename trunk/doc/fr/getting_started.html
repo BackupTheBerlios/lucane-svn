@@ -60,8 +60,9 @@ Le serveur est aussi simple à installer, le fichier de configuration principal e
       <li><strong>dblayer</strong>&nbsp;: la couche d'abstraction de la base de données à utiliser</li>
     </ul>
   </li>
-  <li><strong>store</strong>&nbsp;: le backend à utiliser pour sauvegarder les utilisateurs, les groupes,
+  <li><strong>store</strong>&nbsp;: le backend à utiliser pour stocker les utilisateurs, les groupes,
   les plugins et les services</li>
+  <li>authenticator : la classe a utiliser pour gérer l'authentification</li>
 </ul>
 
 <p>Les moteurs de base de données testés sont HSQLdb, MySQL et Postgres. Les autres n'ont pas
@@ -69,9 +70,16 @@ Le serveur est aussi simple à installer, le fichier de configuration principal e
 Si vous ne voulez pas utiliser une base de données particulière, laissez le fichier de config tel quel
 pour utiliser HSQLdb.</p>
 
-<p>La sauvegarde peut utiliser la base de données ou un serveur LDAP.
+<p>Le sotr peut utiliser la base de données ou un serveur LDAP.
 Pour utiliser ldap, regardezle guide de <a href="ldap_store.html">sauvegarde ldap</a>.
 </p>
+
+<p>Il y a deux authenticators : </p>
+<ul>
+  <li>org.lucane.server.auth.DefaultAuthenticator : Rien de particulier</li>
+  <li>org.lucane.server.auth.LockingAuthenticator : bloque les comptes utilisateurs après 3 échecs.</li>
+</ul>
+
 
 <p>Vous pouvez démarrer le serveur par server.sh ou server.bat</p>
 

@@ -64,6 +64,7 @@ The server is also easy to install, the main configuration file is :
   </li>
   <li><b>store</b> : the backend to use to store user, groups, plugins and
 services</li>
+  <li>authenticator : the class to use for authentication</li>
 </ul>
 
 <p>The databases engines tested are HSQLdb, MySQL and Postgres. 
@@ -76,6 +77,12 @@ it is to use HSQLdb.</p>
 <p>The store can use the database or a ldap server. 
 To use ldap, see the <a href="ldap_store.html">ldap store</a> guide.
 </p>
+
+<p>There are two authenticators : </p>
+<ul>
+  <li>org.lucane.server.auth.DefaultAuthenticator : Nothing particular</li>
+  <li>org.lucane.server.auth.LockingAuthenticator : locks user accounts after 3 login failures</li>
+</ul>
 
 <p>You can start the server
 by "<tt>server.sh</tt>" or "<tt>server.bat</tt>".</p>
