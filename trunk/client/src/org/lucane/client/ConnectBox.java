@@ -267,6 +267,7 @@ class ConnectBox extends JFrame implements KeyListener, ActionListener
         }
         catch (Exception ex)
         {
+        	Logging.getLogger().severe(ex.getMessage());
           ex.printStackTrace();
             msg = "NO_CONNECTION";
         }

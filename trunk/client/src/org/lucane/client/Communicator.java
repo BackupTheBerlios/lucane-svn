@@ -159,23 +159,20 @@ public class Communicator
    * Set the user connection informations to the proxy
    * if necessary
    */
-  protected void setProxyInfo()
+  protected void setProxyInfo() throws IOException
   {
     //proxy
     if(this.ci_proxy != null)
     {
-      try
-      {
         ObjectConnection oc = this.sendMessageTo(this.ci_proxy, "Proxy", 
             "CONNECT_SET " + parent.getMyInfos(true).getRepresentation());
+            
+        if(oc == null)
+        	throw new IOException(Translation.tr("communicatorProxySendError"));
+
         oc.close();
 		Logging.getLogger().finer("using proxy for : " + 
             parent.getMyInfos(true).getRepresentation());
-      }
-      catch(Exception e)
-      {
-        DialogBox.error(Translation.tr("communicatorProxySendError"));
-      }
     }
   }
 
