@@ -237,8 +237,8 @@ public class Store
 
 		//kick application
 		PluginConcept kickPlugin = new PluginConcept("org.lucane.applications.kick", "0.7-preview");
-		admins.addPlugin(audioconfPlugin);
-		getPluginStore().storePlugin(audioconfPlugin);
+		admins.addPlugin(kickPlugin);
+		getPluginStore().storePlugin(kickPlugin);
                 
         //sendmail application
         ServiceConcept sendmailService = new ServiceConcept("org.lucane.applications.sendmail", false);
