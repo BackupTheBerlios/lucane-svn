@@ -127,6 +127,8 @@ public class QuickLaunch
   	
   	//create menu list	
 	Iterator plugins = PluginManager.getInstance().getAvailablePlugins();
+	plugins = PluginComparator.sortPlugins(plugins);
+	
 	while(plugins.hasNext())
 	{
 		Plugin p = (Plugin)plugins.next();
@@ -136,6 +138,10 @@ public class QuickLaunch
   		{
   			category = new JMenu(p.getCategory());
   			categories.put(p.getCategory(), category);
+  			
+  			//copy menu to real one
+  			if(!p.getCategory().equals("Invisible"))
+  	  			this.trayIcon.add(category);
   		}
   		
   		ImageIcon icon = new ImageIcon();
@@ -151,15 +157,6 @@ public class QuickLaunch
   		menu.setToolTipText(p.getToolTip());
   		menu.addActionListener(this);
   		category.add(menu);
-  	}
-
-  	//copy menu to tray
-  	Iterator keys = categories.keySet().iterator();
-  	while(keys.hasNext())
-  	{
-  		Object key = keys.next();
-  		if(!key.equals("Invisible"))
-  			this.trayIcon.add((JMenuItem)categories.get(key));
   	}
   	
   	this.trayIcon.addSeparator();
