@@ -193,9 +193,15 @@ implements ActionListener, KeyListener, ObjectListener
 
   public void windowClosing(WindowEvent we)
   {
-    /*this.getLocalConfig().set(
+    /*jsp_txtRead_lstUsers.setDividerLocation(
+      Integer.parseInt(
+        this.getLocalConfig().get("jsp_txtRead_lstUsers_dividerLocation", "520")));*/
+
+    System.out.println(""+this.getLocalConfig());
+    System.out.println("" + jsp_txtRead_lstUsers.getDividerLocation());
+    this.getLocalConfig().set(
       "jsp_txtRead_lstUsers_dividerLocation",
-      "" + jsp_txtRead_lstUsers.getDividerLocation());*/
+      "" + jsp_txtRead_lstUsers.getDividerLocation());
 
     if(exited)
       return;
@@ -253,11 +259,12 @@ implements ActionListener, KeyListener, ObjectListener
     users = new DefaultListModel();
     lstUsers.setModel(users);
 
-    JSplitPane jsp_txtRead_lstUsers =
+    jsp_txtRead_lstUsers =
       new JSplitPane(
         JSplitPane.HORIZONTAL_SPLIT,
         new JScrollPane(txtRead),
         new JScrollPane(lstUsers));
+    jsp_txtRead_lstUsers.setResizeWeight(1);
     jsp_txtRead_lstUsers.setDividerLocation(
       Integer.parseInt(
         this.getLocalConfig().get("jsp_txtRead_lstUsers_dividerLocation", "520")));
