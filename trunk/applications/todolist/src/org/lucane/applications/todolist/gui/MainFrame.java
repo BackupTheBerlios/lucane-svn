@@ -23,6 +23,8 @@ import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -94,6 +96,20 @@ public class MainFrame extends JFrame {
 				refreshTodolistItems();
 			}
 		});
+		jtTodolists.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+			    int row = jtTodolists.rowAtPoint(e.getPoint()); 
+			    if(e.getClickCount()==2 && row>=0) {
+					Todolist tl = (Todolist)((TodolistTableModel)jtTodolists.getModel()).getValueAt(row);
+					if (tl!=null) {
+						new TodolistDialog(plugin, mainFrame, tl).show();
+					} else {
+						htmledListComment.clear();
+					}
+			    }
+			}
+		});
+		
 		htmledListComment = new HTMLEditor();
 		htmledListComment.setEditable(false);
 		htmledListComment.setToolbarVisible(false);
@@ -113,6 +129,20 @@ public class MainFrame extends JFrame {
 				} else {
 					htmledListItemComment.clear();
 				}
+			}
+		});
+
+		jtTodolistItems.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+			    int row = jtTodolistItems.rowAtPoint(e.getPoint()); 
+			    if(e.getClickCount()==2 && row>=0) {
+					TodolistItem tli = (TodolistItem)((TodolistItemTableModel)jtTodolistItems.getModel()).getValueAt(row);
+					if (tli!=null) {
+						new TodolistItemDialog(plugin, mainFrame, tli).show();
+					} else {
+						htmledListItemComment.clear();
+					}
+			    }
 			}
 		});
 
@@ -232,7 +262,8 @@ public class MainFrame extends JFrame {
 		
 		jbEditItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				// I use the mainFrame object because in that case this is the action listener
+				// I use the mainFrame object because in that case this is the
+				// action listener
 				TodolistItem tli = (TodolistItem)jtTodolistItems.getSelectedTodolistItem();
 				if (tli!=null) {
 					new TodolistItemDialog(plugin, mainFrame, tli).show();
@@ -242,9 +273,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		jtbToolBar.add(jbEditItem);
-		
 		getContentPane().add(jtbToolBar, BorderLayout.NORTH);
-		
 		refreshTodolists();
 	}
 	

@@ -21,7 +21,6 @@ package org.lucane.applications.todolist.gui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -38,8 +37,6 @@ import javax.swing.table.TableColumnModel;
 import org.lucane.applications.todolist.TodolistItem;
 
 public class TodolistItemTable extends JTable {
-	ActionListener columnHeaderActionListener;
-	
 	public TodolistItemTable() {
 		super();
 
