@@ -188,8 +188,8 @@ public class Forum
         //<idref> <auteur> <forum>\001<titre>\001<contenu>
         ObjectConnection sc = Communicator.getInstance().sendMessageTo(ci, "org.lucane.applications.forum", 
                  "POST " + idref +  " " + Client.getInstance() .getMyInfos().getName() + " " + 
-                  sqlZap((String)lstForums .getSelectedValue()) + "\001" + sqlZap(txtPostTitle.getText()) + 
-                   "\001" + sqlZap(txtPostMessage.getText()).replace('\n', '\001'));
+                  (String)lstForums .getSelectedValue() + "\001" + txtPostTitle.getText() + 
+                   "\001" + txtPostMessage.getText().replace('\n', '\001'));
         sc.close();
         postFrame.setVisible(false);
         postFrame = null;
@@ -349,23 +349,5 @@ public class Forum
 	
 	postFrame.setIconImage(this.getImageIcon().getImage());
     postFrame.setVisible(true);
-  }
-
-  private String sqlZap(String s)
-  {
-    String res = "";
-
-    for(int i = 0; i < s.length(); i++)
-    {
-
-      if(s.charAt(i) == '\\')
-        res += "\\\\";
-      else if(s.charAt(i) == '\'')
-        res += "\\'";
-      else
-        res += s.charAt(i);
-    }
-
-    return res;
   }
 }

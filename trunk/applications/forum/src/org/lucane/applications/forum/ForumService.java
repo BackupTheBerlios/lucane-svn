@@ -32,7 +32,7 @@ public class ForumService
 {
   private DatabaseAbstractionLayer layer = null;
   private Connection conn = null;
-  private Statement st = null;
+  private PreparedStatement st = null;
   private ResultSet res = null;
 
   /**
@@ -105,13 +105,14 @@ public class ForumService
     try
     {
 		Vector v = new Vector();
-      st = conn.createStatement();
-      res = st.executeQuery("SELECT name FROM forum");
+      st = conn.prepareStatement("SELECT name FROM forum");
+      res = st.executeQuery();
 
       while(res.next())
 	     v.addElement(res.getString(1));
-	     
+	   
       res.close();
+      st.close();
       sc.write(v);
     }
     catch(Exception e)
@@ -129,10 +130,11 @@ public class ForumService
     try
     {
     	Vector v = new Vector();
-      res = st.executeQuery(
-                  "SELECT id, idref, author, datum, title " + 
-                  "FROM forumMessage WHERE forum='" + data + 
-                  "' ORDER BY idref desc, id");
+    	st = conn.prepareStatement("SELECT id, idref, author, datum, title " + 
+    			"FROM forumMessage WHERE forum=?" +
+				" ORDER BY idref desc, id");
+    	st.setString(1, data);
+      res = st.executeQuery();
 
       while(res.next())
       {
@@ -141,6 +143,7 @@ public class ForumService
       }
 	sc.write(v);
       res.close();
+      st.close();
     }
     catch(Exception e)
     {
@@ -156,13 +159,15 @@ public class ForumService
   {
     try
     {
-      res = st.executeQuery(
-                  "SELECT content FROM forumMessage WHERE id='" + data + "'");
+    	st = conn.prepareStatement("SELECT content FROM forumMessage WHERE id=?");
+    	st.setString(1, data);
+      res = st.executeQuery();
       res.next();
 
       String tosend = res.getString(1).replace('\n', '\001');
       sc.write(tosend);
       res.close();
+      st.close();
     }
     catch(Exception e)
     {
@@ -188,7 +193,7 @@ public class ForumService
     //date calculation
     Calendar now = Calendar.getInstance();
     String date = "" + now.get(Calendar.DAY_OF_MONTH);
-    date += "/" + now.get(Calendar.MONTH);
+    date += "/" + now.get(Calendar.MONTH)+1;
     date += "/" + now.get(Calendar.YEAR);
 
     String id = null;
@@ -198,18 +203,26 @@ public class ForumService
     {
       try
       {
-        res = st.executeQuery("SELECT max(id)+1 FROM forumMessage");
+      	st = conn.prepareStatement("SELECT max(id)+1 FROM forumMessage");
+        res = st.executeQuery();
         res.next();
         id = res.getString(1);
         res.close();
+        st.close();
 
         if(id == null || id.equals("null"))
           id = "1";
 
-        st.execute(
-              "INSERT INTO forumMessage VALUES ('" + id + "', '" + idref + 
-              "', '" + forum + "', '" + author + "', '" + title + "', '" + 
-              date + "', '" + content + "')");
+        st = conn.prepareStatement("INSERT INTO forumMessage VALUES (?, ?, ?, ?, ?, ?, ?)");
+        st.setString(1, id);
+        st.setString(2, idref);
+        st.setString(3, forum);
+        st.setString(4, author);
+        st.setString(5, title);
+        st.setString(6, date);
+        st.setString(7, content);
+        st.execute();
+        st.close();
       }
       catch(Exception e)
       {
