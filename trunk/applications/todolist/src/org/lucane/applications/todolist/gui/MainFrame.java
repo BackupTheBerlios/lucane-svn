@@ -20,26 +20,23 @@
 package org.lucane.applications.todolist.gui;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.TodolistItem;
@@ -50,18 +47,17 @@ import org.lucane.client.widgets.htmleditor.HTMLEditor;
 public class MainFrame extends JFrame {
 	private JToolBar jtbToolBar;
 
-	private JList jlTodolists;
-	private DefaultListModel todolistsModel;
+	private JTable jtTodolists;
+	private TodolistTableModel todolistsModel;
+	private DefaultListSelectionModel todolistsSelectionModel;
 	private JSplitPane jspList;
 	private HTMLEditor htmledListDescription;
 	private JPanel jpListView;
 
-	private JList jlTodolistItems;
-	private DefaultListModel todolistItemsModel;
+	private JTable jtTodolistItems;
+	private TodolistItemTableModel todolistItemsModel;
+	private DefaultListSelectionModel todolistItemSelectionModel;
 	private JSplitPane jspItem;
-	private JLabel jlListItemName;
-	private JLabel jlListItemPriority;
-	private JLabel jlListItemComplete;
 	private HTMLEditor htmledListItemDescription;
 	private JPanel jpItemView;
 	
@@ -85,13 +81,13 @@ public class MainFrame extends JFrame {
 	private void init(){
 		setSize(640,480);
 		
-		todolistsModel = new DefaultListModel();
-		jlTodolists = new JList(todolistsModel);
-		jlTodolists.addListSelectionListener(new ListSelectionListener() {
+		todolistsModel = new TodolistTableModel();
+		todolistsSelectionModel = new DefaultListSelectionModel();
+		jtTodolists = new JTable(todolistsModel);
+		jtTodolists.setSelectionModel(todolistsSelectionModel);
+		todolistsSelectionModel.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
 				refreshTodolistItems();
-				if (jlTodolists.getSelectedIndex()>=0)
-					htmledListDescription.setText(((Todolist)jlTodolists.getSelectedValue()).getDescription());
 			}
 		});
 		htmledListDescription = new HTMLEditor();
@@ -100,76 +96,35 @@ public class MainFrame extends JFrame {
 		jpListView = new JPanel(new BorderLayout());
 		jpListView.add(new JLabel("Description :"), BorderLayout.NORTH);
 		jpListView.add(htmledListDescription, BorderLayout.CENTER);
-		jspList = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jlTodolists), jpListView);
-		jspList.setResizeWeight(.80);
+		jspList = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolists), jpListView);
+		jspList.setResizeWeight(.70);
 
-		todolistItemsModel = new DefaultListModel();
-		jlTodolistItems = new JList(todolistItemsModel);
-		jlTodolistItems.addListSelectionListener(new ListSelectionListener() {
+		todolistItemsModel = new TodolistItemTableModel();
+		todolistItemSelectionModel = new DefaultListSelectionModel();
+		jtTodolistItems = new JTable(todolistItemsModel);
+		jtTodolistItems.setSelectionModel(todolistItemSelectionModel);
+		todolistItemSelectionModel.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
-				if (jlTodolistItems.getSelectedIndex()>=0) {
-					TodolistItem tli = (TodolistItem)jlTodolistItems.getSelectedValue();
-					jlListItemName.setText(tli.getName());
+				int selectedRow = todolistItemSelectionModel.getMinSelectionIndex();
+				if (selectedRow>=0 && todolistItemsModel.getRowCount()>0) {
+					TodolistItem tli = (TodolistItem)todolistItemsModel.getValueAt(selectedRow);
 					htmledListItemDescription.setText(tli.getDescription());
-					jlListItemPriority.setText(""+tli.getPriority());
-					jlListItemComplete.setText(""+tli.isComplete());
+				} else {
+					htmledListItemDescription.clear();
 				}
 			}
 		});
+
 		jpItemView = new JPanel();
-
-		jpItemView.setLayout(new GridBagLayout());
-		GridBagConstraints c = new GridBagConstraints();
-		
-		c.insets=new Insets(2,2,2,2);
-		c.anchor=GridBagConstraints.NORTH;
-		c.fill=GridBagConstraints.HORIZONTAL;
-		c.gridy=0;
-		c.gridx=0;
-		c.weightx=0;
-		c.weighty=0;
-		jpItemView.add(new JLabel("Name :"), c);
-		c.gridx=1;
-		c.weightx=1;
-		jlListItemName = new JLabel();
-		jpItemView.add(jlListItemName, c);
-
-		c.gridy=1;
-		c.gridx=0;
-		c.weightx=0;
-		c.weighty=1;
-		jpItemView.add(new JLabel("Description :"), c);
-		c.fill=GridBagConstraints.BOTH;
-		c.gridx=1;
-		c.weightx=1;
+		jpItemView.setLayout(new BorderLayout());
+		jpItemView.add(new JLabel("Description :"), BorderLayout.NORTH);
 		htmledListItemDescription = new HTMLEditor();
 		htmledListItemDescription.setEditable(false);
 		htmledListItemDescription.setToolbarVisible(false);
-		htmledListItemDescription.setBorder(BorderFactory.createEmptyBorder());
-		jpItemView.add(htmledListItemDescription, c);
+		jpItemView.add(htmledListItemDescription, BorderLayout.CENTER);
 
-		c.gridy=2;
-		c.gridx=0;
-		c.weightx=0;
-		c.weighty=0;
-		jpItemView.add(new JLabel("Priority :"), c);
-		c.gridx=1;
-		c.weightx=1;
-		jlListItemPriority = new JLabel();
-		jpItemView.add(jlListItemPriority, c);
-
-		c.gridy=3;
-		c.gridx=0;
-		c.weightx=0;
-		c.weighty=0;
-		jpItemView.add(new JLabel("Complete :"), c);
-		c.gridx=1;
-		c.weightx=1;
-		jlListItemComplete = new JLabel();
-		jpItemView.add(jlListItemComplete, c);
-
-		jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jlTodolistItems), jpItemView);
-		jspItem.setResizeWeight(.60);
+		jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolistItems), jpItemView);
+		jspItem.setResizeWeight(.70);
 
 		jspMain = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jspList, jspItem);
 		jspMain.setResizeWeight(.20);
@@ -191,9 +146,11 @@ public class MainFrame extends JFrame {
 		jbEditTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
-				Todolist selectedTodolist = (Todolist) jlTodolists.getSelectedValue();
-				if (selectedTodolist!=null)
+				int selectedRow = todolistsSelectionModel.getMinSelectionIndex();
+				if (selectedRow>=0 && todolistsModel.getRowCount()>0) {
+					Todolist selectedTodolist = (Todolist) todolistsModel.getValueAt(selectedRow);
 					new TodolistDialog(mainFrame, selectedTodolist).show();
+				}
 			}
 		});
 		jtbToolBar.add(jbEditTodolist);
@@ -201,10 +158,12 @@ public class MainFrame extends JFrame {
 		JButton jbDeleteTodolist = new JButton("Remove todolist");
 		jbDeleteTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				Todolist selectedTodolist = (Todolist) jlTodolists.getSelectedValue();
-				if (selectedTodolist!=null)
+				int selectedRow = todolistsSelectionModel.getMinSelectionIndex();
+				if (selectedRow>=0 && todolistsModel.getRowCount()>0) {
+					Todolist selectedTodolist = (Todolist) todolistsModel.getValueAt(selectedRow);
 					if (DialogBox.question("Delete todolist", "Do you realy want to delete the selected todolist ?"))
 						mainFrame.deleteTodolist(selectedTodolist);
+				}
 			}
 		});
 		jtbToolBar.add(jbDeleteTodolist);
@@ -213,9 +172,11 @@ public class MainFrame extends JFrame {
 		jbCreateItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
-				Todolist selectedTodolist = (Todolist) jlTodolists.getSelectedValue();
-				if (selectedTodolist!=null)
+				int selectedRow = todolistsSelectionModel.getMinSelectionIndex();
+				if (selectedRow>=0 && todolistsModel.getRowCount()>0) {
+					Todolist selectedTodolist = (Todolist) todolistsModel.getValueAt(selectedRow);
 					new TodolistItemDialog(mainFrame, selectedTodolist.getId()).show();
+				}
 			}
 		});
 		jtbToolBar.add(jbCreateItem);
@@ -224,9 +185,13 @@ public class MainFrame extends JFrame {
 		jbEditItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
-				TodolistItem selectedTodolistItem = (TodolistItem) jlTodolistItems.getSelectedValue();
-				if (selectedTodolistItem!=null)
-					new TodolistItemDialog(mainFrame, selectedTodolistItem).show();
+				int selectedRow = todolistItemSelectionModel.getMinSelectionIndex();
+				if (selectedRow>=0 && todolistItemsModel.getRowCount()>0) {
+					TodolistItem tli = (TodolistItem)todolistItemsModel.getValueAt(selectedRow);
+					new TodolistItemDialog(mainFrame, (TodolistItem)todolistItemsModel.getValueAt(selectedRow)).show();
+				} else {
+					htmledListItemDescription.clear();
+				}
 			}
 		});
 		jtbToolBar.add(jbEditItem);
@@ -234,10 +199,11 @@ public class MainFrame extends JFrame {
 		JButton jbDeleteItem = new JButton("Remove item");
 		jbDeleteItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				TodolistItem selectedTodolistItem = (TodolistItem) jlTodolistItems.getSelectedValue();
-				if (selectedTodolistItem!=null)
+				int selectedRow = todolistItemSelectionModel.getMinSelectionIndex();
+				if (selectedRow>=0 && todolistItemsModel.getRowCount()>0) {
 					if (DialogBox.question("Delete item", "Do you realy want to delete the selected item ?"))
-						mainFrame.deleteTodolistItem(selectedTodolistItem);
+						mainFrame.deleteTodolistItem((TodolistItem)todolistItemsModel.getValueAt(selectedRow));
+				}
 			}
 		});
 		jtbToolBar.add(jbDeleteItem);
@@ -252,17 +218,24 @@ public class MainFrame extends JFrame {
 		todolistsModel.clear();
 		Iterator it = todolists.iterator();
 		while (it.hasNext())
-			todolistsModel.addElement(it.next());
+			todolistsModel.add((Todolist)it.next());
 	}
 
 	private void refreshTodolistItems() {
-		Todolist todolist = (Todolist)jlTodolists.getSelectedValue();
-		if (todolist!=null) {
+		int selectedRow = todolistsSelectionModel.getMinSelectionIndex();
+		if (selectedRow>=0 && todolistsModel.getRowCount()>0) {
+			Todolist todolist = (Todolist) todolistsModel.getValueAt(selectedRow); 
+			htmledListDescription.setText(todolist.getDescription());
+
 			ArrayList todolistItems = IO.getInstance().getTodolistItems(todolist.getId());
 			todolistItemsModel.clear();
 			Iterator it = todolistItems.iterator();
 			while (it.hasNext())
-				todolistItemsModel.addElement(it.next());
+				todolistItemsModel.add((TodolistItem)it.next());
+		}
+		else {
+			htmledListDescription.clear();
+			todolistItemsModel.clear();
 		}
 	}
 	
@@ -271,20 +244,20 @@ public class MainFrame extends JFrame {
 		if (id<0)
 			return;
 		newTodolist.setId(id);
-		todolistsModel.addElement(newTodolist);
+		todolistsModel.add(newTodolist);
 	}
 
 	protected void modifyTodolist(Todolist oldTodolist, Todolist newTodolist) {
 		if (!IO.getInstance().modifyTodolist(oldTodolist, newTodolist))
 			return;
-		todolistsModel.removeElement(oldTodolist);
-		todolistsModel.addElement(newTodolist);
+		todolistsModel.remove(oldTodolist);
+		todolistsModel.add(newTodolist);
 	}
 
 	protected void deleteTodolist(Todolist defunctTodolist) {
 		if (!IO.getInstance().deleteTodolist(defunctTodolist))
 			return;
-		todolistsModel.removeElement(defunctTodolist);
+		todolistsModel.remove(defunctTodolist);
 	}
 
 	protected void addTodolistItem(TodolistItem newTodolistItem) {
@@ -292,19 +265,19 @@ public class MainFrame extends JFrame {
 		if (id<0)
 			return;
 		newTodolistItem.setId(id);
-		todolistItemsModel.addElement(newTodolistItem);
+		todolistItemsModel.add(newTodolistItem);
 	}
 
 	protected void modifyTodolistItem(TodolistItem oldTodolistItem, TodolistItem newTodolistItem) {
 		if (!IO.getInstance().modifyTodolistItem(oldTodolistItem, newTodolistItem))
 			return;
-		todolistItemsModel.removeElement(oldTodolistItem);
-		todolistItemsModel.addElement(newTodolistItem);
+		todolistItemsModel.remove(oldTodolistItem);
+		todolistItemsModel.add(newTodolistItem);
 	}
 
 	protected void deleteTodolistItem(TodolistItem defunctTodolistItem) {
 		if (!IO.getInstance().deleteTodolistItem(defunctTodolistItem))
 			return;
-		todolistItemsModel.removeElement(defunctTodolistItem);
+		todolistItemsModel.remove(defunctTodolistItem);
 	}
 }
