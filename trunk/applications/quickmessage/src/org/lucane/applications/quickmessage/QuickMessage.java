@@ -95,8 +95,7 @@ public class QuickMessage
       txtWho.setText(txtWho.getText() + ";" + friends[i].getName());
 
     txtNew = new HTMLEditor();
-    dialog.addKeyListener(this);
-    txtNew.addKeyListener(this);
+    txtNew.getEditorPane().addKeyListener(this);
     btnMain = new JButton(tr("send"));
     btnMain.addActionListener(this);
     dialog.getContentPane().add(txtWho, BorderLayout.NORTH);
@@ -119,8 +118,7 @@ public class QuickMessage
     txtMessage.setEditable(false);
     txtMessage.setToolbarVisible(false);
     txtNew = new HTMLEditor();
-    dialog.addKeyListener(this);
-    txtNew.addKeyListener(this);
+    txtNew.getEditorPane().addKeyListener(this);
     btnMain = new JButton(tr("answer"));
     btnMain.addActionListener(this);
     dialog.getContentPane().add(txtWho, BorderLayout.NORTH);
@@ -161,7 +159,6 @@ public class QuickMessage
 
   public void keyPressed(KeyEvent e)
   {
-
     if(e.getKeyCode() == KeyEvent.VK_CONTROL)
       ctrl = true;
     else if(e.getKeyCode() == KeyEvent.VK_ENTER && ctrl)
