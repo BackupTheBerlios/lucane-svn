@@ -47,10 +47,13 @@ implements ActionListener
 	private Calendar calendar;
 	private transient CalendarPlugin plugin;
 	
-	public MonthPanel(CalendarPlugin plugin, CalendarListener listener)
+	private String userName;
+	
+	public MonthPanel(CalendarPlugin plugin, CalendarListener listener, String userName)
 	{
 		super(new BorderLayout());
 		this.plugin = plugin;
+		this.userName = userName;
 		
 		calendar = Calendar.getInstance();
 		
@@ -183,8 +186,14 @@ implements ActionListener
 		end = cal.getTimeInMillis();
 		
 		//-- fetch and display events
-		try {
-			ArrayList events = plugin.getMyEvents(start, end);	
+		try {			
+			//if no user, show my events
+			ArrayList events;			
+			if(this.userName == null)
+				events = plugin.getMyEvents(start, end);
+			else
+				events = plugin.getEventsForUser(this.userName, start, end);
+			
 			Iterator i = events.iterator();
 			while(i.hasNext())
 			{

@@ -50,12 +50,15 @@ implements ActionListener
 	private transient CalendarPlugin plugin;
 	private CalendarListener listener;
 	
+	private String userName;
 	
-	public DayPanel(CalendarPlugin plugin, CalendarListener listener)
+	
+	public DayPanel(CalendarPlugin plugin, CalendarListener listener, String userName)
 	{
 		super(new BorderLayout());
 		this.plugin = plugin;
 		this.listener = listener;
+		this.userName = userName;
 		
 		try {
 			previousMonth = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "pprevious.png")));
@@ -224,7 +227,13 @@ implements ActionListener
 		
 		//-- fetch and display events
 		try {
-			ArrayList events = plugin.getMyEvents(start, end);	
+			//if no user, show my events
+			ArrayList events;			
+			if(this.userName == null)
+				events = plugin.getMyEvents(start, end);
+			else
+				events = plugin.getEventsForUser(this.userName, start, end);
+			
 			Iterator i = events.iterator();
 			while(i.hasNext())
 			{

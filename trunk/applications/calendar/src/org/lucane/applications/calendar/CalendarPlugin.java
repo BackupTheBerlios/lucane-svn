@@ -53,7 +53,7 @@ public class CalendarPlugin extends Plugin
 		cf.addWindowListener(this);
 		cf.setSize(780, 550);
 		cf.setIconImage(this.getImageIcon().getImage());
-		cf.show();
+		cf.show();	
 	}
 	
 	public void storeEvent(Event e)

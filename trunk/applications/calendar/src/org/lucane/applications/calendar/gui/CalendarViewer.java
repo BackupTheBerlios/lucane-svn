@@ -22,9 +22,10 @@ package org.lucane.applications.calendar.gui;
 import javax.swing.*;
 
 import org.lucane.client.Client;
+import org.lucane.client.widgets.DialogBox;
 import org.lucane.applications.calendar.CalendarPlugin;
-import org.lucane.applications.calendar.Event;
 import org.lucane.applications.calendar.widget.*;
+import org.lucane.applications.calendar.Event;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -32,35 +33,32 @@ import java.util.*;
 import java.net.URL;
 import java.text.*;
 
-public class CalendarFrame extends JFrame
+public class CalendarViewer extends JFrame
 implements ActionListener, CalendarListener
 {
 	private MonthPanel monthPanel;
 	private DayPanel dayPanel;
 	
-	private JButton newEvent;
 	private JButton goToCurrentMonth;
 	private JButton goToCurrentDay;
 	private JButton close;
 	
 	private transient CalendarPlugin plugin;
 	
-	public CalendarFrame(CalendarPlugin plugin)
+	public CalendarViewer(CalendarPlugin plugin, String userName)
 	{
-		super(plugin.getTitle());
+		super(plugin.getTitle() + " - " +userName);
 		getContentPane().setLayout(new BorderLayout());
 		this.plugin = plugin;
 		
-		monthPanel = new MonthPanel(plugin, this, null);
-		dayPanel = new DayPanel(plugin, this, null);
+		monthPanel = new MonthPanel(plugin, this, userName);
+		dayPanel = new DayPanel(plugin, this, userName);
 	
-		newEvent = new JButton(tr("btn.newEvent"));
 		goToCurrentMonth = new JButton(tr("btn.thisMonth"));
 		goToCurrentDay = new JButton(tr("btn.today"));
 		close = new JButton(tr("btn.close"));
 		
 		try {
-			newEvent.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "new.png")));
 			goToCurrentMonth.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
 			goToCurrentDay.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "jumpTo.png")));
 			close.setIcon(new ImageIcon(new URL(plugin.getDirectory() + "close.png")));
@@ -68,7 +66,6 @@ implements ActionListener, CalendarListener
 			//nothing, no icons :-/
 		}
 
-		newEvent.addActionListener(this);
 		goToCurrentMonth.addActionListener(this);
 		goToCurrentDay.addActionListener(this);
 		close.addActionListener(this);
@@ -85,9 +82,8 @@ implements ActionListener, CalendarListener
 		Locale locale = new Locale(Client.getInstance().getLanguage());
 		DateFormat df = DateFormat.getDateInstance(DateFormat.FULL, locale);
 		JLabel dayLabel = new JLabel(df.format(new Date()));
-		JPanel buttons = new JPanel(new GridLayout(1, 4));
+		JPanel buttons = new JPanel(new GridLayout(1, 3));
 		
-		buttons.add(newEvent);
 		buttons.add(goToCurrentMonth);
 		buttons.add(goToCurrentDay);
 		buttons.add(close);
@@ -99,17 +95,7 @@ implements ActionListener, CalendarListener
 
 	public void actionPerformed(ActionEvent ae)
 	{
-		if(ae.getSource() == newEvent)
-		{
-			
-			//TODO create a better default event
-			long time = Calendar.getInstance().getTimeInMillis();
-			Event e = new Event(-1, "", tr("event.newEvent"), Client.getInstance().getMyInfos().getName(),
-					true, time, time+3600*1000, Event.RECUR_NONE, "");
-			
-			new EventFrame(plugin, e, dayPanel, monthPanel).show();
-		}
-		else if(ae.getSource() == goToCurrentMonth)
+		if(ae.getSource() == goToCurrentMonth)
 		{
 			monthPanel.showMonth(Calendar.getInstance());
 			if(getContentPane().getComponent(1) != monthPanel)
@@ -134,7 +120,6 @@ implements ActionListener, CalendarListener
 		else if(ae.getSource() == close)
 		{
 			this.dispose();
-			plugin.exit();
 		}
 	} 
 	
@@ -150,9 +135,13 @@ implements ActionListener, CalendarListener
 		this.repaint();
 	}
 
-	public void onEventClick(EventLabel event) 
+	public void onEventClick(EventLabel label) 
 	{
-		new EventFrame(plugin, (Event)event.getEvent(), dayPanel, monthPanel).show();
+		Event event = (Event)label.getEvent();
+		if(event.isPublic())
+			new EventFrame(plugin, event, dayPanel, monthPanel).show();
+		else
+			DialogBox.info(tr("event.is.private"));
 	}
 	
 	private String tr(String s)

@@ -111,7 +111,7 @@ implements ActionListener
 		String type = getUserType();
 		bar.add(new JLabel(tr(type)), BorderLayout.WEST);
 
-		if(!type.equals("organizer"))
+		if(!type.equals("organizer") && !type.equals("external.viewer"))
 		{
 			JPanel buttons = new JPanel(new GridLayout(1, 2));
 			buttons.add(btnAccept);
@@ -121,7 +121,7 @@ implements ActionListener
 			String userName = Client.getInstance().getMyInfos().getName();
 			Attendee a = event.getAttendee(userName);
 			btnAccept.setEnabled(a.getStatus() != Attendee.STATUS_ACCEPTED);
-			btnReject.setEnabled(a.getStatus() != Attendee.STATUS_REFUSED);
+			btnReject.setEnabled(a.getStatus() != Attendee.STATUS_REFUSED);	
 		}
 	}
 
@@ -132,6 +132,9 @@ implements ActionListener
 			return "organizer";
 
 		Attendee a = event.getAttendee(userName);
+		if(a == null)
+			return "external.viewer";
+		
 		return  (a.isMandatory() ? "attendee.mandatory" : "attendee.optional");
 	}
 
