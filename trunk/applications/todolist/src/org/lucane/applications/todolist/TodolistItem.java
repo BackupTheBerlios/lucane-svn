@@ -35,6 +35,7 @@ public class TodolistItem implements Serializable {
 	public static final int PRIORITY_LOW = 0;
 	public static final int PRIORITY_MEDIUM = 1; 
 	public static final int PRIORITY_HIGH = 2;
+	public static final String[] PRIORITY_LABELS = {"low", "medium", "high"};
 
 	public TodolistItem(int parentTodolistId, String name, String description, int priority) {
 		this(-1, parentTodolistId, name, description, priority, false);

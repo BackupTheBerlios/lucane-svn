@@ -43,6 +43,9 @@ public class TodolistItemTable extends JTable {
 		setModel(new TodolistItemTableModel());
 		setSelectionModel(new DefaultListSelectionModel());
 		
+		getColumnModel().getColumn(2).setWidth(50);
+		getColumnModel().getColumn(1).setWidth(50);
+		
 		getTableHeader().addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 			    TableColumnModel columnModel = getColumnModel();   
@@ -154,7 +157,7 @@ class TodolistItemTableModel extends AbstractTableModel {
 			case 0 :
 				return item.getName();
 			case 1 :
-				return ""+item.getPriority();
+				return TodolistItem.PRIORITY_LABELS[item.getPriority()];
 			case 2 :
 				return item.isComplete()?"true":"false";
 		}
@@ -195,7 +198,7 @@ class TodolistItemsSorter implements Comparator {
 			case NAME :
 				return direction*(tli1.getName().compareTo(tli2.getName()));
 			case PRIORITY :
-				return direction*(tli1.getPriority()-tli2.getPriority());
+				return direction*(tli2.getPriority()-tli1.getPriority());
 			case COMPLETED :
 				return direction*((tli1.isComplete()?1:0)-(tli2.isComplete()?1:0));
 		}

@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,7 +41,8 @@ import org.lucane.client.widgets.htmleditor.HTMLEditor;
 public class TodolistItemDialog extends JDialog {
 	private JTextField jtfName;
 	private HTMLEditor htmledDescription;
-	private JTextField jtfPriority;
+	//private JTextField jtfPriority;
+	private JComboBox jcmbPriority;
 	private JCheckBox jcbComplete;
 	private JButton jbOk;
 	private JButton jbCancel;
@@ -75,7 +77,8 @@ public class TodolistItemDialog extends JDialog {
 		
 		jtfName = new JTextField();
 		htmledDescription = new HTMLEditor();
-		jtfPriority = new JTextField();
+		//jtfPriority = new JTextField();
+		jcmbPriority = new JComboBox(TodolistItem.PRIORITY_LABELS);
 		
 		jbOk = new JButton("Ok");
 		jbOk.addActionListener(new ActionListener() {
@@ -88,10 +91,10 @@ public class TodolistItemDialog extends JDialog {
 									todolistItem.getParentTodolistId(),
 									jtfName.getText(),
 									htmledDescription.getText(),
-									new Integer(jtfPriority.getText()).intValue(),
+									jcmbPriority.getSelectedIndex(),
 									jcbComplete.isSelected()));
 				else
-					mainFrame.addTodolistItem(new TodolistItem(parentTodolistId, jtfName.getText(), htmledDescription.getText(), new Integer(jtfPriority.getText()).intValue()));
+					mainFrame.addTodolistItem(new TodolistItem(parentTodolistId, jtfName.getText(), htmledDescription.getText(), jcmbPriority.getSelectedIndex()));
 				hide();
 			}
 		});
@@ -138,7 +141,7 @@ public class TodolistItemDialog extends JDialog {
 		getContentPane().add(new JLabel("Priority :"), c);
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(jtfPriority, c);
+		getContentPane().add(jcmbPriority, c);
 
 		c.fill=GridBagConstraints.BOTH;
 		c.gridy=4;
@@ -162,7 +165,7 @@ public class TodolistItemDialog extends JDialog {
 
 			jtfName.setText(todolistItem.getName());
 			htmledDescription.setText(todolistItem.getDescription());
-			jtfPriority.setText("" + todolistItem.getPriority());
+			jcmbPriority.setSelectedIndex(todolistItem.getPriority());
 			jcbComplete.setSelected(todolistItem.isComplete());
 		}
 	}
