@@ -66,8 +66,8 @@ SetCompressor lzma
 !define MUI_HEADERIMAGE
 !define MUI_HEADERIMAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Header\orange-NSIS.bmp"
 !define MUI_HEADERIMAGE_UNBITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Header\orange-uninstall-NSIS.bmp"
-!define MUI_WELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Wizard\orange-NSIS.bmp"
-!define MUI_UNWELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\Orange-Full-MoNKi\Wizard\orange-uninstall-NSIS.bmp"
+!define MUI_WELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\install-big.bmp"
+!define MUI_UNWELCOMEFINISHPAGE_BITMAP "trunk\setup\windows\resources\uninstall-big.bmp"
 !define MUI_ABORTWARNING
 !define MUI_ICON "trunk\setup\windows\resources\Orange-Full-MoNKi\Icons\orange-install-NSIS.ico"
 !define MUI_UNICON "trunk\setup\windows\resources\Orange-Full-MoNKi\Icons\orange-uninstall-NSIS.ico"
@@ -137,11 +137,11 @@ CRCCheck on
 Function .onInit
 
   #splash screen
-  SetOutPath $TEMP
-  File /oname=spltmp.bmp "trunk\setup\windows\resources\splash.bmp"
-  splash::show 1000 $TEMP\spltmp
-  Pop $0
-  Delete $TEMP\spltmp.bmp
+  #SetOutPath $TEMP
+  #File /oname=spltmp.bmp "trunk\setup\windows\resources\splash.bmp"
+  #splash::show 1000 $TEMP\spltmp
+  #Pop $0
+  #Delete $TEMP\spltmp.bmp
 
   #Extract InstallOptions files
   #$PLUGINSDIR will automatically be removed when the installer closes
