@@ -66,6 +66,8 @@ public class AudioConf extends Plugin
 
 	public void follow()
 	{
+		DialogBox.info("DEBUG: receiving audio stream from " +friend.getName());
+		
 		try {
 			AudioConfig config = (AudioConfig)this.connection.read();
 			AudioPlayer player = new AudioPlayer(config, new AudioConfInputStream(this.connection));

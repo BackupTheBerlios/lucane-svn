@@ -52,6 +52,9 @@ implements ActionListener
 		this.btnOk = new JButton(tr("btn.ok"), Client.getIcon("ok.png"));
 		this.btnCancel = new JButton(tr("btn.cancel"), Client.getIcon("cancel.png"));
 		
+		btnOk.addActionListener(this);
+		btnCancel.addActionListener(this);
+		
 		JPanel buttons = new JPanel(new GridLayout(1, 2));
 		buttons.add(btnOk);
 		buttons.add(btnCancel);

@@ -74,7 +74,7 @@ public class AudioConfigPanel extends JPanel
 	
 	public AudioConfig getAudioConfig()
 	{
-		return new AudioConfig(this.mode.getSelectedIndex(), this.quality.getValue());
+		return new AudioConfig(this.mode.getSelectedIndex()+1, this.quality.getValue());
 	}
 	
 	private String tr(String s)
