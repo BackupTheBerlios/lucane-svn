@@ -32,7 +32,7 @@ class PostgresLayer extends DatabaseAbstractionLayer
 		this.dataSource = dataSource;
 	}
 	
-	public Connection openConnection()
+	public Connection getConnection()
 	throws SQLException
 	{
 		return dataSource.getConnection();
