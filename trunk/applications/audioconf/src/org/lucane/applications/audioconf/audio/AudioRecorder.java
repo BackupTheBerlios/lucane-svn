@@ -34,12 +34,12 @@ public class AudioRecorder implements Runnable
 				AudioSystem.NOT_SPECIFIED);
 	}
 	
-	public void addAudioListener(AudioListener listener)
+	public void addAudioListener(AudioRecorderListener listener)
 	{
 		this.listeners.add(listener);
 	}
 	
-	public void removeAudioListener(AudioListener listener)
+	public void removeAudioListener(AudioRecorderListener listener)
 	{
 		this.listeners.remove(listener);
 	}
@@ -57,7 +57,7 @@ public class AudioRecorder implements Runnable
 		
 		Iterator listeners = this.listeners.iterator();
 		while(listeners.hasNext())
-			((AudioListener)listeners.next()).audioRecordingEnded();
+			((AudioRecorderListener)listeners.next()).audioRecordingEnded();
 	}
 	
 	public void run()
@@ -71,7 +71,7 @@ public class AudioRecorder implements Runnable
 
 		Iterator listeners = this.listeners.iterator();
 		while(listeners.hasNext())
-			((AudioListener)listeners.next()).audioRecordingStarted();
+			((AudioRecorderListener)listeners.next()).audioRecordingStarted();
 		
 		
 		try
@@ -83,9 +83,8 @@ public class AudioRecorder implements Runnable
 				
 				listeners = this.listeners.iterator();
 				while(listeners.hasNext())
-					((AudioListener)listeners.next()).audioRecorded(data);				
+					((AudioRecorderListener)listeners.next()).audioRecorded(data);				
 			}
-			System.out.println("kikoo");
 		}
 		catch (IOException e)
 		{

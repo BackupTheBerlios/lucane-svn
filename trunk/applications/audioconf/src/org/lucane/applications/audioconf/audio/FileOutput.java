@@ -2,7 +2,7 @@ package org.lucane.applications.audioconf.audio;
 
 import java.io.*;
 
-public class FileOutput implements AudioListener
+public class FileOutput implements AudioRecorderListener
 {
 	private String filename;
 	private FileOutputStream output;
@@ -16,7 +16,7 @@ public class FileOutput implements AudioListener
 	{
 		try {
 			this.output = new FileOutputStream(this.filename);
-			System.out.println("recording 5 seconds...");			
+			System.out.println("recording 50 seconds...");			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -51,7 +51,7 @@ public class FileOutput implements AudioListener
 		Thread t = new Thread(ar);
 		
 		t.start();
-		Thread.sleep(5*1000);
+		Thread.sleep(50*1000);
 		ar.stop();
 		
 		System.out.println(t.isAlive());
