@@ -10,7 +10,7 @@ elif [ -e "bin/client.sh" ]; then
 elif [ -e "client/bin/client.sh" ]; then
   cd client;
 else
-  echo "unable to find server, set $LUCANE_HOME or $LUCANE_CLIENT !"
+  echo "unable to find server, set LUCANE_HOME or LUCANE_CLIENT !"
   exit 1;
 fi
 # classpath generation
