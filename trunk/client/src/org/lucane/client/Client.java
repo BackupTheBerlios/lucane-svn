@@ -22,6 +22,7 @@ import org.lucane.client.util.*;
 import org.lucane.client.widgets.*;
 import org.lucane.common.*;
 import java.net.*;
+import java.awt.Font;
 import java.io.*;
 import java.util.*;
 
@@ -377,6 +378,12 @@ public class Client
 	{
 		this.config = config;
 		Translation.setLocale(config.getLanguage());
+
+		if(config.getFont() != null)
+		{	
+			FontManager.setDefaultFont(new Font(config.getFont(), Font.PLAIN, 12));
+			Logging.getLogger().info("Using font : " + config.getFont());   
+		}
 		
 		if(config.getProxyHost() != null)
 		{
@@ -385,7 +392,7 @@ public class Client
 		}
 
 		if(config.getPublicIp() != null)
-			Logging.getLogger().info("Forced use of the IP adress " + config.getPublicIp());   		
+			Logging.getLogger().info("Forced use of the IP adress : " + config.getPublicIp());   
 	}
 
 	/**

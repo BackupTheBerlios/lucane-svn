@@ -37,7 +37,7 @@ public class Translation
      * Places the correct Locale.
      * Load the properties file
      */
-    static void setLocale(String lang)
+    public static void setLocale(String lang)
     {
         try
         {

@@ -34,6 +34,7 @@ public class ClientConfig
 	private int listenerPort = 0;
 	private int serverPort = 9115;
 	private String language = "en";
+	private String font = null;
 	private String looknfeel = null;
 	private String proxyHost = null;
 	private int proxyPort = 5119;
@@ -113,6 +114,11 @@ public class ClientConfig
 	private void handleLanguage(Node node)
 	{
 		this.language = node.getAttributes().getNamedItem("value").getNodeValue();
+		try {
+			this.font = node.getAttributes().getNamedItem("font").getNodeValue();
+		} catch(Exception e) {
+			this.font = null;
+		}
 	}
 	
 	/**
@@ -197,6 +203,16 @@ public class ClientConfig
 	{
 		return language;
 	}
+	
+	/**
+	 * Get the font if a special one is needed
+	 * 
+	 * @return the font
+	 */
+	public String getFont()
+	{
+		return font;
+	}	
 
 	/**
 	 * Get the looknfeel used
