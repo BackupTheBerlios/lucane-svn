@@ -39,7 +39,7 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   
   public Connection openConnection()
   throws SQLException
-  {
+  {    
 	return dataSource.getConnection();
   }
 

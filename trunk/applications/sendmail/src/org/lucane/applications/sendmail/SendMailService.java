@@ -69,11 +69,14 @@ public class SendMailService extends Service
 				SMTP_HOST = res.getString(1);
 			res.close();
 			st.close();
-			conn.close();
 		}
 		catch(SQLException e)
 		{
 			Logging.getLogger().warning("Warning: unable to fetch the mailhost, using default: " + SMTP_HOST);
+		}
+		finally
+		{
+			try {conn.close();} catch (SQLException e1) {}
 		}
 	}
 	
