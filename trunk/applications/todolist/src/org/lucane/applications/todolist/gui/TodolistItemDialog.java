@@ -34,19 +34,19 @@ import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.applications.todolist.io.IO;
 
 public class TodolistItemDialog extends JDialog {
-	JTextField jtfName;
-	JTextField jtfDescription;
-	JTextField jtfPriority;
-	JCheckBox jcbComplete;
-	JButton jbOk;
-	JButton jbCancel;
+	private JTextField jtfName;
+	private JTextField jtfDescription;
+	private JTextField jtfPriority;
+	private JCheckBox jcbComplete;
+	private JButton jbOk;
+	private JButton jbCancel;
 	
-	MainFrame mainFrame;
-	String parentTodolistName;
+	private MainFrame mainFrame;
+	private String parentTodolistName;
 	
-	TodolistItem todolistItem;
+	private TodolistItem todolistItem;
 	
-	boolean modify = false;
+	private boolean modify = false;
 	
 	public TodolistItemDialog (MainFrame mainFrame, String parentTodolistName) {
 		this.mainFrame = mainFrame;

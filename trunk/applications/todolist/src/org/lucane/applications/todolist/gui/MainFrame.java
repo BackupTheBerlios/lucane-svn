@@ -20,6 +20,8 @@
 package org.lucane.applications.todolist.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -46,14 +49,17 @@ import org.lucane.client.widgets.DialogBox;
 
 public class MainFrame extends JFrame {
 	JToolBar jtbToolBar;
+
 	JList jlTodolists;
-	//JTable jtTodoListItems;
-	JList jlTodolistItems;
-	JSplitPane jspMain;
-	JSplitPane jspItem;
 	JSplitPane jspList;
-	JPanel jpItemView;
+	JTextArea jtaListDescription;
 	JPanel jpListView;
+
+	JList jlTodolistItems;
+	JSplitPane jspItem;
+	JPanel jpItemView;
+	
+	JSplitPane jspMain;
 
 	JButton jbCreateTodolist;
 	JButton jbEditTodolist;
@@ -83,16 +89,30 @@ public class MainFrame extends JFrame {
 		jlTodolists.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent lse) {
 				refreshTodolistItems();
+				if (jlTodolists.getSelectedIndex()>=0)
+					jtaListDescription.setText(((Todolist)todolistsByName.get((String)jlTodolists.getSelectedValue())).getDescription());
 			}
 		});
+		jtaListDescription = new JTextArea();
+		//jtaListDescription.setBackground(SystemColor.control);
+		jtaListDescription.setEditable(false);
+		jtaListDescription.setLineWrap(true);
+		jtaListDescription.setWrapStyleWord(true);
 		jpListView = new JPanel(new BorderLayout());
 		jpListView.add(new JLabel("Description :"), BorderLayout.NORTH);
-		jpListView.add(new JLabel("<html><body><i>The description</i></body></html>"), BorderLayout.CENTER);
+		jpListView.add(new JScrollPane(jtaListDescription), BorderLayout.CENTER);
 		jspList = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jlTodolists), jpListView);
 		jspList.setResizeWeight(.80);
 
 		//jtTodoListItems = new JTable();
 		jlTodolistItems = new JList();
+		jlTodolistItems.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent lse) {
+				if (jlTodolists.getSelectedIndex()>=0) {
+					jtaListDescription.setText(((Todolist)todolistsByName.get((String)jlTodolists.getSelectedValue())).getDescription());
+				}
+			}
+		});
 		jpItemView = new JPanel();
 		//jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodoListItems), jpItemView);
 		jspItem = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jlTodolistItems), jpItemView);
@@ -109,12 +129,19 @@ public class MainFrame extends JFrame {
 		jbCreateTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
-				new TodolistCreationDialog(mainFrame).show();
+				new TodolistDialog(mainFrame).show();
 			}
 		});
 		jtbToolBar.add(jbCreateTodolist);
 		
 		JButton jbEditTodolist = new JButton("Edit todolist");
+		jbEditTodolist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				// TODO check if a selection is available
+				// I use the mainFrame object because in that case this is the action listener
+				new TodolistDialog(mainFrame, (Todolist) todolistsByName.get((String) jlTodolists.getSelectedValue())).show();
+			}
+		});
 		jtbToolBar.add(jbEditTodolist);
 		
 		JButton jbDeleteTodolist = new JButton("Remove todolist");
@@ -193,6 +220,14 @@ public class MainFrame extends JFrame {
 	protected void addTodolist(Todolist newTodolist) {
 		if (!IO.getInstance().addTodolist(newTodolist))
 			return;
+		todolistsByName.put(newTodolist.getName(), newTodolist);
+		jlTodolists.setListData(new Vector(todolistsByName.keySet()));
+	}
+
+	protected void modifyTodolist(Todolist oldTodolist, Todolist newTodolist) {
+		if (!IO.getInstance().modifyTodolist(oldTodolist, newTodolist))
+			return;
+		todolistsByName.remove(oldTodolist.getName());
 		todolistsByName.put(newTodolist.getName(), newTodolist);
 		jlTodolists.setListData(new Vector(todolistsByName.keySet()));
 	}

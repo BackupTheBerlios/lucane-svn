@@ -127,6 +127,7 @@ public class IO {
 
 		return true;
 	}
+
 	public boolean deleteTodolistItem(TodolistItem defunctTodolistItem) {
         try {
 			TodolistAction action =	new TodolistAction(TodolistAction.DEL_TODOLISTITEM, new String[] {defunctTodolistItem.getUserName(), defunctTodolistItem.getParentTodolistName(), defunctTodolistItem.getName()});
@@ -162,9 +163,25 @@ public class IO {
 
 		return true;
 	}
-	public boolean modifyTodolist(String oldListName, Todolist newTodoList) {
-		return false;
+
+	public boolean modifyTodolist(Todolist oldTodolist, Todolist newTodolist) {
+        try {
+			TodolistAction action =	new TodolistAction(TodolistAction.MOD_TODOLIST, new Object[] {oldTodolist.getUserName(), oldTodolist.getName(), newTodolist});
+			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
+			String ack = oc.readString();
+			if (ack.startsWith("FAILED")) {
+				DialogBox.error("Can't modify the todo list");
+				return false;
+			}
+			oc.close();
+		} catch (Exception e) {
+			DialogBox.error("Can't modify the todo list");
+			return false;
+		}
+
+		return true;
 	}
+	
 	public boolean deleteTodolist(Todolist defunctTodolist) {
         try {
 			TodolistAction action =	new TodolistAction(TodolistAction.DEL_TODOLIST, new String[] {defunctTodolist.getUserName(), defunctTodolist.getName()});

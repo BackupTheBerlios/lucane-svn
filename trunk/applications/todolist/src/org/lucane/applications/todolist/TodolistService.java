@@ -83,7 +83,11 @@ public class TodolistService extends Service {
             		addTodolist(oc, (Todolist)tla.getParam());
                     break;
             	case TodolistAction.MOD_TODOLIST :
-                    break;
+	        		{
+	        			Object[] tmpobj = (Object[])tla.getParam();
+	        			modifyTodolist(oc, (String)tmpobj[0], (String)tmpobj[1], (Todolist)tmpobj[2]);
+	        		}
+	                break;
             	case TodolistAction.DEL_TODOLIST :
 	            	{
 	            		String[] tmpstr = (String[])tla.getParam();
@@ -178,6 +182,34 @@ public class TodolistService extends Service {
 		} catch (Exception e) {
 			Logging.getLogger().warning(
 				"Error in TodolistService::addTodolist : " + e);
+		}
+	}
+
+	private void modifyTodolist(ObjectConnection oc, String oldTodolistUser, String oldTodolistName, Todolist newTodolist) {
+		// TODO check if the list can be correctly renamed
+		try {
+			st = conn.prepareStatement(
+					"UPDATE todolists SET user_name=?, name=?, description=? WHERE user_name=? AND name=?");
+			st.setString(1, newTodolist.getUserName());
+			st.setString(2, newTodolist.getName());
+			st.setString(3, newTodolist.getDescription());
+			st.setString(4, oldTodolistUser);
+			st.setString(5, oldTodolistName);
+			st.executeUpdate();
+			st.close();
+
+			st = conn.prepareStatement(
+					"UPDATE todolistitems SET list_name=? WHERE list_name=?");
+			st.setString(1, newTodolist.getName());
+			st.setString(2, oldTodolistName);
+			st.executeUpdate();
+			st.close();
+
+			oc.write("OK");
+
+		} catch (Exception e) {
+			Logging.getLogger().warning(
+				"Error in TodolistService::modifyTodolist : " + e);
 		}
 	}
 
