@@ -18,12 +18,14 @@
  */
 package org.lucane.applications.audioconf.audio;
 
+import java.io.Serializable;
+
 import javax.sound.sampled.*;
 
 /**
  * Configuration for audio stream
  */
-public class AudioConfig
+public class AudioConfig implements Serializable
 {
 	//-- speex frame rates
 	public static final int NARROWBAND = 8000;
@@ -81,5 +83,10 @@ public class AudioConfig
 						this.getChannels()*2, 
 						this.getFrameRate(), 
 						false);
+	}
+	
+	public String toString()
+	{
+		return "" +this.frameRate;
 	}
 }

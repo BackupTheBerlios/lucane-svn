@@ -75,7 +75,7 @@ public class ObjectConnection
 	{
 		this.output.writeObject(o);
 	}
-	
+		
 	/**
 	 * Check if we have something to read
 	 * 

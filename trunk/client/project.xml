@@ -44,6 +44,12 @@
       <jar>TrayIcon12.dll</jar>
     </dependency>
     
+    <dependency>
+      <groupId>jspeex</groupId>
+      <artifactId>jspeex</artifactId>
+      <version>0.9.2</version>
+    </dependency>
+
   </dependencies>
 
 </project>
