@@ -49,7 +49,7 @@
   <goal
     name="mkwinsetup-lucane"
     description="Create a windows installer"
-><!--    prereqs="mkdist-lucane">-->
+    prereqs="mkdist-lucane">
     
     <echo message="Creating the windows installer:"/>
 
