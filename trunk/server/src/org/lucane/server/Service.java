@@ -74,4 +74,10 @@ public abstract class Service
    * Only called the first time a service is initialized.
    */
   public void install() {}
+  
+  /**
+   * Shutdown the service.
+   * Called at server shutdown
+   */
+  public void shutdown() {}
 }
