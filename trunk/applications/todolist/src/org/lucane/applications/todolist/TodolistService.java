@@ -22,7 +22,6 @@ package org.lucane.applications.todolist;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.lucane.common.Logging;
@@ -35,16 +34,16 @@ import org.lucane.server.store.Store;
 
 public class TodolistService extends Service {
 	private Store store;
-    
-    private DatabaseAbstractionLayer layer;
-    private Connection conn;
-
-    private PreparedStatement st;
-    private ResultSet res;
-
+	
+	private DatabaseAbstractionLayer layer;
+	private Connection conn;
+	
+	private PreparedStatement st;
+	private ResultSet res;
+	
 	public TodolistService() {
 	}
-
+	
 	public void install() {
 		try {
 			String dbDescription = getDirectory() + "db-todolist.xml";
@@ -54,77 +53,74 @@ public class TodolistService extends Service {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void init(Server parent) {
+		layer = parent.getDBLayer();
+		
 		try {
-			layer = parent.getDBLayer();
-			conn = layer.openConnection();
-		} catch (SQLException e) {
-			Logging.getLogger().warning("unable to open connection: " + e);
-		}
-
-    	try {
 			this.store = parent.getStore();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public void process(ObjectConnection oc, Message message) {
 		TodolistAction tla = (TodolistAction) message.getData();
 		try {
-            switch (tla.action) {
-            	case TodolistAction.GET_TODOLISTS :
-            		getTodolists(oc, (String)tla.getParam());
-                    break;
-            	case TodolistAction.GET_TODOLISTITEMS :
-	        		{
-	        			getTodolistItems(oc, ((Integer)tla.getParam()).intValue());
-	        		}
-	                break;
-            	case TodolistAction.ADD_TODOLIST :
-            		addTodolist(oc, (Todolist)tla.getParam());
-                    break;
-            	case TodolistAction.MOD_TODOLIST :
-	        		{
-	        			Object[] tmpobj = (Object[])tla.getParam();
-	        			modifyTodolist(oc, ((Integer)tmpobj[0]).intValue(), (Todolist)tmpobj[1]);
-	        		}
-	                break;
-            	case TodolistAction.DEL_TODOLIST :
-	            	{
-	            		deleteTodolist(oc, ((Integer)tla.getParam()).intValue());
-	            	}
-                    break;
-            	case TodolistAction.ADD_TODOLISTITEM :
-            		addTodolistItem(oc, (TodolistItem)tla.getParam());
-                    break;
-            	case TodolistAction.MOD_TODOLISTITEM :
-	        		{
-	        			Object[] tmpobj = (Object[])tla.getParam();
-	        			modifyTodolistItem(oc, ((Integer)tmpobj[0]).intValue(), (TodolistItem)tmpobj[1]);
-	        		}
-                    break;
-            	case TodolistAction.DEL_TODOLISTITEM :
-	            	{
-	            		deleteTodolistItem(oc, ((Integer)tla.getParam()).intValue());
-	            	}
-                    break;
+			switch (tla.action) {
+				case TodolistAction.GET_TODOLISTS :
+					getTodolists(oc, (String)tla.getParam());
+				break;
+				case TodolistAction.GET_TODOLISTITEMS :
+				{
+					getTodolistItems(oc, ((Integer)tla.getParam()).intValue());
+				}
+				break;
+				case TodolistAction.ADD_TODOLIST :
+					addTodolist(oc, (Todolist)tla.getParam());
+				break;
+				case TodolistAction.MOD_TODOLIST :
+				{
+					Object[] tmpobj = (Object[])tla.getParam();
+					modifyTodolist(oc, ((Integer)tmpobj[0]).intValue(), (Todolist)tmpobj[1]);
+				}
+				break;
+				case TodolistAction.DEL_TODOLIST :
+				{
+					deleteTodolist(oc, ((Integer)tla.getParam()).intValue());
+				}
+				break;
+				case TodolistAction.ADD_TODOLISTITEM :
+					addTodolistItem(oc, (TodolistItem)tla.getParam());
+				break;
+				case TodolistAction.MOD_TODOLISTITEM :
+				{
+					Object[] tmpobj = (Object[])tla.getParam();
+					modifyTodolistItem(oc, ((Integer)tmpobj[0]).intValue(), (TodolistItem)tmpobj[1]);
+				}
+				break;
+				case TodolistAction.DEL_TODOLISTITEM :
+				{
+					deleteTodolistItem(oc, ((Integer)tla.getParam()).intValue());
+				}
+				break;
 			}
 		} catch (Exception e) {
 			try {
 				oc.write("FAILED " + e);
 			} catch (Exception e2) {
 			}
-
+			
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void getTodolists(ObjectConnection oc, String userName) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"SELECT id, user_name, name, comment FROM todolists WHERE user_name=?");
+			"SELECT id, user_name, name, comment FROM todolists WHERE user_name=?");
 			st.setString(1, userName);
 			res = st.executeQuery();
 			
@@ -132,22 +128,25 @@ public class TodolistService extends Service {
 			while (res.next()) {
 				todolists.add(new Todolist(res.getInt(1), res.getString(2), res.getString(3), res.getString(4)));
 			}
-
+			
 			oc.write("OK");
 			oc.write(todolists);
 			
 			res.close();
 			st.close();
+			conn.close();
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::getTodolists : " + e);
+					"Error in TodolistService::getTodolists : " + e);
 		}
 	}
 	
 	private void getTodolistItems(ObjectConnection oc, int idList) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"SELECT id, id_list, name, comment, priority, completed FROM todolistitems WHERE id_list=?");
+			"SELECT id, id_list, name, comment, priority, completed FROM todolistitems WHERE id_list=?");
 			st.setInt(1, idList);
 			res = st.executeQuery();
 			
@@ -155,31 +154,34 @@ public class TodolistService extends Service {
 			while (res.next()) {
 				todolistitems.add(new TodolistItem(res.getInt(1), res.getInt(2), res.getString(3), res.getString(4), res.getInt(5), res.getInt(6)==1));
 			}
-
+			
 			oc.write("OK");
 			oc.write(todolistitems);
 			
 			res.close();
 			st.close();
+			conn.close();
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::getTodolistItems : " + e);
+					"Error in TodolistService::getTodolistItems : " + e);
 		}
 	}
 	
 	private void addTodolist(ObjectConnection oc, Todolist newTodolist) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"SELECT MAX(id) FROM todolists");
+			"SELECT MAX(id) FROM todolists");
 			res = st.executeQuery();
 			int id=1;
 			if (res.next());
-				id = res.getInt(1) + 1;
+			id = res.getInt(1) + 1;
 			res.close();
 			st.close();
 			
 			st = conn.prepareStatement(
-					"INSERT INTO todolists (id, user_name, name, comment) VALUES (?, ?, ?, ?)");
+			"INSERT INTO todolists (id, user_name, name, comment) VALUES (?, ?, ?, ?)");
 			newTodolist.setId(id);
 			st.setInt(1, id);
 			st.setString(2, newTodolist.getUserName());
@@ -187,59 +189,68 @@ public class TodolistService extends Service {
 			st.setString(4, newTodolist.getComment());
 			st.executeUpdate();
 			st.close();
-
+			conn.close();
+			
 			oc.write("OK");
 			oc.write(new Integer(id));
-
+			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::addTodolist : " + e);
+					"Error in TodolistService::addTodolist : " + e);
 		}
 	}
-
+	
 	private void modifyTodolist(ObjectConnection oc, int oldTodolistId, Todolist newTodolist) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"UPDATE todolists SET user_name=?, name=?, comment=? WHERE id=?");
+			"UPDATE todolists SET user_name=?, name=?, comment=? WHERE id=?");
 			st.setString(1, newTodolist.getUserName());
 			st.setString(2, newTodolist.getName());
 			st.setString(3, newTodolist.getComment());
 			st.setInt(4, oldTodolistId);
 			st.executeUpdate();
 			st.close();
-
+			conn.close();
+			
 			oc.write("OK");
-
+			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::modifyTodolist : " + e);
+					"Error in TodolistService::modifyTodolist : " + e);
 		}
 	}
-
+	
 	private void deleteTodolist(ObjectConnection oc, int id) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"DELETE FROM todolists WHERE id=?");
+			"DELETE FROM todolists WHERE id=?");
 			st.setInt(1, id);
 			st.executeUpdate();
 			st.close();
-
+			
 			st = conn.prepareStatement(
-					"DELETE FROM todolistitems WHERE id_list=?");
+			"DELETE FROM todolistitems WHERE id_list=?");
 			st.setInt(1, id);
 			st.executeUpdate();
 			st.close();
-
+			conn.close();
+			
 			oc.write("OK");
-
+			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::deleteTodolist : " + e);
+					"Error in TodolistService::deleteTodolist : " + e);
 		}
 	}
-
+	
 	private void addTodolistItem(ObjectConnection oc, TodolistItem newTodolistItem) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
 			"SELECT count(*) FROM todolists WHERE id=?");
 			st.setInt(1, newTodolistItem.getParentTodolistId());
@@ -252,18 +263,18 @@ public class TodolistService extends Service {
 			}
 			res.close();
 			st.close();
-
+			
 			st = conn.prepareStatement(
-					"SELECT MAX(id) FROM todolistItems");
+			"SELECT MAX(id) FROM todolistItems");
 			res = st.executeQuery();
 			int id=1;
 			if (res.next());
-				id = res.getInt(1) + 1;
+			id = res.getInt(1) + 1;
 			res.close();
 			st.close();
-		
+			
 			st = conn.prepareStatement(
-					"INSERT INTO todolistitems (id, name, comment, id_list, priority, completed) VALUES (?, ?, ?, ?, ?, ?)");
+			"INSERT INTO todolistitems (id, name, comment, id_list, priority, completed) VALUES (?, ?, ?, ?, ?, ?)");
 			st.setInt(1, id);
 			st.setString(2, newTodolistItem.getName());
 			st.setString(3, newTodolistItem.getComment());
@@ -272,20 +283,24 @@ public class TodolistService extends Service {
 			st.setInt(6, newTodolistItem.isCompleted()?1:0);
 			st.executeUpdate();
 			st.close();
-
+			
+			conn.close();
+			
 			oc.write("OK");
 			oc.write(new Integer(id));
 			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::addTodolistItem : " + e);
+					"Error in TodolistService::addTodolistItem : " + e);
 		}
 	}
-
+	
 	private void modifyTodolistItem(ObjectConnection oc, int oldTodolistItemId, TodolistItem newTodolistItem) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"UPDATE todolistitems SET name=?, comment=?, id_list=?, priority=?, completed=? WHERE id=?");
+			"UPDATE todolistitems SET name=?, comment=?, id_list=?, priority=?, completed=? WHERE id=?");
 			st.setString(1, newTodolistItem.getName());
 			st.setString(2, newTodolistItem.getComment());
 			st.setInt(3, newTodolistItem.getParentTodolistId());
@@ -294,29 +309,33 @@ public class TodolistService extends Service {
 			st.setInt(6, oldTodolistItemId);
 			st.executeUpdate();
 			st.close();
-
+			conn.close();
+			
 			oc.write("OK");
-
+			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::modifyTodolistItem : " + e);
+					"Error in TodolistService::modifyTodolistItem : " + e);
 		}
 	}
-
+	
 	private void deleteTodolistItem(ObjectConnection oc, int id) {
 		try {
+			conn = layer.openConnection();
+
 			st = conn.prepareStatement(
-					"DELETE FROM todolistitems WHERE id=?");
+			"DELETE FROM todolistitems WHERE id=?");
 			st.setInt(1, id);
 			st.executeUpdate();
 			st.close();
-
+			conn.close();
+			
 			oc.write("OK");
-
+			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
-				"Error in TodolistService::deleteTodolistItem : " + e);
+					"Error in TodolistService::deleteTodolistItem : " + e);
 		}
 	}
-
+	
 }

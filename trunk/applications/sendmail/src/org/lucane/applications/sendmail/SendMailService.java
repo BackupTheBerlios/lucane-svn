@@ -28,55 +28,55 @@ import java.sql.*;
 
 public class SendMailService extends Service
 {
-  protected static String SMTP_HOST = "localhost";
-  
-        private DatabaseAbstractionLayer layer = null;
-        private Connection conn = null;
-        private Statement st = null;
-        private ResultSet res = null;
-
+	protected static String SMTP_HOST = "localhost";
+	
+	private DatabaseAbstractionLayer layer = null;
+	private Connection conn = null;
+	private Statement st = null;
+	private ResultSet res = null;
+	
 	public SendMailService()
-        {
-        }
-
-        public void createTable()
-        {
-             try  {  	
-             	String dbDescription = getDirectory()	+ "db-sendmail.xml";
-             	layer.getTableCreator().createFromXml(dbDescription);
-             	
-                 conn = layer.openConnection();
-                 String request = "INSERT INTO smtphost VALUES ('" + SMTP_HOST + "')";
-                 st = conn.createStatement();
-                 st.execute(request);
-                 st.close();
-                 conn.close();
-             } catch (Exception e) {
-             	Logging.getLogger().severe("Unable to install SendMailService !");
-             	e.printStackTrace();
-             }    
-        }
-
-        public void initSmtpHost()
-        {
-          try 
-          {
-            String request = "SELECT hostname FROM smtphost";
-            conn = layer.openConnection();
-            st = conn.createStatement();
-            res = st.executeQuery(request);
-            if(res.next())
-              SMTP_HOST = res.getString(1);
-            res.close();
-            st.close();
-            conn.close();
-          }
-          catch(SQLException e)
-          {
+	{
+	}
+	
+	public void createTable()
+	{
+		try  {  	
+			String dbDescription = getDirectory()	+ "db-sendmail.xml";
+			layer.getTableCreator().createFromXml(dbDescription);
+			
+			conn = layer.openConnection();
+			String request = "INSERT INTO smtphost VALUES ('" + SMTP_HOST + "')";
+			st = conn.createStatement();
+			st.execute(request);
+			st.close();
+			conn.close();
+		} catch (Exception e) {
+			Logging.getLogger().severe("Unable to install SendMailService !");
+			e.printStackTrace();
+		}    
+	}
+	
+	public void initSmtpHost()
+	{
+		try 
+		{
+			String request = "SELECT hostname FROM smtphost";
+			conn = layer.openConnection();
+			st = conn.createStatement();
+			res = st.executeQuery(request);
+			if(res.next())
+				SMTP_HOST = res.getString(1);
+			res.close();
+			st.close();
+			conn.close();
+		}
+		catch(SQLException e)
+		{
 			Logging.getLogger().warning("Warning: unable to fetch the mailhost, using default: " + SMTP_HOST);
-          }
-        }
-
+		}
+	}
+	
 	public void process(ObjectConnection oc, Message message)
 	{
 		//fetch parameters
@@ -97,7 +97,7 @@ public class SendMailService extends Service
 			content = "";
 		if(contentType == null)
 			contentType = "text/plain";
-			
+		
 		//build mail and send it
 		try {
 			SendableMail sm = new SendableMail();
@@ -111,7 +111,7 @@ public class SendMailService extends Service
 				sm.addCc(cc);
 			if(bcc != null)
 				sm.addBcc(bcc);
-				
+			
 			//attachments loop
 			if(attach != null)
 			{
@@ -120,8 +120,8 @@ public class SendMailService extends Service
 				{
 					String key = (String)i.next();
 					String data = (String)attach.get(key);
-                                        if(key != null && data != null)
-					  sm.attach(key, data);
+					if(key != null && data != null)
+						sm.attach(key, data);
 				}
 			}
 			
@@ -130,21 +130,21 @@ public class SendMailService extends Service
 			oc.write("OK");
 		}
 		catch(Exception e) {
-                  try {
-                    e.printStackTrace();
-		    oc.write("FAILED " + e);
-                  } catch(Exception e2) {}
+			try {
+				e.printStackTrace();
+				oc.write("FAILED " + e);
+			} catch(Exception e2) {}
 		}
 	}
-
+	
 	public void init(Server parent)
 	{
-                layer = parent.getDBLayer();
-                initSmtpHost();
+		layer = parent.getDBLayer();
+		initSmtpHost();
 	}
-
+	
 	public void install()
 	{
-          createTable();
+		createTable();
 	}
 }
