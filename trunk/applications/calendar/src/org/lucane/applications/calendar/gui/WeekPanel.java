@@ -21,6 +21,8 @@ package org.lucane.applications.calendar.gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import java.net.URL;
 import java.util.*;
 
 import org.lucane.client.widgets.DialogBox;
@@ -29,8 +31,18 @@ import org.lucane.applications.calendar.widget.*;
 import org.lucane.applications.calendar.Event;
 
 public class WeekPanel extends JPanel
+implements ActionListener
 {
 	private WeekView view;
+	
+	private JButton previousYear;
+	private JButton previousWeek;
+	
+	private JComboBox week;
+	private JComboBox year;
+	
+	private JButton nextYear;
+	private JButton nextWeek;
 	
 	private Calendar calendar;
 	private CalendarListener listener;
@@ -47,15 +59,109 @@ public class WeekPanel extends JPanel
 		this.userName = userName;
 		
 		calendar = Calendar.getInstance();
+		
+		try {
+			previousYear = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "pprevious.png")));
+			previousWeek = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "previous.png")));
+			nextYear = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "nnext.png")));
+			nextWeek = new JButton(new ImageIcon(new URL(plugin.getDirectory() + "next.png")));
+		} catch(Exception e) {
+			previousYear = new JButton("<<");
+			previousWeek = new JButton("<");
+			nextYear = new JButton(">>");
+			nextWeek = new JButton(">");	
+		}
+		
+		previousYear.addActionListener(this);
+		previousWeek.addActionListener(this);
+		nextYear.addActionListener(this);
+		nextWeek.addActionListener(this);
+		
+		week = new JComboBox();
+		year = new JComboBox();		
+		
 		view = new WeekView(plugin);
 		view.addCalendarListener(listener);
+		
+		JPanel topbar = new JPanel(new BorderLayout());
+		initTopBar(topbar);
+		
+		
+		add(topbar, BorderLayout.NORTH);		
 		add(view, BorderLayout.CENTER);
+		
+		refreshView();
+	}
+	
+
+	private void initCombos()
+	{			
+		int weekIndex = calendar.get(Calendar.WEEK_OF_YEAR)-1;
+		week.removeActionListener(this);
+		week.removeAllItems();
+		for(int i=1;i<=52;i++)
+			week.addItem(new Integer(i));
+		week.setSelectedIndex(weekIndex);
+		week.addActionListener(this);
+		
+		if(weekIndex == 0)
+			calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		else if(weekIndex == 51)
+			calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		
+		int currentYear = calendar.get(Calendar.YEAR);
+		year.removeActionListener(this);
+		year.removeAllItems();
+		for(int i=-3;i<4;i++)
+			year.addItem(new Integer(currentYear+i));
+		year.setSelectedIndex(3);
+		year.addActionListener(this);
+	}
+	
+	private void initTopBar(JPanel bar)
+	{
+		JPanel previous = new JPanel(new GridLayout(1, 2));
+		previous.add(previousYear);
+		previous.add(previousWeek);
+		
+		JPanel middle = new JPanel(new BorderLayout());
+		middle.add(week, BorderLayout.CENTER);
+		middle.add(year, BorderLayout.EAST);
+		
+		JPanel next = new JPanel(new GridLayout(1, 2));
+		next.add(nextWeek);
+		next.add(nextYear);
+		
+		bar.add(previous, BorderLayout.WEST);
+		bar.add(middle, BorderLayout.CENTER);
+		bar.add(next, BorderLayout.EAST);
+		bar.setBorder(BorderFactory.createEmptyBorder(2, 1, 3, 1));
+	}
+	
+	public void actionPerformed(ActionEvent ae)
+	{	
+		//-- buttons
+		if(ae.getSource() == previousYear)
+			calendar.add(Calendar.YEAR, -1);
+		else if(ae.getSource() == previousWeek)
+			calendar.add(Calendar.WEEK_OF_YEAR, -1);
+		else if(ae.getSource() == nextYear)
+			calendar.add(Calendar.YEAR, 1);
+		else if(ae.getSource() == nextWeek)
+			calendar.add(Calendar.WEEK_OF_YEAR, 1);
+		
+		//-- combos
+		if(ae.getSource() == week)
+			calendar.set(Calendar.WEEK_OF_YEAR, ((Integer)week.getSelectedItem()).intValue());
+		else if(ae.getSource() == year)
+			calendar.set(Calendar.YEAR, ((Integer)year.getSelectedItem()).intValue());
 		
 		refreshView();
 	}
 	
 	public void refreshView()
 	{	
+		initCombos();
 		view.setDisplayedWeek(calendar.get(Calendar.WEEK_OF_YEAR)+1, calendar.get(Calendar.YEAR));
 		
 		//-- get month interval (in milliseconds)
