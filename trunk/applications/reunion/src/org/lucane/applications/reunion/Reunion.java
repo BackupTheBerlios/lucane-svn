@@ -87,17 +87,17 @@ implements ActionListener, KeyListener, ObjectListener
 
     /* creation of the frame */
     dialog = new JFrame(getTitle());
-	dialog.setIconImage(this.getImageIcon().getImage());
-	dialog.addWindowListener(this);
-	dialog.addKeyListener(this);
-	dialog.getContentPane().setLayout(new BorderLayout());
-	/* the subject */
+    dialog.setIconImage(this.getImageIcon().getImage());
+    dialog.addWindowListener(this);
+    dialog.addKeyListener(this);
+    dialog.getContentPane().setLayout(new BorderLayout());
+    /* the subject */
     lblInfo = new JLabel(tr("subject"));
-	dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
+    dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
     txtSubject = new JTextField(50);
     txtSubject.addKeyListener(this);
-	dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
-	/* send button */
+    dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
+    /* send button */
     btnDlg = new JButton(tr("send"));
     btnDlg.addActionListener(this);
     dialog.getContentPane().add(btnDlg, BorderLayout.EAST);
@@ -109,18 +109,18 @@ implements ActionListener, KeyListener, ObjectListener
   /* if the user joined the reunion */
   public void follow()
   {
-	/* creation of the frame */
+    /* creation of the frame */
     dialog = new JFrame(getTitle());
     dialog.addWindowListener(this);
     dialog.getContentPane().setLayout(new BorderLayout());
-	/* the subject */
+    /* the subject */
     lblInfo = new JLabel("[" + this.coordinator.getName() + "]");
-	dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
+    dialog.getContentPane().add(lblInfo, BorderLayout.WEST);
     txtSubject = new JTextField(50);
     txtSubject.setText(this.subject);
     txtSubject.setEditable(false);
-	dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
-	/* accept button */
+    dialog.getContentPane().add(txtSubject, BorderLayout.CENTER);
+    /* accept button */
     btnDlg = new JButton(tr("accept"));
     btnDlg.addActionListener(this);
     dialog.getContentPane().add(btnDlg, BorderLayout.EAST);
@@ -132,7 +132,7 @@ implements ActionListener, KeyListener, ObjectListener
 
   public void actionPerformed(ActionEvent ae)
   {
-	/* if the user started the reunion, get the friends */
+    /* if the user started the reunion, get the friends */
     if(this.starter)
     {
       this.subject = txtSubject.getText();
@@ -148,7 +148,7 @@ implements ActionListener, KeyListener, ObjectListener
         catch(Exception e)
         {
           e.printStackTrace();
-		  Logging.getLogger().warning(tr("contactError"));
+          Logging.getLogger().warning(tr("contactError"));
         }
       }
     }
@@ -162,7 +162,7 @@ implements ActionListener, KeyListener, ObjectListener
     /* join the reunion */
     ReunionMessage msg = ReunionMessage.createJoinInstance(Client.getInstance().getMyInfos().getName());
 
-	/* if the user started the reunion, send them the join message */
+    /* if the user started the reunion, send them the join message */
     if(starter)
     {
       for(int i = 0; i < ocFriends.length; i++)
@@ -177,11 +177,11 @@ implements ActionListener, KeyListener, ObjectListener
     /* else, just send the join message to the reunion creator */
     else
     {
-    	try {
+      try {
           ocCoordinator.addObjectListener(this);
           ocCoordinator.listen();
           ocCoordinator.write(msg);
-    	} catch(Exception e) {}
+      } catch(Exception e) {}
     }
   }
 
@@ -199,8 +199,8 @@ implements ActionListener, KeyListener, ObjectListener
       return;
     }
 
-	ReunionMessage msg;
-	/* if the user started the reunion, send all friends the end message */
+    ReunionMessage msg;
+    /* if the user started the reunion, send all friends the end message */
     if(starter)
     {
       msg = ReunionMessage.createEndInstance();
@@ -214,7 +214,7 @@ implements ActionListener, KeyListener, ObjectListener
       }
       saveReunion();
     }
-	/* else, send the reunion creator, the leave message */
+    /* else, send the reunion creator, the leave message */
     else
     {
       msg = ReunionMessage.createLeaveInstance(Client.getInstance().getMyInfos().getName());
@@ -233,25 +233,33 @@ implements ActionListener, KeyListener, ObjectListener
     frame.addWindowListener(this);
     frame.setSize(640, 480);
     frame.getContentPane().setLayout(new BorderLayout());
+    
     /* the send textbox */
     txtRead = new HTMLEditor();
     txtRead.setEditable(false);
-	txtRead.setToolbarVisible(false);
-	frame.getContentPane().add(new JScrollPane(txtRead), BorderLayout.CENTER);
+    txtRead.setToolbarVisible(false);
     /* the friends */
     lstUsers = new JList();
     users = new DefaultListModel();
     lstUsers.setModel(users);
-    frame.getContentPane().add(new JScrollPane(lstUsers), BorderLayout.EAST);
 
-	txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("subjectMsg") + this.subject));
+    JSplitPane jsp =
+      new JSplitPane(
+        JSplitPane.HORIZONTAL_SPLIT,
+        new JScrollPane(txtRead),
+        new JScrollPane(lstUsers));
+    jsp.setDividerLocation(520);
+    frame.getContentPane().add(jsp, BorderLayout.CENTER);
+
+
+    txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("subjectMsg") + this.subject));
 
     if(this.starter)
     {
       addUser(Client.getInstance().getMyInfos().getName());
     }
 
-	/* send button */
+    /* send button */
     txtSend = new HTMLEditor();
     txtSend.getEditorPane().addKeyListener(this);
     frame.getContentPane().add(txtSend, BorderLayout.SOUTH);
@@ -277,8 +285,8 @@ implements ActionListener, KeyListener, ObjectListener
 
       /* mainfraime */
       /* if there is no message to send, stop */
-	  if(txtSend.getText().equals(""))
-		return;
+    if(txtSend.getText().equals(""))
+    return;
       /* create the message to send */
       ReunionMessage msg =
         ReunionMessage.createTextInstance(
@@ -320,8 +328,8 @@ implements ActionListener, KeyListener, ObjectListener
   public void addUser(String user)
   {
     //txtRead.addHTML(ReunionMessage.createHTMLInfoMessage(this, tr("joinMsg") + user));
-	this.users.addElement(user);
-	this.lstUsers.setModel(users);
+  this.users.addElement(user);
+  this.lstUsers.setModel(users);
   }
 
   public void delUser(String user)
@@ -347,28 +355,28 @@ implements ActionListener, KeyListener, ObjectListener
 
   private void saveReunion()
   {
-  	try
-	{
-  		subject = subject.replace(' ', '_');
+    try
+  {
+      subject = subject.replace(' ', '_');
 
-  		Calendar cal = Calendar.getInstance();
-  		String time = "_" + cal.get(Calendar.DAY_OF_MONTH) + "-" +
-		(cal.get(Calendar.MONTH) + 1) + "-" +
-		cal.get(Calendar.YEAR);
-  		ConnectInfo fileService =
-  			Communicator.getInstance().getConnectInfo("org.lucane.applications.filemanager");
-  		ObjectConnection sc =
-  			Communicator.getInstance().sendMessageTo(fileService,
-  					"org.lucane.applications.filemanager", "SET_FILE /Reunion/ " +
-					subject + time + ".html");
+      Calendar cal = Calendar.getInstance();
+      String time = "_" + cal.get(Calendar.DAY_OF_MONTH) + "-" +
+      (cal.get(Calendar.MONTH) + 1) + "-" +
+      cal.get(Calendar.YEAR);
+      ConnectInfo fileService =
+        Communicator.getInstance().getConnectInfo("org.lucane.applications.filemanager");
+      ObjectConnection sc =
+        Communicator.getInstance().sendMessageTo(fileService,
+            "org.lucane.applications.filemanager", "SET_FILE /Reunion/ " +
+            subject + time + ".html");
 
-  		sc.write(txtRead.getText().getBytes());
-  		sc.close();
-  	}
-  	catch(Exception e)
-	{
-  		DialogBox.error(tr("saveError"));
-  	}
+      sc.write(txtRead.getText().getBytes());
+      sc.close();
+    }
+    catch(Exception e)
+    {
+      DialogBox.error(tr("saveError"));
+    }
   }
   
   //-- network object management
@@ -412,21 +420,21 @@ implements ActionListener, KeyListener, ObjectListener
       //JOIN
       if(msg.getType()==ReunionMessage.TYPE_JOIN)
       {
-		txtRead.addHTML(msg.toString(this));
+        txtRead.addHTML(msg.toString(this));
         String user = (String)(msg.getData());
         addUser(user);
       }
 
       //LEAVE
-	  else if(msg.getType()==ReunionMessage.TYPE_LEAVE)
+      else if(msg.getType()==ReunionMessage.TYPE_LEAVE)
       {
-		txtRead.addHTML(msg.toString(this));
-		String user = (String)(msg.getData());
+      txtRead.addHTML(msg.toString(this));
+      String user = (String)(msg.getData());
         delUser(user);
       }
 
       //END
-	  else if(msg.getType()==ReunionMessage.TYPE_END)
+      else if(msg.getType()==ReunionMessage.TYPE_END)
       {
         end();
       }
