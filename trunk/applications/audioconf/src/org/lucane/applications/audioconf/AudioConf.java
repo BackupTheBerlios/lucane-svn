@@ -18,10 +18,8 @@
  */
 package org.lucane.applications.audioconf;
 
-
-import org.lucane.applications.audioconf.audio.AudioConfig;
-import org.lucane.applications.audioconf.audio.AudioPlayer;
-import org.lucane.applications.audioconf.audio.AudioRecorder;
+import org.lucane.applications.audioconf.audio.*;
+import org.lucane.applications.audioconf.gui.ConfigDialog;
 import org.lucane.client.*;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.*;
@@ -62,12 +60,8 @@ public class AudioConf extends Plugin
 			return;
 		}
 		
-		this.connection = Communicator.getInstance().sendMessageTo(this.friend, this.getName(), "");
-		AudioConfig config = new AudioConfig(AudioConfig.NARROWBAND, 5);
-		AudioRecorder recorder = new AudioRecorder(config);
-		recorder.addAudioListener(new Streamer(this.connection));
-		Thread thread = new Thread(recorder);
-		thread.start();
+		ConfigDialog cd = new ConfigDialog(this);
+		cd.show();
 	}
 
 	public void follow()
@@ -81,4 +75,14 @@ public class AudioConf extends Plugin
 			e.printStackTrace();
 		}
 	}	
+	
+	public void startRecorder(AudioConfig config)
+	{
+		System.out.println("start");
+		this.connection = Communicator.getInstance().sendMessageTo(this.friend, this.getName(), "");
+		AudioRecorder recorder = new AudioRecorder(config);
+		recorder.addAudioListener(new Streamer(this.connection));
+		Thread thread = new Thread(recorder);
+		thread.start();
+	}
 }
