@@ -91,10 +91,7 @@ public class Server
 			System.exit(1);
 		}
 		
-		this.authenticator = new Authenticator();
-		
-		ServiceManager.getInstance().loadAllServices();
-		ServiceManager.getInstance().startAllServices();
+		this.authenticator = new Authenticator();		
 	}
 	
 	/**
@@ -109,7 +106,7 @@ public class Server
 			ConnectInfo myConnectInfo = new ConnectInfo("server",
 					this.serverIp, this.serverIp,
 					this.port, pair[1], "Server");
-			ConnectInfoManager.getInstance().setMyInfos(myConnectInfo);
+			ConnectInfoManager.getInstance().setServerInfo(myConnectInfo);
 			ConnectInfoManager.getInstance().addConnectInfo(myConnectInfo);
 			this.signer = new Signer(pair[0]);
 		} catch (SignatureException e) {
@@ -296,7 +293,7 @@ public class Server
 	{
 		Socket sock = new Socket(dest.hostname, dest.port);
 		ObjectConnection oc = new ObjectConnection(sock);
-		Message msg = new Message(ConnectInfoManager.getInstance().getMyInfos(), dest, app, data);
+		Message msg = new Message(ConnectInfoManager.getInstance().getServerInfo(), dest, app, data);
 		byte[] signature = null;
 		
 		try {
@@ -369,6 +366,8 @@ public class Server
 		// Server creation
 		server = new Server(config);
 		server.generateKeys();
+		ServiceManager.getInstance().loadAllServices();
+		ServiceManager.getInstance().startAllServices();		
 		Logging.getLogger().info("Server is ready.");
 		server.acceptConnections();		
 	}

@@ -34,68 +34,91 @@ public class ConnectInfoManager
 		
 		return instance;
 	}
-
+	
 	//-- attributes
 	private ArrayList connections;
-	private ConnectInfo myConnectInfo;
-
+	private ConnectInfo serverInfo;
 	
+	/**
+	 * Constructor
+	 */
 	private ConnectInfoManager()
 	{
 		this.connections = new ArrayList();        
 	}
 	
-	public void setMyInfos(ConnectInfo my)
+	/**
+	 * Set the server's ConnectInfo
+	 * 
+	 * @param info the server info
+	 */
+	public void setServerInfo(ConnectInfo info)
 	{
-		this.myConnectInfo = my;
-	}
-
-	public ConnectInfo getMyInfos()
-	{
-		return this.myConnectInfo;
+		this.serverInfo = info;
 	}
 	
+	/**
+	 * Get the server's ConnectInfo
+	 * 
+	 * @return the server info
+	 */
+	public ConnectInfo getServerInfo()
+	{
+		return this.serverInfo;
+	}
+	
+	/**
+	 * Add a connect info to the list
+	 * 
+	 * @param info the info to add
+	 */
 	public void addConnectInfo(ConnectInfo info)
 	{
 		this.connections.add(info);
 	}
-
+	
 	/**
 	 * Remove a ConnectionInfo
 	 * 
-	 * @param ci the connect info
+	 * @param info the info to remove
 	 */
-	public void removeConnectInfo(ConnectInfo ci)
+	public void removeConnectInfo(ConnectInfo info)
 	{
-		removeConnectInfo(ci.getName());
+		removeConnectInfo(info.getName());
 	}
 	
 	/**
 	 * Remove a ConnectionInfo
 	 * 
-	 * @param user the user name
+	 * @param user the user name to remove
 	 */
 	public void removeConnectInfo(String user)
 	{
-		//TODO replace with an iterator
-		for (int i = 0; i < this.connections.size(); i++)
-		{
-			ConnectInfo ci = (ConnectInfo)this.connections.get(i);
-			if (ci.getName().equals(user))
-			{
-				this.connections.remove(ci);
-				break;
-			}
-		}
+		ConnectInfo info = getConnectInfo(user);
+		if(info == null)
+			return;
 		
-		Server.getInstance().sendUserListToEveryone();
+		this.connections.remove(info);
+		
+		//refresh the user list if needed
+		if(info.type.equalsIgnoreCase("Client"))
+			Server.getInstance().sendUserListToEveryone();
 	}
 	
+	/**
+	 * Get all known connectinfos
+	 * @return an iterator of ConnectInfos
+	 */
 	public Iterator getAllConnectInfos()
 	{
 		return this.connections.iterator();
 	}
 	
+	/**
+	 * Get all client connectinfos
+	 * 
+	 * @return an iterator of ConnectInfos with "Client" as a type
+	 */
 	public Iterator getClientConnectInfos()
 	{
 		ArrayList clients = new ArrayList();
@@ -110,7 +133,7 @@ public class ConnectInfoManager
 		
 		return clients.iterator();
 	}
-
+	
 	
 	/**
 	 * Check if a user is already known
@@ -135,7 +158,7 @@ public class ConnectInfoManager
 		return isConnected(ci.getName());
 	}
 	
-
+	
 	/**
 	 * Get a user connection infos
 	 * 
@@ -144,11 +167,12 @@ public class ConnectInfoManager
 	 */
 	public ConnectInfo getConnectInfo(String userName) 
 	{
-		for (int i=0;  i<this.connections.size(); i++)
+		Iterator infos = this.connections.iterator();
+		while(infos.hasNext())
 		{
-			ConnectInfo ci = (ConnectInfo)this.connections.get(i);
-			if(ci.getName().equals(userName))
-				return ci;
+			ConnectInfo info = (ConnectInfo)infos.next();
+			if (info.getName().equals(userName))
+				return info;
 		}
 		
 		return null;
@@ -160,17 +184,9 @@ public class ConnectInfoManager
 	 * @param ConnectInfo the user
 	 * @return the complete ConnectInfo
 	 */
-	public ConnectInfo getCompleteConnectInfo(ConnectInfo ci)
+	public ConnectInfo getCompleteConnectInfo(ConnectInfo info)
 	{
-		Iterator i = this.connections.iterator();
-		
-		while (i.hasNext())
-		{
-			ConnectInfo tmp = (ConnectInfo)i.next();
-			if (ci.getName().equals(tmp.getName()))
-				return tmp;
-		}
-		
-		return ci;
+		ConnectInfo complete = getConnectInfo(info.getName());		
+		return complete == null ? info : complete;
 	}
 }

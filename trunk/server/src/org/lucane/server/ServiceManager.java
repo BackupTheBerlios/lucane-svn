@@ -117,7 +117,7 @@ public class ServiceManager
 				}
 				
 				//add the service connect info
-				ConnectInfo serverInfo = ConnectInfoManager.getInstance().getMyInfos();
+				ConnectInfo serverInfo = ConnectInfoManager.getInstance().getServerInfo();
 				ConnectInfo serviceInfo = new ConnectInfo(serv.getName(),
 						serverInfo.getAuthenticationServer(), serverInfo.hostname,
 						serverInfo.port, "nokey", "service");
