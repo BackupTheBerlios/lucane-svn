@@ -93,7 +93,7 @@ public class FileService
 
   public void install()
   {
-    (new File(Server.getWorkingDirectory()+DIRECTORY)).mkdirs();
+    (new File(Server.getInstance().getWorkingDirectory()+DIRECTORY)).mkdirs();
   }
 
 
@@ -103,12 +103,12 @@ public class FileService
     String path = stk.nextToken();
     String filename = stk.nextToken();
 	Logging.getLogger().finer("FileService::setFile()");
-    (new File(Server.getWorkingDirectory()+DIRECTORY + path)).mkdirs();
+    (new File(Server.getInstance().getWorkingDirectory()+DIRECTORY + path)).mkdirs();
 
 	DataOutputStream dos = null;
     try {
       dos = new DataOutputStream(new FileOutputStream(
-      		Server.getWorkingDirectory()+DIRECTORY + '/' + path + "/" + filename));
+      		Server.getInstance().getWorkingDirectory()+DIRECTORY + '/' + path + "/" + filename));
       byte[] buf = (byte[])sc.read();
       dos.write(buf);
 	  Logging.getLogger().finer("FileService::setFile() OK");
@@ -136,7 +136,7 @@ public class FileService
 	DataInputStream dis = null;
     try {
        dis = new DataInputStream(new FileInputStream(
-       		Server.getWorkingDirectory()+DIRECTORY + '/' + path + "/" + filename));
+       		Server.getInstance().getWorkingDirectory()+DIRECTORY + '/' + path + "/" + filename));
 		byte[] buf = new byte[dis.available()];
 		dis.readFully(buf);
 		sc.write(buf);
@@ -156,7 +156,7 @@ public class FileService
     data = data.substring(1);
 
     try {
-        if((new File(Server.getWorkingDirectory()+DIRECTORY + data)).mkdirs())
+        if((new File(Server.getInstance().getWorkingDirectory()+DIRECTORY + data)).mkdirs())
     	  sc.write("OK");
     	else
       		sc.write("FAILED");
@@ -168,10 +168,10 @@ public class FileService
     Vector result = new Vector();
     data = data.substring(1);
 
-	Logging.getLogger().fine("FileService: " + Server.getWorkingDirectory()+DIRECTORY + data);
+	Logging.getLogger().fine("FileService: " + Server.getInstance().getWorkingDirectory()+DIRECTORY + data);
 
-    String[] list = (new File(Server.getWorkingDirectory()+DIRECTORY + data)).list();
-    File[] files = (new File(Server.getWorkingDirectory()+DIRECTORY + data)).listFiles();
+    String[] list = (new File(Server.getInstance().getWorkingDirectory()+DIRECTORY + data)).list();
+    File[] files = (new File(Server.getInstance().getWorkingDirectory()+DIRECTORY + data)).listFiles();
 
 	Logging.getLogger().fine("FileService: length=" + list.length);
 

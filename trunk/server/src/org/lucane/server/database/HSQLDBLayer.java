@@ -44,7 +44,7 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   		String miniurl = url.substring(standardStart.length()).replace('\\','/');
   		
   		if(! miniurl.startsWith("/") && miniurl.charAt(1)!=':')
-  			url = standardStart + Server.getWorkingDirectory() + miniurl;
+  			url = standardStart + Server.getInstance().getWorkingDirectory() + miniurl;
   	}
   	
   	Logging.getLogger().fine("HSQLdb url : " + url);

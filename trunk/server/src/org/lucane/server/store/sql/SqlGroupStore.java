@@ -46,7 +46,7 @@ public class SqlGroupStore extends GroupStore
         if(!layer.hasTable(TABLENAME))
         {
         	String dbDescription = "jar:file:///"
-    			+ Server.getWorkingDirectory()
+    			+ Server.getInstance().getWorkingDirectory()
 				+ "lib/lucane-server-" +Server.VERSION+ ".jar!/"
 				+ "db-sqlstore.xml";
 

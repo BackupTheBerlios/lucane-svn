@@ -46,7 +46,7 @@ public abstract class Service
   public String getDirectory()
   {
   	String pack = this.getClass().getPackage().getName();
-	String url = "jar:file:///" + Server.getWorkingDirectory()
+	String url = "jar:file:///" + Server.getInstance().getWorkingDirectory()
 				+ Server.APPLICATIONS_DIRECTORY + pack + ".jar!/";
   	return url.replace('\\', '/');
   }

@@ -49,8 +49,7 @@ public class ServerConfig
 	{
 		  DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		  
-		  String fileToParse = Server.getWorkingDirectory()+filename;
-		  Document document = builder.parse(fileToParse);
+		  Document document = builder.parse(filename);
                                                                   
 		  //-- root element
 		  Node node = document.getFirstChild();                                                                               

@@ -55,7 +55,7 @@ public class ServiceManager
 	 */
 	protected void loadAllServices()
 	{
-		String baseURL = Server.getWorkingDirectory() + Server.APPLICATIONS_DIRECTORY;
+		String baseURL = Server.getInstance().getWorkingDirectory() + Server.APPLICATIONS_DIRECTORY;
 		//get all services from store
 		Iterator services;
 		try {

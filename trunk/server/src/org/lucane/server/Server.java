@@ -26,8 +26,6 @@ import org.lucane.server.store.*;
 import org.lucane.common.*;
 import org.lucane.common.signature.*;
 
-import sun.util.logging.resources.logging;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -38,7 +36,7 @@ import java.util.*;
 public class Server
 {
 	
-	private static String workingDirectory;
+	private String workingDirectory;
 	
 	private static final String CONFIG_FILE = "etc/server-config.xml";
 	public static final String APPLICATIONS_DIRECTORY = "applications/";
@@ -68,9 +66,10 @@ public class Server
 	 * @param dbLogin database login
 	 * @param dbPasswd database password
 	 */
-	private Server(ServerConfig config)
+	private Server(ServerConfig config, String workingDirectory)
 	{
 		Server.instance = this;
+		this.workingDirectory = workingDirectory;
 		this.port = config.getPort();
 		this.socket = null;
 		this.dbLayer = null;
@@ -370,8 +369,8 @@ public class Server
 		return this.authenticator;
 	}
 	
-	//-- static methos
-	public static void shutdownServer()
+	//-- static methods
+	public static void shutdownServer(String [] args)
 	{
 		Server.getInstance().shutdown();
 	}
@@ -387,6 +386,9 @@ public class Server
 			System.out.println("USAGE :\nserver.(bat|sh) [server path]");
 			System.exit(1);
 		}
+
+		// get the workingDirectory
+		String workingDirectory;
 		if (args.length==1) {
 			workingDirectory=args[0];
 		} else {
@@ -400,7 +402,7 @@ public class Server
 
 		//init logging
 		try {
-			Logging.init(getWorkingDirectory()+"lucane.log", "ALL");
+			Logging.init(workingDirectory+"lucane.log", "ALL");
 		} catch(IOException ioe) {
 			System.err.println("Unable to init logging, exiting.");
 			System.exit(1);
@@ -410,15 +412,15 @@ public class Server
 		ServerConfig config = null;
 		
 		try {
-			config = new ServerConfig(CONFIG_FILE);
-		} catch (Exception e) {            
+			config = new ServerConfig(workingDirectory+CONFIG_FILE);
+		} catch (Exception e) {
 			Logging.getLogger().severe("Unable to read or parse the config file.");
 			e.printStackTrace();
 			System.exit(1);
 		}
 		
 		// Server creation
-		server = new Server(config);
+		server = new Server(config, workingDirectory);
 		server.generateKeys();
 		ServiceManager.getInstance().loadAllServices();
 		ServiceManager.getInstance().startAllServices();		
@@ -426,7 +428,7 @@ public class Server
 		server.acceptConnections();		
 	}
 	
-	public static String getWorkingDirectory() {
+	public String getWorkingDirectory() {
 		Logging.getLogger().fine(workingDirectory);
 		return workingDirectory;
 	}
