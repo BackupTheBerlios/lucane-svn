@@ -75,7 +75,10 @@
       <env key="_PRODUCT_NAME" value="${pom.groupId}"/>
       <env key="_PRODUCT_VERSION" value="${pom.currentVersion}"/>
       <env key="_PRODUCT_PUBLISHER" value="${pom.organization.name}"/>
-      <env key="_PRODUCT_WEB_SITE" value="${pom.url}"/>
+      <env key="_WEB_SITE_URL" value="${pom.url}"/>
+      <env key="_TRACKER_URL" value="http://developer.berlios.de/bugs/?group_id=1547"/>
+      <env key="_FEATURE_REQUEST_URL" value="http://developer.berlios.de/feature/?group_id=1547"/>
+      <env key="_FORUM_URL" value="http://lucane.org/forum/index.php?forum=1_generalForum"/>
 
       <env key="_BASE_DIR" value="../../../../"/>
       <env key="_NSIS_FILE_DIR" value="trunk\setup\windows\src"/>
