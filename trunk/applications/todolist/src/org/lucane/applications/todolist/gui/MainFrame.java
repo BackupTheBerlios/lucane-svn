@@ -20,6 +20,7 @@
 package org.lucane.applications.todolist.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
@@ -74,6 +75,7 @@ public class MainFrame extends JFrame {
 	public MainFrame(Plugin plugin) {
 		super();
 		this.plugin=plugin;
+	    setIconImage(plugin.getImageIcon().getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 		setTitle(plugin.tr("MainInterface.title"));
 		mainFrame=this;
 		TodolistItemTableModel.setColumnsNames(new String[] {plugin.tr("MainInterface.items.name"), plugin.tr("MainInterface.items.priority"), plugin.tr("MainInterface.items.complete")});
