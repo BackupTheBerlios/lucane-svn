@@ -15,6 +15,7 @@ cd ..
 
 # create source archive
 tar zcvf $SRC_DIR.tgz $SRC_DIR
+zip -r $SRC_DIR.zip $SRC_DIR
 
 # compile
 cd /tmp/$SRC_DIR
@@ -24,6 +25,7 @@ cd ..
 # create bin archive
 mv dist $BIN_DIR
 tar zcvf $BIN_DIR.tgz $BIN_DIR
+zip -r $BIN_DIR.zip $BIN_DIR
 
-scp $SRC_DIR.tgz $BIN_DIR.tgz $SCP_URL
+scp $SRC_DIR.tgz $SRC_SIR.zip $BIN_DIR.tgz $BIN_DIR.zip $SCP_URL
 
