@@ -63,9 +63,6 @@ public class Client
 	//the current startup plugin
 	private String startupPlugin;
 	
-	//stores running plugins
-	private ArrayList registeredPlugins;
-	
 	//the window manager
 	private WindowManager windowManager;
 
@@ -101,7 +98,6 @@ public class Client
         this.userListListeners = new ArrayList();
 		this.config = null;
 		
-		this.registeredPlugins = new ArrayList();
 		this.windowManager = new DefaultWindowManager();
 
 		//create application directory structure
@@ -247,31 +243,7 @@ public class Client
     protected void createNewCommunicator(String serverName)
     {
         this.communicator = new Communicator(serverName);
-    }
-        
-    
-    /**
-     * Tells the client that a plugin has been launched.
-     */
-    protected void registerPlugin(Plugin p)
-    {
-    	Logging.getLogger().fine("registering : " + p.getName());
-        this.registeredPlugins.add(p);
-    }
-    
-    /**
-     * Tells a client that a plugin has been closed.
-     */
-    protected void unregisterPlugin(Plugin p)
-    {
-		Logging.getLogger().fine("unregistering : " + p.getName());
-        this.registeredPlugins.remove(p);
-        
-		//if no more plugins are running, or if we quit the startup plugin,
-		//exits the client cleanly
-        if(registeredPlugins.isEmpty() || p.getName().equals(startupPlugin))
-        	cleanExit();
-    }
+    }          
     
     /**
      * Disconnected by the server

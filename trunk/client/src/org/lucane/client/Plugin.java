@@ -208,7 +208,7 @@ public abstract class Plugin
   		Logging.getLogger().warning("Unable to save localconfig");
   		ioe.printStackTrace();
   	}
-  	Client.getInstance().unregisterPlugin(this);
+  	PluginLoader.getInstance().removeRunningPlugin(this);
   } 
 
   /**
@@ -216,7 +216,7 @@ public abstract class Plugin
    */
   public void run()
   {
-    Client.getInstance().registerPlugin(this);
+    PluginLoader.getInstance().addRunningPlugin(this);
 	Logging.getLogger().fine("attempt to start a plugin thread");
 	Logging.getLogger().fine("starter = " + this.starter);
 	this.config = new LocalConfig(this.getName());	
