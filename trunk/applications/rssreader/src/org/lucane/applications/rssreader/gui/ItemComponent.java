@@ -106,7 +106,10 @@ class ItemComponent extends Component
 		if (hasFocus)
 			paintFocusBorder(g2);
 
-		paintChannelIcon(g2);
+		boolean hasIcon = paintChannelIcon(g2);
+		if(! hasIcon)
+			textMargin = margin;
+		
 		curY = paintTitle(g2, textMargin);
 		paintDescription(g2, textMargin, curY);
 		paintScore(g2);
@@ -132,7 +135,7 @@ class ItemComponent extends Component
 		 if(description.length() == 0)
 			 return;
 			
-		 Font smallFont = g2.getFont().deriveFont(10.0f);
+		 Font smallFont = g2.getFont().deriveFont(Font.PLAIN, 10.0f);
 		 float wrappingWidth = getWidth() - textMargin;
 
 		 description = description.replace('\n', ' ');
@@ -195,7 +198,7 @@ class ItemComponent extends Component
 		return curY;
 	}
 
-	private void paintChannelIcon(Graphics2D g2)
+	private boolean paintChannelIcon(Graphics2D g2)
 	{
 		// Draw the icon for the channel of the item.
 		ImageIcon imageIcon = null;
@@ -204,7 +207,7 @@ class ItemComponent extends Component
 		} catch(Exception e) {}
 		
 		if(imageIcon == null)
-			return; 
+			return false; 
 
 		// Create the scaling transformation needed to ensure that the
 		// graphic associated with this channel will fit in the space
@@ -222,6 +225,7 @@ class ItemComponent extends Component
 		// Draw the image, applying the transformations to scale and
 		// translate it appropriately.
 		g2.drawImage(imageIcon.getImage(), transform, null);
+		return true;
 	}
 
 	private void paintFog(Graphics2D g2)

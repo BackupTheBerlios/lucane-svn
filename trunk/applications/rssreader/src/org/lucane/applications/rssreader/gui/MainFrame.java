@@ -20,6 +20,7 @@ implements ListSelectionListener
 	private JList items;
 	private DefaultListModel rssChannels;
 	private DefaultListModel rssItems;
+	private JProgressBar status;
 	
 	public MainFrame(RssReader plugin)
 	{
@@ -28,41 +29,55 @@ implements ListSelectionListener
 		this.rssChannels = new DefaultListModel();
 		this.rssItems = new DefaultListModel();
 		
+		
+		JPanel channelPanel = new JPanel(new BorderLayout());
 		channels = new JList(rssChannels);
 		channels.addListSelectionListener(this);
+		status = new JProgressBar();
+		channelPanel.add(new JScrollPane(channels), BorderLayout.CENTER);
+		channelPanel.add(status, BorderLayout.SOUTH);
 		
 		items = new JList(rssItems);
 		items.setCellRenderer(new ItemRenderer());
 		
+		
 		JSplitPane split = new JSplitPane();
-		split.setTopComponent(new JScrollPane(channels));
+		split.setTopComponent(channelPanel);
 		split.setBottomComponent(new JScrollPane(items));
 		split.setOneTouchExpandable(true);
 		split.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-		split.setDividerLocation(200);
+		split.setDividerLocation(120);
 		
 		getContentPane().add(split, BorderLayout.CENTER);
 	}
 
 	public void valueChanged(ListSelectionEvent lse)
 	{
-		ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
+		final ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
 		if(channel == null)
 			return;
 
-		try {					
-			RssChannel rss = channel.getChannel();
-			this.setTitle(rss.getTitle());
-	
-			rssItems.clear();
-			Iterator i = rss.getItemList().iterator();
-			while (i.hasNext())
-				rssItems.addElement(i.next());
-		}	catch (MalformedURLException mue) {
-			DialogBox.error("Wrong url : " + mue);
-		}	catch (RssException re) {
-			DialogBox.error("RSS Error : " + re);
-		}			
+		
+		Runnable refresh = new Runnable() {
+			public void run() {
+				try {							
+					rssItems.clear();
+					status.setIndeterminate(true);
+					RssChannel rss = channel.getChannel();
+
+					Iterator i = rss.getItemList().iterator();
+					while (i.hasNext())
+						rssItems.addElement(i.next());
+					status.setIndeterminate(false);			
+				}	catch (MalformedURLException mue) {
+					DialogBox.error("Wrong url : " + mue);
+				}	catch (RssException re) {
+					DialogBox.error("RSS Error : " + re);
+				}							
+			}
+		};
+
+		new Thread(refresh).start();
 	}
 	
 	public void addChannel(ChannelInfo info)
