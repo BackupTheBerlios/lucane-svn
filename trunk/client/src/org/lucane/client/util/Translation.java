@@ -39,6 +39,7 @@ public class Translation
      */
     public static void setLocale(String lang)
     {
+    	Locale.setDefault(new Locale(lang));
         try
         {
             InputStream is = new URL(getDirectory() + "messages_" + lang + ".properties").openStream();

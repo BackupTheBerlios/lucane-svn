@@ -44,7 +44,7 @@ class HSQLDBLayer extends DatabaseAbstractionLayer
   public String resolveType(String type)
   {
     if(type.equalsIgnoreCase("SMALLTEXT"))
-      return "VARCHAR(255)";
+      return "VARCHAR(250)";
     else if(type.equalsIgnoreCase("TEXT"))
       return "VARCHAR";
     else if(type.equalsIgnoreCase("SMALLINT"))

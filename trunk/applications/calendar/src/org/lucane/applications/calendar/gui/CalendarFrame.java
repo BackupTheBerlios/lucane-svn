@@ -186,7 +186,8 @@ implements ActionListener, CalendarListener
 		Calendar cal = monthPanel.getCalendar();
 		cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 		dayPanel.showDay(cal);
-		getContentPane().removeAll();
+		getContentPane().remove(monthPanel);
+		getContentPane().remove(weekPanel);
 		getContentPane().add(dayPanel, BorderLayout.CENTER);
 		getContentPane().validate();
 		this.repaint();

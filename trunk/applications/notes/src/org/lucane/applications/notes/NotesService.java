@@ -110,8 +110,6 @@ extends Service
   private synchronized Note saveNote(Note note)
     throws Exception
   {
-    Statement stmt = connex.createStatement();
-
     long editionDate = 0;
     if(note.getEditionDate() != null)
       editionDate = note.getEditionDate().getTime();
@@ -120,10 +118,12 @@ extends Service
     if(note.getId() == null)
     {
       try {
-        ResultSet rs = stmt.executeQuery("SELECT MAX(id)+1 FROM notes");
+		PreparedStatement select = connex.prepareStatement("SELECT MAX(id)+1 FROM notes");
+        ResultSet rs = select.executeQuery();
         rs.next();
         note.setId(rs.getString(1));
         rs.close();
+		select.close();
       } catch(Exception e) {
         note.setId("0");
       }
@@ -133,15 +133,23 @@ extends Service
     //edition, remove old note
     else
     {
-        stmt.execute("DELETE FROM notes WHERE id='" + note.getId() + "'");       
+		PreparedStatement delete = connex.prepareStatement("DELETE FROM notes WHERE id=?");
+        delete.setString(1, note.getId());
+		delete.execute();    
+		delete.close();   
     }
     
-    
-    stmt.execute("INSERT INTO notes VALUES(" +
-        note.getId() + ", '" + note.getAuthor() + "', '" + note.getTitle() +
-        "', '" + note.getContent() + "', " + note.getCreationDate().getTime()
-        + ", " + editionDate + ", " + (note.isPublic()?"1":"0") + ", " + (note.isCommentable()?"1":"0") + ")");
-    stmt.close();
+    PreparedStatement insert = connex.prepareStatement("INSERT INTO notes VALUES(?,?,?,?,?,?,?,?)");
+	insert.setString(1, note.getId());    
+	insert.setString(2, note.getAuthor());    
+	insert.setString(3, note.getTitle());    
+	insert.setString(4, note.getContent());    
+	insert.setLong(5, note.getCreationDate().getTime());    
+	insert.setLong(6, editionDate);    
+	insert.setString(7, note.isPublic() ? "1":"0");    
+	insert.setString(8, note.isCommentable() ? "1":"0");
+	insert.execute();
+	insert.close();    
     
     return note;
   }
@@ -149,19 +157,25 @@ extends Service
   private void deleteNote(String noteId)
     throws Exception
   {
-	Statement stmt = connex.createStatement();  
-	stmt.execute("DELETE FROM notes WHERE id=" + noteId);
-	stmt.execute("DELETE FROM notes_comments WHERE idnote=" + noteId);
-	stmt.close();  	
+	PreparedStatement delete = connex.prepareStatement("DELETE FROM notes WHERE id=?");
+	delete.setString(1, noteId);
+	delete.execute();
+	delete.close();
+  
+	delete = connex.prepareStatement("DELETE FROM notes_comments WHERE idnote=?");
+	delete.setString(1, noteId);
+	delete.execute();
+	delete.close();
   }
 
   private Object[] getPersonnalNotes(String author)
     throws Exception
   {
   	ArrayList result = new ArrayList();
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM notes WHERE author='" + author 
-					+ "' ORDER BY author");
+	PreparedStatement select = connex.prepareStatement(
+		"SELECT * FROM notes WHERE author=? ORDER BY author");
+	select.setString(1, author);
+	ResultSet rs = select.executeQuery();
 
 	while(rs.next())
 	{
@@ -179,7 +193,7 @@ extends Service
 	}	
 
 	rs.close();
-	stmt.close();
+	select.close();
 	
     return result.toArray();
   }
@@ -188,8 +202,9 @@ extends Service
     throws Exception
   {
 	ArrayList result = new ArrayList();
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT distinct author FROM notes WHERE isPublic=1");
+	PreparedStatement select = connex.prepareStatement(
+		"SELECT distinct author FROM notes WHERE isPublic=1");
+	ResultSet rs = select.executeQuery();
 
 	while(rs.next())
 	{
@@ -198,7 +213,7 @@ extends Service
 	}	
 
 	rs.close();
-	stmt.close();
+	select.close();
 	
 	return result.toArray();
   }
@@ -207,8 +222,10 @@ extends Service
     throws Exception
   {
 	ArrayList result = new ArrayList();
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM notes WHERE isPublic=1 ORDER BY creationDate");
+	PreparedStatement select = connex.prepareStatement(
+		"SELECT * FROM notes WHERE isPublic=1 ORDER BY creationDate");
+	ResultSet rs = select.executeQuery();
+
 
 	for(int i=0;i<max.intValue() && rs.next();i++)
 	{
@@ -226,7 +243,7 @@ extends Service
 	}	
 
 	rs.close();
-	stmt.close();
+	select.close();
 	
 	return result.toArray();
   }
@@ -235,9 +252,10 @@ extends Service
     throws Exception
   {
 	ArrayList result = new ArrayList();
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM notes WHERE author='" + author 
-					+ "' AND isPublic=1 ORDER BY creationDate");
+	PreparedStatement select = connex.prepareStatement(
+		"SELECT * FROM notes WHERE author=? AND isPublic=1 ORDER BY creationDate");
+	select.setString(1, author);
+	ResultSet rs = select.executeQuery();
 
 	while(rs.next())
 	{
@@ -255,7 +273,7 @@ extends Service
 	}	
 
 	rs.close();
-	stmt.close();
+	select.close();
 	
 	return result.toArray();
   }
@@ -266,34 +284,41 @@ extends Service
   private synchronized void saveComment(Comment comment)
     throws Exception
   {
-	Statement stmt = connex.createStatement();
-
 	//fetch a new id
     try {
-  	  ResultSet rs = stmt.executeQuery("SELECT MAX(id)+1 FROM notes_comments");
+	  PreparedStatement select = connex.prepareStatement(
+		"SELECT MAX(id)+1 FROM notes_comments");
+  	  ResultSet rs = select.executeQuery();
 	  rs.next();
 	  comment.setId(rs.getString(1));
 	  rs.close();
+	  select.close();
 	} catch(Exception e) {
 	  comment.setId("0");
 	}
     if(comment.getId() == null)
         comment.setId("0");
-   
-	stmt.execute("INSERT INTO notes_comments VALUES(" +
-		comment.getId() + ", " + comment.getNoteId() + ", '" + comment.getAuthor() + "', '" 
-		+ comment.getTitle() +	"', '" + comment.getContent() + "', " 
-		+ comment.getCreationDate().getTime() + ")");
-	stmt.close();  	
+
+	PreparedStatement insert = connex.prepareStatement(
+   		"INSERT INTO notes_comments VALUES(?,?,?,?,?,?)");
+	insert.setString(1, comment.getId());
+	insert.setString(2, comment.getNoteId());
+	insert.setString(3, comment.getAuthor());
+	insert.setString(4, comment.getTitle());
+	insert.setString(5, comment.getContent());
+	insert.setLong(6, comment.getCreationDate().getTime());
+	insert.execute();
+	insert.close();  	
   }
 
   private Object[] getCommentsForNote(String idNote)
     throws Exception
   {
 	ArrayList result = new ArrayList();
-	Statement stmt = connex.createStatement();
-	ResultSet rs = stmt.executeQuery("SELECT * FROM notes_comments WHERE idnote='" + idNote 
-					+ "' ORDER BY creationDate");
+	PreparedStatement select = connex.prepareStatement(
+		"SELECT * FROM notes_comments WHERE idnote=? ORDER BY creationDate");
+	select.setString(1, idNote);
+	ResultSet rs = select.executeQuery();
 
 	while(rs.next())
 	{
@@ -309,7 +334,7 @@ extends Service
 	}	
 
 	rs.close();
-	stmt.close();
+	select.close();
 	
 	return result.toArray();
   }

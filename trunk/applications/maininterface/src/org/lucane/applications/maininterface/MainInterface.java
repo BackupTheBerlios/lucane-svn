@@ -96,7 +96,7 @@ public class MainInterface
     frame.addWindowListener(this);
     mnuBar = new JMenuBar();
     mnuMain = new JMenu("Lucane");
-    mnuExtends = new JMenu("Applications");
+    mnuExtends = new JMenu(tr("applications"));
     mnuBar.add(mnuMain);
     mnuBar.add(mnuExtends);
     frame.setJMenuBar(mnuBar);
