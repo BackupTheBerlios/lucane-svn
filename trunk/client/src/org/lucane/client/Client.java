@@ -129,8 +129,10 @@ public class Client
 		new File(configPath).mkdirs();
 		
         this.listener.listen();
-        this.pluginloader = PluginLoader.getInstance();
-        this.communicator.updatePlugins();
+        this.pluginloader = PluginLoader.getInstance();       
+		this.communicator.updatePlugins();
+ 
+        
         this.serverInfos = new ConnectInfo("Server", "", myinfos.server,
             config.getServerPort(), "nokey", "Server");
         
@@ -139,24 +141,24 @@ public class Client
             ObjectConnection oc = this.communicator.sendMessageTo(serverInfos, "Server",
                 "STARTUP_PLUGINS");
             
-            this.startupPlugin = oc.readString();
-            
-            if(this.pluginloader.hasPlugin(startupPlugin))
-                this.pluginloader.run(startupPlugin, new ConnectInfo[0]);
-            else
-            {
-                DialogBox.error(startupPlugin + " : " + Translation.tr("clientUnknownPlugin"));
-                this.cleanExit();
-            }
-            
+            this.startupPlugin = oc.readString();                        
             oc.close();
         }
         catch(Exception e)
         {
 			Logging.getLogger().warning(e.toString());
-        }
-        
-        this.connectbox.closeDialog();
+        }        		       
+    }
+    
+    protected void startMainPlugin()
+    {
+		if(this.pluginloader.hasPlugin(startupPlugin))
+			this.pluginloader.run(startupPlugin, new ConnectInfo[0]);
+		else
+		{
+			DialogBox.error(startupPlugin + " : " + Translation.tr("clientUnknownPlugin"));
+			this.cleanExit();
+		}
     }
     
     /**
@@ -475,5 +477,7 @@ public class Client
 		}
         
         client.showConnectBox(login, passwd, config.getServerHost(), config.getServerPort());
+        if(client.getConnectBox().connectionAccepted())
+        	client.startMainPlugin();
     }
 }

@@ -54,7 +54,16 @@ public class QuickLaunch
    */
   public Plugin init(ConnectInfo[] friends, boolean starter)
   {
-    return new QuickLaunch();
+    QuickLaunch self = new QuickLaunch();
+    
+	try	{
+		self.trayIcon = new TrayIcon(this.getImageIcon(), 
+				Client.getInstance().getMyInfos().getName() + " - Lucane Groupware");
+	} catch (Throwable t) {
+		self.trayIcon = null;
+	}
+	
+	return self;
   }
 
 
@@ -63,10 +72,8 @@ public class QuickLaunch
    */
   public void start()
   { 	
-  	try {  		
-	  	this.trayIcon = new TrayIcon(this.getImageIcon(), 
-	  			Client.getInstance().getMyInfos().getName() + " - Lucane Groupware");
-	} catch(Throwable t) {
+  	if(this.trayIcon == null)
+  	{
 		//no user message if we aren't on windows
 		if(System.getProperty("os.name").startsWith("Win"))
 			DialogBox.error(tr("err.noTray"));

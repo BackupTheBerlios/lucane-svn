@@ -191,12 +191,11 @@ implements KeyListener, ActionListener
     {              
         if ((JButton) ev.getSource() == btOk)
         {
-        	Thread connection = new Thread(new Runnable() {
+			new Thread() {
 				public void run() {
 					tryToConnect(Client.getInstance());
 				}
-        	});
-        	connection.start();
+			}.start();
 		}
         else if ((JButton) ev.getSource() == btCancel)
             closeDialog();
@@ -231,7 +230,7 @@ implements KeyListener, ActionListener
                 }
                 
                 isConnected = true;
-                parent.init();
+				Client.getInstance().init();
 				closeDialog();
             }
             else
