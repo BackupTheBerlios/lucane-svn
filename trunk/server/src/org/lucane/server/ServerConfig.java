@@ -36,6 +36,11 @@ public class ServerConfig
 	private String dbLogin = null;
 	private String dbPassword = "";
 	private String dbLayer = null;
+	private int dbPoolInitialSize = 0;
+	private int dbPoolMaxActive = 8;
+	private int dbPoolMaxIdle = 8;
+	private int dbPoolMinIdle = 0;
+	private int dbPoolMaxWait = -1;
 	private String storeBackend = "database";
 	private String authenticatorClass = "org.lucane.server.auth.DefaultAuthenticator";
 	
@@ -100,6 +105,14 @@ public class ServerConfig
 			  }
 			  else if(node.getNodeName().equals("dblayer"))
 			  	this.dbLayer = node.getAttributes().getNamedItem("class").getNodeValue();
+			  else if(node.getNodeName().equals("pool"))
+			  {	
+			  	this.dbPoolInitialSize = Integer.parseInt(node.getAttributes().getNamedItem("initialSize").getNodeValue());
+			  	this.dbPoolMaxActive = Integer.parseInt(node.getAttributes().getNamedItem("maxActive").getNodeValue());
+			  	this.dbPoolMaxIdle = Integer.parseInt(node.getAttributes().getNamedItem("maxIdle").getNodeValue());
+			  	this.dbPoolMinIdle = Integer.parseInt(node.getAttributes().getNamedItem("minIdle").getNodeValue());
+			  	this.dbPoolMaxWait = Integer.parseInt(node.getAttributes().getNamedItem("maxWait").getNodeValue());
+			  }
 			  else
 			  	Logging.getLogger().warning("unexepected node : " + node.getNodeName());
 		  }
@@ -187,6 +200,57 @@ public class ServerConfig
 	public String getDbLayer()
 	{
 		return this.dbLayer;
+	}
+	
+	/**
+	 * Get the pool initial size
+	 * 
+	 * @return the initial size
+	 */
+	public int getDbPoolInitialSize() 
+	{
+		return this.dbPoolInitialSize;
+	}
+
+	/**
+	 * Get the pool maximum number of active connections
+	 * 
+	 * @return maxActive
+	 */
+	public int getDbPoolMaxActive() 
+	{
+		return this.dbPoolMaxActive;
+	}
+
+	/**
+	 * Get the pool maximum number of idle connections
+	 * 
+	 * @return maxIdle
+	 */
+	public int getDbPoolMaxIdle() 
+	{
+		return this.dbPoolMaxIdle;
+	}
+
+	/**
+	 * Get the pool minimun number of idle connections
+	 * 
+	 * @return minIdle
+	 */
+	public int getDbPoolMinIdle() 
+	{
+		return this.dbPoolMinIdle;
+	}
+
+	/**
+	 * Get the maximum time (in ms) to wait before throwing an error 
+	 * if no connection is free in the pool
+	 * 
+	 * @return maxWait
+	 */
+	public long getDbPoolMaxWait() 
+	{
+		return this.dbPoolMaxWait;
 	}
 	
 	/**

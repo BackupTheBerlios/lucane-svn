@@ -18,6 +18,7 @@
  */
 package org.lucane.server.database;
 
+import org.lucane.common.Logging;
 import org.lucane.server.ServerConfig;
 import org.lucane.server.database.xml.*;
 
@@ -47,10 +48,22 @@ public abstract class DatabaseAbstractionLayer
 		ds.setUsername(config.getDbLogin());
 		ds.setPassword(config.getDbPassword());
 		ds.setUrl(config.getDbUrl());
+				
+		ds.setPoolPreparedStatements(true);
+		ds.setInitialSize(config.getDbPoolInitialSize());
+		ds.setMaxActive(config.getDbPoolMaxActive());
+		ds.setMaxIdle(config.getDbPoolMaxIdle());
+		ds.setMinIdle(config.getDbPoolMinIdle());
+		ds.setMaxWait(config.getDbPoolMaxWait());
 		
-		//TODO put these params in the server.xml config
-		ds.setMaxWait(5000);
-		ds.setInitialSize(5);
+		Logging.getLogger().info("Pool initialized (" +
+				"initial size=" + config.getDbPoolInitialSize() +
+				", max active=" + config.getDbPoolMaxActive() +
+				", max idle=" + config.getDbPoolMaxIdle() +
+				", min idle=" + config.getDbPoolMinIdle() +
+				", max wait=" + config.getDbPoolMaxWait() +
+				")");
+				
 		
 		//-- dynamic layer loading
 		Class klass = Class.forName(config.getDbLayer());
