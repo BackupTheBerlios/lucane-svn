@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -38,6 +39,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -57,6 +59,10 @@ public class MainFrame extends JFrame {
 
 	JList jlTodolistItems;
 	JSplitPane jspItem;
+	JTextField jtaListItemName;
+	JTextArea jtaListItemDescription;
+	JTextField jtaListItemPriority;
+	JCheckBox jcbListItemCompleted;
 	JPanel jpItemView;
 	
 	JSplitPane jspMain;

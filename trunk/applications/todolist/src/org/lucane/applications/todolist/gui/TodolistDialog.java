@@ -27,7 +27,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,65 +38,57 @@ import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.applications.todolist.io.IO;
 
-public class TodolistItemDialog extends JDialog {
+public class TodolistDialog extends JDialog {
 	private JTextField jtfName;
 	private JTextArea jtaDescription;
-	private JTextField jtfPriority;
-	private JCheckBox jcbComplete;
 	private JButton jbOk;
 	private JButton jbCancel;
 	
 	private MainFrame mainFrame;
-	private String parentTodolistName;
 	
-	private TodolistItem todolistItem;
+	private Todolist todolist;
 	
 	private boolean modify = false;
 	
-	public TodolistItemDialog (MainFrame mainFrame, String parentTodolistName) {
+	public TodolistDialog (MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
-		this.parentTodolistName = parentTodolistName;
 		init();
 	}
 	
-	public TodolistItemDialog (MainFrame mainFrame, TodolistItem todolistItem) {
+	public TodolistDialog (MainFrame mainFrame, Todolist todolist) {
 		this.mainFrame = mainFrame;
-		this.todolistItem = todolistItem;
-		modify = true;
+		this.todolist = todolist;
+		modify=true;
 		init();
 	}
 	
 	private void init() {
 		if (modify) {
-			setTitle("Item modification ...");
+			setTitle("Todolist modification ...");
 		} else {
-			setTitle("Item creation ...");
+			setTitle("Todolist creation ...");
 		}
-		setSize(320, 240);
 		JPanel contentPane = new JPanel(new BorderLayout(3, 3));
 		contentPane.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 		setContentPane(contentPane);
 		
+		setSize(320, 200);
 		
 		jtfName = new JTextField();
 		jtaDescription = new JTextArea();
-		jtfPriority = new JTextField();
 		
 		jbOk = new JButton("Ok");
 		jbOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (modify)
-					mainFrame.modifyTodolistItem(
-							todolistItem,
-							new TodolistItem(
-									todolistItem.getUserName(),
-									todolistItem.getParentTodolistName(),
+					mainFrame.modifyTodolist(
+							todolist,
+							new Todolist(
+									todolist.getUserName(),
 									jtfName.getText(),
-									jtaDescription.getText(),
-									new Integer(jtfPriority.getText()).intValue(),
-									jcbComplete.isSelected()));
+									jtaDescription.getText()));
 				else
-					mainFrame.addTodolistItem(new TodolistItem(IO.getInstance().getUserName(), parentTodolistName, jtfName.getText(), jtaDescription.getText(), new Integer(jtfPriority.getText()).intValue()));
+					mainFrame.addTodolist(new Todolist(IO.getInstance().getUserName(), jtfName.getText(), jtaDescription.getText()));
 				hide();
 			}
 		});
@@ -107,24 +98,12 @@ public class TodolistItemDialog extends JDialog {
 				hide();
 			}
 		});
-		
+
 		JPanel jpName = new JPanel(new BorderLayout(3, 3));
 		jpName.add(new JLabel("Name :"), BorderLayout.WEST);
 		jpName.add(jtfName, BorderLayout.CENTER);
 
-		JPanel jpPriority = new JPanel(new BorderLayout(3, 3));
-		jpPriority.add(new JLabel("Priority :"), BorderLayout.WEST);
-		jpPriority.add(jtfPriority, BorderLayout.CENTER);
-
-		JPanel jpComplete = null;
-		if (modify) {
-			jpComplete = new JPanel(new BorderLayout(3, 3));
-			jpComplete.add(new JLabel("Complete :"), BorderLayout.WEST);
-			jcbComplete = new JCheckBox();
-			jpComplete.add(jcbComplete, BorderLayout.CENTER);
-		}
-
-		JPanel jpDescription = new JPanel(new BorderLayout(3, 3));
+		JPanel jpDescription = new JPanel(new BorderLayout());
 		jpDescription.add(new JLabel("Description :"), BorderLayout.NORTH);
 		jpDescription.add(new JScrollPane(jtaDescription), BorderLayout.CENTER);
 
@@ -132,25 +111,13 @@ public class TodolistItemDialog extends JDialog {
 		jpButtons.add(jbOk);
 		jpButtons.add(jbCancel);
 
-		JPanel jpFields;
-		if (modify)
-			jpFields = new JPanel(new GridLayout(3, 1, 3, 3));
-		else
-			jpFields = new JPanel(new GridLayout(2, 1, 3, 3));
-		jpFields.add(jpName);
-		jpFields.add(jpPriority);
-		if (modify)
-			jpFields.add(jpComplete);
-		
-		getContentPane().add(jpFields, BorderLayout.NORTH);
+		getContentPane().add(jpName, BorderLayout.NORTH);
 		getContentPane().add(jpDescription, BorderLayout.CENTER);
 		getContentPane().add(jpButtons, BorderLayout.SOUTH);
-
+		
 		if (modify) {
-			jtfName.setText(todolistItem.getName());
-			jtaDescription.setText(todolistItem.getDescription());
-			jtfPriority.setText("" + todolistItem.getPriority());
-			jcbComplete.setSelected(todolistItem.isComplete());
+			jtfName.setText(todolist.getName());
+			jtaDescription.setText(todolist.getDescription());
 		}
 	}
 }
