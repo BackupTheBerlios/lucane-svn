@@ -23,6 +23,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -33,6 +36,7 @@ import org.jperdian.rss2.dom.RssChannel;
 import org.jperdian.rss2.dom.RssItem;
 import org.lucane.applications.rssreader.RssReader;
 import org.lucane.applications.rssreader.rss.ChannelInfo;
+import org.lucane.applications.rssreader.rss.RssItemComparator;
 import org.lucane.client.Client;
 import org.lucane.client.util.WidgetState;
 import org.lucane.client.widgets.DialogBox;
@@ -42,6 +46,7 @@ public class MainFrame extends ManagedWindow
 implements ListSelectionListener, ActionListener, MouseListener
 {
 	private JButton btnRefresh;
+	private JButton btnAggregate;
 	private JButton btnAddChannel;
 	private JButton btnRemoveChannel;
 	
@@ -67,6 +72,9 @@ implements ListSelectionListener, ActionListener, MouseListener
 		btnRefresh = new JButton(Client.getIcon("refresh.png"));
 		btnRefresh.setToolTipText(plugin.tr("btn.refresh"));
 		btnRefresh.addActionListener(this);
+		btnAggregate = new JButton(Client.getIcon("refresh.png"));
+		btnAggregate.setToolTipText(plugin.tr("btn.aggregate"));
+		btnAggregate.addActionListener(this);
 		btnAddChannel = new JButton(Client.getIcon("add.png"));
 		btnAddChannel.setToolTipText(plugin.tr("btn.addChannel"));
 		btnAddChannel.addActionListener(this);
@@ -116,11 +124,13 @@ implements ListSelectionListener, ActionListener, MouseListener
 	{
 		WidgetState.restore(plugin.getLocalConfig(), split);
 	}
-
+	
 	public void actionPerformed(ActionEvent ae) 
 	{
 		if(ae.getSource().equals(btnRefresh))
 			valueChanged(null);
+		else if(ae.getSource().equals(btnAggregate))
+			showAllChannels();
 		else if(ae.getSource().equals(btnRemoveChannel))
 		{
 			ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
@@ -137,9 +147,9 @@ implements ListSelectionListener, ActionListener, MouseListener
 		{
 			new ChannelDialog(this, plugin).show();
 		}
-					
+		
 	}
-
+	
 	public void valueChanged(ListSelectionEvent lse)
 	{
 		ChannelInfo channel = (ChannelInfo)channels.getSelectedValue();
@@ -165,7 +175,7 @@ implements ListSelectionListener, ActionListener, MouseListener
 					rssItems.clear();
 					status.setIndeterminate(true);
 					RssChannel rss = channel.getChannel();
-
+					
 					Iterator i = rss.getItemList().iterator();
 					while (i.hasNext())
 						rssItems.addElement(i.next());								
@@ -185,10 +195,53 @@ implements ListSelectionListener, ActionListener, MouseListener
 				}
 			}
 		};
-
+		
 		new Thread(refresh).start();
 	}
-
+	
+	public void showAllChannels() 
+	{
+		Runnable refresh = new Runnable() {
+			public void run() {
+				try {							
+					channels.setSelectedValue(null, false);
+					rssItems.clear();
+					status.setIndeterminate(true);
+					
+					Iterator channels = plugin.getChannels().iterator();
+					ArrayList allItems = new ArrayList();
+					while(channels.hasNext())
+					{
+						ChannelInfo channel = (ChannelInfo)channels.next();
+						Collection items = channel.getChannel().getItemList();
+						allItems.addAll(items);
+					}
+					
+					Collections.sort(allItems, new RssItemComparator());
+					
+					Iterator i = allItems.iterator();
+					while (i.hasNext())
+						rssItems.addElement(i.next());	
+					
+				} catch (MalformedURLException mue) {
+					DialogBox.error(plugin.tr("err.wrongUrl")+ mue);
+				} catch (RssException re) {
+					//call proxy config if unable to connect
+					if(re.getCause() != null && re.getCause() instanceof ConnectException)
+					{
+						if(DialogBox.question("err.connect", "msg.setupProxy"))
+							new ProxyDialog(plugin).show();
+					}
+					else
+						DialogBox.error(plugin.tr("err.rssError") + re);
+				} finally {
+					status.setIndeterminate(false);
+				}
+			}
+		};
+		new Thread(refresh).start();
+	}
+	
 	public void mousePressed(MouseEvent me) {}
 	public void mouseReleased(MouseEvent me) {}
 	public void mouseEntered(MouseEvent me) {}
@@ -200,7 +253,7 @@ implements ListSelectionListener, ActionListener, MouseListener
 			RssItem item = (RssItem)items.getSelectedValue();
 			if(item == null)
 				return;
-				
+			
 			plugin.openUrl(item.getLink());	
 		}		
 	}
