@@ -314,11 +314,11 @@ final class SendMessageDialog extends JDialog {
 
 		menuBar = new JMenuBar();
 
-		fileMenu = new JMenu(msgBundle.getString("SendMessage.fileMenuLabel"));
+		fileMenu = new JMenu(msgBundle.getString("common.fileMenu"));
 		fileMenu.setMnemonic('F');
 
 		newMenuItem =
-			fileMenu.add(msgBundle.getString("SendMessage.newMenuItemLabel"));
+			fileMenu.add(msgBundle.getString("common.new"));
 		newMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('N', Event.CTRL_MASK));
 		newMenuItem.setMnemonic('N');
@@ -331,7 +331,7 @@ final class SendMessageDialog extends JDialog {
 		fileMenu.addSeparator();
 
 		printMenuItem =
-			fileMenu.add(msgBundle.getString("SendMessage.printMenuItemLabel"));
+			fileMenu.add(msgBundle.getString("common.print"));
 		printMenuItem.setEnabled(false);
 		printMenuItem.addActionListener(listener);
 
@@ -374,7 +374,7 @@ final class SendMessageDialog extends JDialog {
 		insertMenu = menuBar.add(insertMenu);
 
 		messageMenu =
-			new JMenu(msgBundle.getString("SendMessage.messageMenuLabel"));
+			new JMenu(msgBundle.getString("common.mail"));
 		messageMenu.setMnemonic('M');
 
 		sendMsgMenuItem =

@@ -134,7 +134,7 @@ public class JMailWindow extends JFrame {
 		/** Init menus */
 		menuBar = new JMenuBar();
 
-		fileMenu = new JMenu(msgBundle.getString("JMailWindow.fileMenuLabel"));
+		fileMenu = new JMenu(msgBundle.getString("common.fileMenu"));
 		fileMenu.setMnemonic('F');
 
 		newMenu = new JMenu(msgBundle.getString("JMailWindow.newMenuLabel"));
@@ -142,7 +142,7 @@ public class JMailWindow extends JFrame {
 		fileMenu.add(newMenu);
 
 		newMsgMenuItem =
-			newMenu.add(msgBundle.getString("JMailWindow.newMsgMenuItemLabel"));
+			newMenu.add(msgBundle.getString("common.mail"));
 		newMsgMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('N', Event.CTRL_MASK));
 		newMsgMenuItem.addActionListener(listener);
@@ -151,12 +151,12 @@ public class JMailWindow extends JFrame {
 
 		newFolderMenuItem =
 			newMenu.add(
-				msgBundle.getString("JMailWindow.newFolderMenuItemLabel"));
+				msgBundle.getString("common.folder"));
 		newFolderMenuItem.setMnemonic('R');
 		newFolderMenuItem.addActionListener(listener);
 
 		openMenuItem =
-			fileMenu.add(msgBundle.getString("JMailWindow.openMenuItemLabel"));
+			fileMenu.add(msgBundle.getString("common.open"));
 		openMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('O', Event.CTRL_MASK));
 		openMenuItem.setMnemonic('O');
@@ -164,7 +164,7 @@ public class JMailWindow extends JFrame {
 		openMenuItem.addActionListener(listener);
 
 		saveMenuItem =
-			fileMenu.add(msgBundle.getString("JMailWindow.saveMenuItemLabel"));
+			fileMenu.add(msgBundle.getString("common.save"));
 		saveMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('S', Event.CTRL_MASK));
 		saveMenuItem.setMnemonic('E');
@@ -174,25 +174,25 @@ public class JMailWindow extends JFrame {
 		fileMenu.addSeparator();
 
 		folderMenu =
-			new JMenu(msgBundle.getString("JMailWindow.folderMenuLabel"));
+			new JMenu(msgBundle.getString("common.folder"));
 		folderMenu.setMnemonic('D');
 		fileMenu.add(folderMenu);
 
 		folderNewMenuItem =
 			folderMenu.add(
-				msgBundle.getString("JMailWindow.folderNewMenuItemLabel"));
+				msgBundle.getString("common.new"));
 		folderNewMenuItem.addActionListener(listener);
 
 		folderDeleteMenuItem =
 			folderMenu.add(
-				msgBundle.getString("JMailWindow.folderDeleteMenuItemLabel"));
+				msgBundle.getString("common.delete"));
 		folderDeleteMenuItem.setEnabled(false);
 		folderDeleteMenuItem.addActionListener(listener);
 
 		fileMenu.addSeparator();
 
 		printMenuItem =
-			fileMenu.add(msgBundle.getString("JMailWindow.printMenuItemLabel"));
+			fileMenu.add(msgBundle.getString("common.print"));
 		printMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('P', Event.CTRL_MASK));
 		printMenuItem.setMnemonic('I');
@@ -231,7 +231,7 @@ public class JMailWindow extends JFrame {
 
 		deleteMenuItem =
 			editMenu.add(
-				msgBundle.getString("JMailWindow.deleteMenuItemLabel"));
+				msgBundle.getString("common.delete"));
 		deleteMenuItem.setMnemonic('E');
 		deleteMenuItem.setEnabled(false);
 		deleteMenuItem.addActionListener(listener);
@@ -239,7 +239,7 @@ public class JMailWindow extends JFrame {
 		editMenu = menuBar.add(editMenu);
 
 		messageMenu =
-			new JMenu(msgBundle.getString("JMailWindow.messageMenuLabel"));
+			new JMenu(msgBundle.getString("common.mail"));
 		messageMenu.setMnemonic('M');
 
 		newMsgMenuItem2 =
@@ -254,7 +254,7 @@ public class JMailWindow extends JFrame {
 
 		replyMenuItem =
 			messageMenu.add(
-				msgBundle.getString("JMailWindow.replyMenuItemLabel"));
+				msgBundle.getString("common.reply"));
 		replyMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('R', Event.CTRL_MASK));
 		replyMenuItem.setMnemonic('R');
@@ -263,7 +263,7 @@ public class JMailWindow extends JFrame {
 
 		replyallMenuItem =
 			messageMenu.add(
-				msgBundle.getString("JMailWindow.replyallMenuItemLabel"));
+				msgBundle.getString("common.replyAll"));
 		replyallMenuItem.setAccelerator(
 			KeyStroke.getKeyStroke('R', Event.CTRL_MASK + Event.SHIFT_MASK));
 		replyallMenuItem.setMnemonic('t');

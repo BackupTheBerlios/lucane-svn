@@ -147,7 +147,7 @@ final class ReadMessageFrame extends JFrame
 
 		menuBar = new JMenuBar();
 
-		fileMenu = new JMenu(msgBundle.getString("ReadMessage.fileMenuLabel"));
+		fileMenu = new JMenu(msgBundle.getString("common.fileMenu"));
 		fileMenu.setMnemonic('F');
 
 		newMenuItem = fileMenu.add(msgBundle.getString("ReadMessage.newMenuItemLabel"));
@@ -162,12 +162,12 @@ final class ReadMessageFrame extends JFrame
 		copyMenuItem = fileMenu.add(msgBundle.getString("ReadMessage.copyMenuItemLabel"));
 		copyMenuItem.addActionListener(listener);
 
-		deleteMenuItem = fileMenu.add(msgBundle.getString("ReadMessage.deleteMenuItemLabel"));
+		deleteMenuItem = fileMenu.add(msgBundle.getString("common.delete"));
 		deleteMenuItem.addActionListener(listener);
 
 		fileMenu.addSeparator();
 
-		printMenuItem = fileMenu.add(msgBundle.getString("ReadMessage.printMenuItemLabel"));
+		printMenuItem = fileMenu.add(msgBundle.getString("common.print"));
 		printMenuItem.setEnabled(false);
 		printMenuItem.addActionListener(listener);
 
@@ -179,20 +179,20 @@ final class ReadMessageFrame extends JFrame
 
 		fileMenu = menuBar.add(fileMenu);
 
-		messageMenu = new JMenu(msgBundle.getString("ReadMessage.messageMenuLabel"));
+		messageMenu = new JMenu(msgBundle.getString("common.mail"));
 		messageMenu.setMnemonic('M');
 
-		newMenuItem2 = messageMenu.add(msgBundle.getString("ReadMessage.newMenuItem2Label"));
+		newMenuItem2 = messageMenu.add(msgBundle.getString("common.new"));
 		newMenuItem2.addActionListener(listener);
 
 		messageMenu.addSeparator();
 
-		replyMenuItem = messageMenu.add(msgBundle.getString("ReadMessage.replyMenuItemLabel"));
+		replyMenuItem = messageMenu.add(msgBundle.getString("common.reply"));
 		replyMenuItem.setAccelerator(KeyStroke.getKeyStroke('R', Event.CTRL_MASK));
 		replyMenuItem.setMnemonic('R');
 		replyMenuItem.addActionListener(listener);
 
-		replyAllMenuItem = messageMenu.add(msgBundle.getString("ReadMessage.replyAllMenuItemLabel"));
+		replyAllMenuItem = messageMenu.add(msgBundle.getString("common.replyAll"));
 		replyAllMenuItem.addActionListener(listener);
 
 		forwardMenuItem = messageMenu.add(msgBundle.getString("ReadMessage.forwardMenuItemLabel"));
@@ -214,7 +214,7 @@ final class ReadMessageFrame extends JFrame
 		toolBar.add(reply);
 
 		replyall = new JButton(plugin.getIcon("replyall.png"));
-		replyall.setToolTipText(msgBundle.getString("ReadMessage.replyallLabel"));
+		replyall.setToolTipText(msgBundle.getString("common.replyAll"));
 		replyall.addActionListener(listener);
 
 		toolBar.add(replyall);

@@ -74,11 +74,11 @@ final class AttachmentFrame extends JFrame
 
 	filePopup = new JPopupMenu();
 	
-	openMenuItem = new JMenuItem(msgBundle.getString("Attachment.openMenuItemLabel"));
+	openMenuItem = new JMenuItem(msgBundle.getString("common.open"));
 	openMenuItem.addActionListener(listener);
 	filePopup.add(openMenuItem);
 
-	saveMenuItem = new JMenuItem(msgBundle.getString("Attachment.saveMenuItemLabel"));
+	saveMenuItem = new JMenuItem(msgBundle.getString("common.save"));
 	saveMenuItem.addActionListener(listener);
 	filePopup.add(saveMenuItem);
 

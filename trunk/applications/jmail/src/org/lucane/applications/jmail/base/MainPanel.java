@@ -180,7 +180,7 @@ final class MainPanel extends JPanel {
 		toolBar.add(reply);
 
 		replyall = new JButton(plugin.getIcon("replyall.png"));
-		replyall.setToolTipText(msgBundle.getString("MainPanel.replyallLabel"));
+		replyall.setToolTipText(msgBundle.getString("common.replyAll"));
 		replyall.setEnabled(false);
 		replyall.addActionListener(listener);
 
@@ -247,7 +247,7 @@ final class MainPanel extends JPanel {
 
 		folderDeleteItem =
 			new JMenuItem(
-				msgBundle.getString("MainPanel.folderDeleteItemLabel"));
+				msgBundle.getString("common.delete"));
 		folderDeleteItem.addActionListener(listener);
 		folderPopup.add(folderDeleteItem);
 
@@ -279,7 +279,7 @@ final class MainPanel extends JPanel {
 		msgPopup = new JPopupMenu();
 
 		msgOpenItem =
-			new JMenuItem(msgBundle.getString("MainPanel.msgOpenItemLabel"));
+			new JMenuItem(msgBundle.getString("common.open"));
 		msgOpenItem.addActionListener(listener);
 		msgPopup.add(msgOpenItem);
 
@@ -289,25 +289,25 @@ final class MainPanel extends JPanel {
 		msgPopup.add(msgSourceItem);
 
 		msgSaveItem =
-			new JMenuItem(msgBundle.getString("MainPanel.msgSaveItemLabel"));
+			new JMenuItem(msgBundle.getString("common.save"));
 		msgSaveItem.addActionListener(listener);
 		msgPopup.add(msgSaveItem);
 
 		msgPrintItem =
-			new JMenuItem(msgBundle.getString("MainPanel.msgPrintItemLabel"));
+			new JMenuItem(msgBundle.getString("common.print"));
 		msgPrintItem.setEnabled(false);
 		msgPopup.add(msgPrintItem);
 
 		msgPopup.addSeparator();
 
 		msgReplyItem =
-			new JMenuItem(msgBundle.getString("MainPanel.msgReplyItemLabel"));
+			new JMenuItem(msgBundle.getString("common.reply"));
 		msgReplyItem.addActionListener(listener);
 		msgPopup.add(msgReplyItem);
 
 		msgReplyallItem =
 			new JMenuItem(
-				msgBundle.getString("MainPanel.msgReplyallItemLabel"));
+				msgBundle.getString("common.replyAll"));
 		msgReplyallItem.addActionListener(listener);
 		msgPopup.add(msgReplyallItem);
 
@@ -329,7 +329,7 @@ final class MainPanel extends JPanel {
 		msgPopup.add(msgCopyItem);
 
 		msgDeleteItem =
-			new JMenuItem(msgBundle.getString("MainPanel.msgDeleteItemLabel"));
+			new JMenuItem(msgBundle.getString("common.delete"));
 		msgDeleteItem.addActionListener(listener);
 		msgPopup.add(msgDeleteItem);
 
