@@ -21,6 +21,11 @@
   <proxy host="localhost" port="5119" />
   -->
   
+  <!-- listener port if you want to enforce a port for the client -->
+  <!--
+  <listener port="1951" />
+  -->
+  
   <!-- public IP address to use if the host has multiple network interfaces -->
   <!--
   <public-ip address="192.168.0.1" />

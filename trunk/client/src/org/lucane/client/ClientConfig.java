@@ -31,6 +31,7 @@ public class ClientConfig
 	//-- attributes
 	private String login = "";
 	private String serverHost = null;
+	private int listenerPort = 0;
 	private int serverPort = 9115;
 	private String language = "en";
 	private String looknfeel = null;
@@ -74,6 +75,8 @@ public class ClientConfig
 					handleProxy(node);
 				else if(node.getNodeName().equals("public-ip"))
 					handlePublicIp(node);
+				else if(node.getNodeName().equals("listener"))
+					handleListener(node);
 				else
 				  Logging.getLogger().warning("unexepected node : " + node.getNodeName());
 			}
@@ -141,6 +144,16 @@ public class ClientConfig
 	private void handlePublicIp(Node node)
 	{
 		this.publicIp = node.getAttributes().getNamedItem("address").getNodeValue();
+	}
+	
+	/**
+	 * Parse listener node
+	 * 
+	 * @param node the listener node
+	 */
+	private void handleListener(Node node)
+	{
+		this.listenerPort = Integer.parseInt(node.getAttributes().getNamedItem("port").getNodeValue());
 	}
 
 	//-- getters
@@ -224,4 +237,14 @@ public class ClientConfig
 	{
 		return publicIp;
 	}
+	
+	/**
+	 * Get the listener port
+	 * 
+	 * @return the listener port
+	 */
+	public int getListenerPort()
+	{
+		return listenerPort;
+	}	
 }

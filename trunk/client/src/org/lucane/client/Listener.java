@@ -49,18 +49,18 @@ class Listener
     boolean ok = false;
     this.parent = Client.getInstance();
 
+    port = parent.getConfig().getListenerPort();
     while(! ok)
     {
-      port = rnd.nextInt(62000) + 1025;
-
       try
       {
         this.socket = new ServerSocket(port);
-		Logging.getLogger().fine("Listener port : " + port);
+		Logging.getLogger().info("Listener port : " + port);
         ok = true;
       }
       catch(IOException ex)
       {
+      	port = rnd.nextInt(62000) + 1025;
       }
     }
   }
