@@ -38,6 +38,7 @@ import javax.swing.event.ListSelectionListener;
 import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.applications.todolist.io.IO;
+import org.lucane.client.Plugin;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
@@ -64,10 +65,18 @@ public class MainFrame extends JFrame {
 	private JButton jbDeleteItem;
 	
 	private MainFrame mainFrame;
+
+	private Plugin plugin;
 	
-	public MainFrame() {
-		super("Todo List");
+	public MainFrame(Plugin plugin) {
+		super();
+		this.plugin=plugin;
+		setTitle(plugin.tr("MainInterface.title"));
 		mainFrame=this;
+		TodolistItemTableModel.setColumnsNames(new String[] {plugin.tr("MainInterface.items.name"), plugin.tr("MainInterface.items.priority"), plugin.tr("MainInterface.items.complete")});
+		TodolistTableModel.setColumnsNames(new String[] {plugin.tr("MainInterface.lists.name")});
+		TodolistItem.setPriorityLabels(new String[] {plugin.tr("TodoListItem.priority.low"), plugin.tr("TodoListItem.priority.medium"), plugin.tr("TodoListItem.priority.high")});
+		TodolistItem.setCompleteLabels(new String[] {plugin.tr("TodoListItem.complete.false"), plugin.tr("TodoListItem.complete.true")});
 		init();
 	}
 	
@@ -84,7 +93,7 @@ public class MainFrame extends JFrame {
 		htmledListDescription.setEditable(false);
 		htmledListDescription.setToolbarVisible(false);
 		jpListView = new JPanel(new BorderLayout());
-		jpListView.add(new JLabel("Description :"), BorderLayout.NORTH);
+		jpListView.add(new JLabel(plugin.tr("MainInterface.decription")), BorderLayout.NORTH);
 		jpListView.add(htmledListDescription, BorderLayout.CENTER);
 		jspList = new JSplitPane(JSplitPane.VERTICAL_SPLIT, new JScrollPane(jtTodolists), jpListView);
 		jspList.setResizeWeight(.70);
@@ -104,7 +113,7 @@ public class MainFrame extends JFrame {
 
 		jpItemView = new JPanel();
 		jpItemView.setLayout(new BorderLayout());
-		jpItemView.add(new JLabel("Description :"), BorderLayout.NORTH);
+		jpItemView.add(new JLabel(plugin.tr("MainInterface.decription")), BorderLayout.NORTH);
 		htmledListItemDescription = new HTMLEditor();
 		htmledListItemDescription.setEditable(false);
 		htmledListItemDescription.setToolbarVisible(false);
@@ -120,58 +129,58 @@ public class MainFrame extends JFrame {
 
 		jtbToolBar = new JToolBar();
 
-		JButton jbCreateTodolist = new JButton("Create todolist");
+		JButton jbCreateTodolist = new JButton(plugin.tr("MainInterface.createList"));
 		jbCreateTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
-				new TodolistDialog(mainFrame).show();
+				new TodolistDialog(plugin, mainFrame).show();
 			}
 		});
 		jtbToolBar.add(jbCreateTodolist);
 		
-		JButton jbEditTodolist = new JButton("Edit todolist");
+		JButton jbEditTodolist = new JButton(plugin.tr("MainInterface.editList"));
 		jbEditTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
 				Todolist tl = jtTodolists.getSelectedTodolist();
 				if (tl!=null) {
-					new TodolistDialog(mainFrame, tl).show();
+					new TodolistDialog(plugin, mainFrame, tl).show();
 				}
 			}
 		});
 		jtbToolBar.add(jbEditTodolist);
 		
-		JButton jbDeleteTodolist = new JButton("Remove todolist");
+		JButton jbDeleteTodolist = new JButton(plugin.tr("MainInterface.deleteList"));
 		jbDeleteTodolist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				Todolist tl = jtTodolists.getSelectedTodolist();
 				if (tl!=null) {
-					if (DialogBox.question("Delete todolist", "Do you realy want to delete the selected todolist ?"))
+					if (DialogBox.question(plugin.tr("MainInterface.confirmDeleteListDialog.title"), plugin.tr("MainInterface.confirmDeleteListDialog.question")))
 						mainFrame.deleteTodolist(tl);
 				}
 			}
 		});
 		jtbToolBar.add(jbDeleteTodolist);
 		
-		JButton jbCreateItem = new JButton("New item");
+		JButton jbCreateItem = new JButton(plugin.tr("MainInterface.createItem"));
 		jbCreateItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
 				Todolist tl = jtTodolists.getSelectedTodolist();
 				if (tl!=null) {
-					new TodolistItemDialog(mainFrame, tl.getId()).show();
+					new TodolistItemDialog(plugin, mainFrame, tl.getId()).show();
 				}
 			}
 		});
 		jtbToolBar.add(jbCreateItem);
 		
-		JButton jbEditItem = new JButton("Edit item");
+		JButton jbEditItem = new JButton(plugin.tr("MainInterface.editItem"));
 		jbEditItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				// I use the mainFrame object because in that case this is the action listener
 				TodolistItem tli = (TodolistItem)jtTodolistItems.getSelectedTodolistItem();
 				if (tli!=null) {
-					new TodolistItemDialog(mainFrame, tli).show();
+					new TodolistItemDialog(plugin, mainFrame, tli).show();
 				} else {
 					htmledListItemDescription.clear();
 				}
@@ -179,12 +188,12 @@ public class MainFrame extends JFrame {
 		});
 		jtbToolBar.add(jbEditItem);
 		
-		JButton jbDeleteItem = new JButton("Remove item");
+		JButton jbDeleteItem = new JButton(plugin.tr("MainInterface.deleteItem"));
 		jbDeleteItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				TodolistItem tli = jtTodolistItems.getSelectedTodolistItem(); 
 				if (tli!=null) {
-					if (DialogBox.question("Delete item", "Do you realy want to delete the selected item ?"))
+					if (DialogBox.question(plugin.tr("MainInterface.confirmDeleteItemDialog.title"), plugin.tr("MainInterface.confirmDeleteItemDialog.question")))
 						mainFrame.deleteTodolistItem(tli);
 				}
 			}
@@ -197,7 +206,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	private void refreshTodolists() {
-		ArrayList todolists = IO.getInstance().getTodolists();
+		ArrayList todolists = IO.getInstance(plugin).getTodolists();
 		jtTodolists.clear();
 		Iterator it = todolists.iterator();
 		while (it.hasNext())
@@ -209,7 +218,7 @@ public class MainFrame extends JFrame {
 		if (tl!=null) {
 			htmledListDescription.setText(tl.getDescription());
 
-			ArrayList todolistItems = IO.getInstance().getTodolistItems(tl.getId());
+			ArrayList todolistItems = IO.getInstance(plugin).getTodolistItems(tl.getId());
 			jtTodolistItems.clear();
 			Iterator it = todolistItems.iterator();
 			while (it.hasNext())
@@ -222,7 +231,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	protected void addTodolist(Todolist newTodolist) {
-		int id = IO.getInstance().addTodolist(newTodolist);
+		int id = IO.getInstance(plugin).addTodolist(newTodolist);
 		if (id<0)
 			return;
 		newTodolist.setId(id);
@@ -230,20 +239,20 @@ public class MainFrame extends JFrame {
 	}
 
 	protected void modifyTodolist(Todolist oldTodolist, Todolist newTodolist) {
-		if (!IO.getInstance().modifyTodolist(oldTodolist, newTodolist))
+		if (!IO.getInstance(plugin).modifyTodolist(oldTodolist, newTodolist))
 			return;
 		jtTodolists.remove(oldTodolist);
 		jtTodolists.add(newTodolist);
 	}
 
 	protected void deleteTodolist(Todolist defunctTodolist) {
-		if (!IO.getInstance().deleteTodolist(defunctTodolist))
+		if (!IO.getInstance(plugin).deleteTodolist(defunctTodolist))
 			return;
 		jtTodolists.remove(defunctTodolist);
 	}
 
 	protected void addTodolistItem(TodolistItem newTodolistItem) {
-		int id = IO.getInstance().addTodolistItem(newTodolistItem);
+		int id = IO.getInstance(plugin).addTodolistItem(newTodolistItem);
 		if (id<0)
 			return;
 		newTodolistItem.setId(id);
@@ -251,15 +260,16 @@ public class MainFrame extends JFrame {
 	}
 
 	protected void modifyTodolistItem(TodolistItem oldTodolistItem, TodolistItem newTodolistItem) {
-		if (!IO.getInstance().modifyTodolistItem(oldTodolistItem, newTodolistItem))
+		if (!IO.getInstance(plugin).modifyTodolistItem(oldTodolistItem, newTodolistItem))
 			return;
 		jtTodolistItems.remove(oldTodolistItem);
 		jtTodolistItems.add(newTodolistItem);
 	}
 
 	protected void deleteTodolistItem(TodolistItem defunctTodolistItem) {
-		if (!IO.getInstance().deleteTodolistItem(defunctTodolistItem))
+		if (!IO.getInstance(plugin).deleteTodolistItem(defunctTodolistItem))
 			return;
 		jtTodolistItems.remove(defunctTodolistItem);
 	}
 }
+

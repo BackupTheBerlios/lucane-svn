@@ -35,6 +35,6 @@ public class TodolistPlugin extends StandalonePlugin {
 	}
 
 	public void start() {
-		new MainFrame().show();
+		new MainFrame(this).show();
 	}
 }

@@ -59,6 +59,10 @@ public class TodolistItemTable extends JTable {
 		});
 	}
 	
+	public static void setColumnsNames(String [] names) {
+		TodolistItemTableModel.setColumnsNames(names);
+	}
+	
 	public void addListSelectionListener(ListSelectionListener lsl) {
 		getSelectionModel().addListSelectionListener(lsl);
 	}
@@ -86,7 +90,7 @@ public class TodolistItemTable extends JTable {
 
 class TodolistItemTableModel extends AbstractTableModel {
 
-	private static final String[] COLUMNS_NAMES = {"Name", "Priority", "Complete"};
+	private static String[] columnsNames = {"Name", "Priority", "Complete"};
 	private static final int[] COLUMNS_SORT = {TodolistItemsSorter.NAME, TodolistItemsSorter.PRIORITY, TodolistItemsSorter.COMPLETED};
 	private ArrayList items;
 	private Comparator comparator;
@@ -98,7 +102,11 @@ class TodolistItemTableModel extends AbstractTableModel {
 		items = new ArrayList();
 		comparator = new TodolistItemsSorter(TodolistItemsSorter.NAME, TodolistItemsSorter.ASC);
 	}
-	
+
+	public static void setColumnsNames(String [] names) {
+		columnsNames = names;
+	}
+
 	public void setComparator(Comparator comparator) {
 		this.comparator = comparator;
 	}
@@ -134,7 +142,7 @@ class TodolistItemTableModel extends AbstractTableModel {
 	}
 
 	public String getColumnName(int col) {
-		return COLUMNS_NAMES[col];
+		return columnsNames[col];
 	}
 
 	public boolean isCellEditable(int row, int col) {
@@ -159,9 +167,9 @@ class TodolistItemTableModel extends AbstractTableModel {
 			case 0 :
 				return item.getName();
 			case 1 :
-				return TodolistItem.PRIORITY_LABELS[item.getPriority()];
+				return TodolistItem.getPriorityLabels()[item.getPriority()];
 			case 2 :
-				return item.isComplete()?"true":"false";
+				return TodolistItem.getCompleteLabels()[item.isComplete()?1:0];
 		}
 		return "";
 	}

@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.TodolistItem;
+import org.lucane.client.Plugin;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 public class TodolistItemDialog extends JDialog {
@@ -47,19 +48,22 @@ public class TodolistItemDialog extends JDialog {
 	private JButton jbCancel;
 	
 	private MainFrame mainFrame;
-	private int parentTodolistId;
+	private Plugin plugin;
 	
+	private int parentTodolistId;
 	private TodolistItem todolistItem;
 	
 	private boolean modify = false;
 	
-	public TodolistItemDialog (MainFrame mainFrame, int parentTodolistId) {
+	public TodolistItemDialog (Plugin plugin, MainFrame mainFrame, int parentTodolistId) {
+		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		this.parentTodolistId = parentTodolistId;
 		init();
 	}
 	
-	public TodolistItemDialog (MainFrame mainFrame, TodolistItem todolistItem) {
+	public TodolistItemDialog (Plugin plugin, MainFrame mainFrame, TodolistItem todolistItem) {
+		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		this.todolistItem = todolistItem;
 		modify = true;
@@ -68,18 +72,18 @@ public class TodolistItemDialog extends JDialog {
 	
 	private void init() {
 		if (modify) {
-			setTitle("Item modification ...");
+			setTitle(plugin.tr("TodoListItemDialog.modificationTitle"));
 		} else {
-			setTitle("Item creation ...");
+			setTitle(plugin.tr("TodoListItemDialog.creationTitle"));
 		}
 		setSize(512, 384);
 		
 		jtfName = new JTextField();
 		htmledDescription = new HTMLEditor();
 		//jtfPriority = new JTextField();
-		jcmbPriority = new JComboBox(TodolistItem.PRIORITY_LABELS);
+		jcmbPriority = new JComboBox(TodolistItem.getPriorityLabels());
 		
-		jbOk = new JButton("Ok");
+		jbOk = new JButton(plugin.tr("TodoListItemDialog.ok"));
 		jbOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (modify)
@@ -97,7 +101,7 @@ public class TodolistItemDialog extends JDialog {
 				hide();
 			}
 		});
-		jbCancel = new JButton("Cancel");
+		jbCancel = new JButton(plugin.tr("TodoListItemDialog.cancel"));
 		jbCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				hide();
@@ -118,7 +122,7 @@ public class TodolistItemDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=0;
-		getContentPane().add(new JLabel("Name :"), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListItemDialog.name")), c);
 		c.gridx=1;
 		c.weightx=1;
 		getContentPane().add(jtfName, c);
@@ -127,7 +131,7 @@ public class TodolistItemDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=1;
-		getContentPane().add(new JLabel("Description :"), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListItemDialog.description")), c);
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
@@ -137,7 +141,7 @@ public class TodolistItemDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=0;
-		getContentPane().add(new JLabel("Priority :"), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListItemDialog.priority")), c);
 		c.gridx=1;
 		c.weightx=1;
 		getContentPane().add(jcmbPriority, c);
@@ -157,7 +161,7 @@ public class TodolistItemDialog extends JDialog {
 			c.gridx=0;
 			c.weightx=0;
 			c.weighty=0;
-			getContentPane().add(new JLabel("Complete :"), c);
+			getContentPane().add(new JLabel(plugin.tr("TodoListItemDialog.complete")), c);
 			c.gridx=1;
 			c.weightx=1;
 			getContentPane().add(jcbComplete, c);

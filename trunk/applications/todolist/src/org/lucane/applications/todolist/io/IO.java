@@ -26,6 +26,7 @@ import org.lucane.applications.todolist.TodolistAction;
 import org.lucane.applications.todolist.TodolistItem;
 import org.lucane.client.Client;
 import org.lucane.client.Communicator;
+import org.lucane.client.Plugin;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.ConnectInfo;
 import org.lucane.common.ObjectConnection;
@@ -33,13 +34,20 @@ import org.lucane.common.ObjectConnection;
 public class IO {
 	private ConnectInfo service;
 	private static IO singleInstance;
+	private static Plugin plugin;
 
 	private IO() {
 		service = Communicator.getInstance().getConnectInfo("org.lucane.applications.todolist");
 	}
 	
-	public static IO getInstance() {
-		if (singleInstance==null) singleInstance = new IO();
+	public static IO getInstance(Plugin plugin) {
+		// always use the newest plugin instance to prevent an old one to stay in memory
+		IO.plugin = plugin;
+		
+		if (singleInstance==null) {
+			singleInstance = new IO();
+		}
+		
 		return singleInstance;
 	}
 	
@@ -58,13 +66,13 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't add the new item");
+				DialogBox.error(plugin.tr("IO.cantGetLists"));
 				return null;
 			}
 			todolists = (ArrayList) oc.read();
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't add the new item");
+			DialogBox.error(plugin.tr("IO.cantGetLists"));
 			return null;
 		}
 
@@ -78,13 +86,13 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't add the new item");
+				DialogBox.error(plugin.tr("IO.cantGetItems"));
 				return null;
 			}
 			todolistitems = (ArrayList) oc.read();
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't add the new item");
+			DialogBox.error(plugin.tr("IO.cantGetItems"));
 			return null;
 		}
 
@@ -98,13 +106,13 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't add the new item");
+				DialogBox.error(plugin.tr("IO.cantCreateItem"));
 				return -1;
 			}
 			id = ((Integer)oc.read()).intValue();
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't add the new item");
+			DialogBox.error(plugin.tr("IO.cantCreateItem"));
 			return -1;
 		}
 
@@ -117,12 +125,12 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't modify the item");
+				DialogBox.error(plugin.tr("IO.cantModifyItem"));
 				return false;
 			}
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't modify the item");
+			DialogBox.error(plugin.tr("IO.cantModifyItem"));
 			return false;
 		}
 
@@ -135,12 +143,12 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't delete the item");
+				DialogBox.error(plugin.tr("IO.cantDeleteItem"));
 				return false;
 			}
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't delete the item");
+			DialogBox.error(plugin.tr("IO.cantDeleteItem"));
 			return false;
 		}
 
@@ -154,14 +162,14 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't create the todolist");
+				DialogBox.error(plugin.tr("IO.cantCreateList"));
 				return -1;
 			}
 			id = ((Integer)oc.read()).intValue();
 
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't create the todolist");
+			DialogBox.error(plugin.tr("IO.cantCreateList"));
 			return -1;
 		}
 
@@ -174,12 +182,12 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't modify the todo list");
+				DialogBox.error(plugin.tr("IO.cantModifyList"));
 				return false;
 			}
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't modify the todo list");
+			DialogBox.error(plugin.tr("IO.cantModifyList"));
 			return false;
 		}
 
@@ -192,12 +200,12 @@ public class IO {
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
-				DialogBox.error("Can't delete the todolist");
+				DialogBox.error(plugin.tr("IO.cantDeleteList"));
 				return false;
 			}
 			oc.close();
 		} catch (Exception e) {
-			DialogBox.error("Can't delete the todolist");
+			DialogBox.error(plugin.tr("IO.cantDeleteList"));
 			return false;
 		}
 

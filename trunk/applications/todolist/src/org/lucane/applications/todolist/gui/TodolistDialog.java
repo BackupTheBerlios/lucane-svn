@@ -34,6 +34,7 @@ import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.io.IO;
+import org.lucane.client.Plugin;
 import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 public class TodolistDialog extends JDialog {
@@ -43,17 +44,20 @@ public class TodolistDialog extends JDialog {
 	private JButton jbCancel;
 	
 	private MainFrame mainFrame;
+	private Plugin plugin;
 	
 	private Todolist todolist;
 	
 	private boolean modify = false;
 	
-	public TodolistDialog (MainFrame mainFrame) {
+	public TodolistDialog (Plugin plugin, MainFrame mainFrame) {
+		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		init();
 	}
 	
-	public TodolistDialog (MainFrame mainFrame, Todolist todolist) {
+	public TodolistDialog (Plugin plugin, MainFrame mainFrame, Todolist todolist) {
+		this.plugin = plugin;
 		this.mainFrame = mainFrame;
 		this.todolist = todolist;
 		modify=true;
@@ -62,9 +66,9 @@ public class TodolistDialog extends JDialog {
 	
 	private void init() {
 		if (modify) {
-			setTitle("Todolist modification ...");
+			setTitle(plugin.tr("TodoListDialog.modificationTitle"));
 		} else {
-			setTitle("Todolist creation ...");
+			setTitle(plugin.tr("TodoListDialog.creationTitle"));
 		}
 		
 		setSize(512, 384);
@@ -72,7 +76,7 @@ public class TodolistDialog extends JDialog {
 		jtfName = new JTextField();
 		htmledDescription = new HTMLEditor();
 		
-		jbOk = new JButton("Ok");
+		jbOk = new JButton(plugin.tr("TodoListDialog.ok"));
 		jbOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (modify)
@@ -84,11 +88,11 @@ public class TodolistDialog extends JDialog {
 									jtfName.getText(),
 									htmledDescription.getText()));
 				else
-					mainFrame.addTodolist(new Todolist(IO.getInstance().getUserName(), jtfName.getText(), htmledDescription.getText()));
+					mainFrame.addTodolist(new Todolist(IO.getInstance(plugin).getUserName(), jtfName.getText(), htmledDescription.getText()));
 				hide();
 			}
 		});
-		jbCancel = new JButton("Cancel");
+		jbCancel = new JButton(plugin.tr("TodoListDialog.cancel"));
 		jbCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				hide();
@@ -109,7 +113,7 @@ public class TodolistDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=0;
-		getContentPane().add(new JLabel("Name :"), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListDialog.name")), c);
 		c.gridx=1;
 		c.weightx=1;
 		getContentPane().add(jtfName, c);
@@ -118,7 +122,7 @@ public class TodolistDialog extends JDialog {
 		c.gridx=0;
 		c.weightx=0;
 		c.weighty=1;
-		getContentPane().add(new JLabel("Description :"), c);
+		getContentPane().add(new JLabel(plugin.tr("TodoListDialog.description")), c);
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;

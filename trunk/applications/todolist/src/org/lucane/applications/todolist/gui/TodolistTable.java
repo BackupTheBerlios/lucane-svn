@@ -82,7 +82,7 @@ public class TodolistTable extends JTable {
 
 class TodolistTableModel extends AbstractTableModel {
 
-	private static final String[] COLUMNS_NAMES = {"Name"};
+	private static String[] columnsNames = {"Name"};
 	private static final int[] COLUMNS_SORT = {TodolistsSorter.NAME, TodolistsSorter.PRIORITY, TodolistsSorter.COMPLETED};
 	private ArrayList lists;
 	private Comparator comparator;
@@ -95,6 +95,10 @@ class TodolistTableModel extends AbstractTableModel {
 		comparator = new TodolistsSorter(TodolistsSorter.NAME, TodolistsSorter.ASC);
 	}
 	
+	public static void setColumnsNames(String [] names) {
+		columnsNames = names;
+	}
+
 	public void setComparator(Comparator comparator) {
 		this.comparator = comparator;
 	}
@@ -130,7 +134,7 @@ class TodolistTableModel extends AbstractTableModel {
 	}
 
 	public String getColumnName(int col) {
-		return COLUMNS_NAMES[col];
+		return columnsNames[col];
 	}
 
 	public boolean isCellEditable(int row, int col) {
