@@ -23,6 +23,8 @@ import org.lucane.common.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Iterator;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
@@ -78,10 +80,11 @@ public class HelpBrowser
     plugins = new JComboBox();
     plugins.addActionListener(this);
 
-    for(int i = 0; i < ploader.getNumberOfPlugins(); i++)
+    Iterator i = PluginLoader.getInstance().getPluginIterator();
+    while(i.hasNext())
     {
-      Plugin p = ploader.getPluginAt(i);
-      plugins.addItem(p.getName() + " - " + p.getTitle());
+    	Plugin p = (Plugin)i.next();    	
+        plugins.addItem(p.getName());
     }
 
     frame.getContentPane().add(plugins, BorderLayout.NORTH);
@@ -97,11 +100,9 @@ public class HelpBrowser
 
     if(idx >= 0)
     {
-
       try
       {
-
-        Plugin p = ploader.getPluginAt(idx);
+        Plugin p = ploader.getPlugin((String)plugins.getSelectedItem());
         parser = new HelpParser(p.getDirectory(), tr("file"));
         sections.setModel(new DefaultTreeModel(parser.getSections()));
         bighelp.setText("");

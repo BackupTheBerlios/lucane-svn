@@ -18,8 +18,6 @@
  */
 package org.lucane.applications.audioconf;
 
-import java.io.IOException;
-
 import org.lucane.applications.audioconf.audio.*;
 import org.lucane.applications.audioconf.gui.ConfigDialog;
 import org.lucane.client.*;
@@ -63,63 +61,62 @@ public class AudioConf extends Plugin
 		}
 		
 		ConfigDialog cd = new ConfigDialog(this);
-		cd.show();
+ 	    cd.show();
 	}
 
 	public void follow()
 	{
 		System.out.println("DEBUG: receiving audio stream from " +friend.getName());
 		
-		try {		
+		try {
 			AudioConfig config = (AudioConfig)this.connection.read();
-			System.out.println("read config : " +config);
 			
-			boolean accepted = true;//DialogBox.question(getTitle(), "accept audioconf ?");
-			this.connection.write(Boolean.valueOf(accepted));
+			boolean accept = DialogBox.question(getTitle(), "accept from " + friend.getName() + " ?");
+			this.connection.write(Boolean.valueOf(accept));
 			
-			AudioPlayer player = new AudioPlayer(config, new AudioConfInputStream(this.connection));
-			Thread thread = new Thread(player);
-			thread.start();
+			
+			startPlayer(config);
+			startRecorder(config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}	
 	
-	public void askForAccept(AudioConfig config)
+	public void waitForAccept(AudioConfig config)
 	{
-		System.out.println("ask for accept");
+		System.out.println("start");
 		this.connection = Communicator.getInstance().sendMessageTo(this.friend, this.getName(), "");
-		try {
-			System.out.println("sending " +config);
+		try	{
 			this.connection.write(config);
-			System.out.println("sent " +config);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-				
-		try {
-			System.out.println("waiting for accept");
-			Boolean accept = (Boolean)this.connection.read();
-			if(accept.booleanValue())
+			Boolean accepted = (Boolean)this.connection.read();
+			if(accepted.booleanValue())
 			{
-				System.out.println("accepted, recording starts");
-				this.startRecording(config);
+				startRecorder(config);
+				startPlayer(config);
+				DialogBox.info("accepted : speak now !");
 			}
 			else
 			{
-				System.out.println("rejected.");
+				DialogBox.info("rejected : good bye !");
 			}
 		} catch (Exception e) {
-			System.out.println("error in acceptation");
+			DialogBox.info("error in accept : " + e);
 			e.printStackTrace();
 		}		
 	}
 	
-	private void startRecording(AudioConfig config)
+	public void startRecorder(AudioConfig config)
 	{
 		AudioRecorder recorder = new AudioRecorder(config);
 		recorder.addAudioListener(new Streamer(this.connection));
 		Thread thread = new Thread(recorder);
+		thread.start();		
+	}
+	
+	public void startPlayer(AudioConfig config)
+	{
+		AudioPlayer player = new AudioPlayer(config, new AudioConfInputStream(this.connection));
+		Thread thread = new Thread(player);
 		thread.start();
 	}
 }

@@ -24,6 +24,8 @@ import org.lucane.common.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+import java.util.Iterator;
+
 import javax.swing.*;
 
 
@@ -99,10 +101,11 @@ public class PluginsInfos
     infos.add(lblIcon, BorderLayout.EAST);
     jpmain.add(infos, BorderLayout.CENTER);
 
-    for(int i = 0; i < ploader.getNumberOfPlugins(); i++)
+    Iterator i = PluginLoader.getInstance().getPluginIterator();
+    while(i.hasNext())
     {
-      Plugin p = ploader.getPluginAt(i);
-      plugins.addItem(p.getName());
+    	Plugin p = (Plugin)i.next();   
+        plugins.addItem(p.getName());
     }
 
     frame.setSize(340, 150);
@@ -116,7 +119,7 @@ public class PluginsInfos
 
     if(idx >= 0)
     {
-      Plugin p = ploader.getPluginAt(idx);
+    	Plugin p = ploader.getPlugin((String)plugins.getSelectedItem());
       name.setText(p.getName() + " - " + p.getVersion());
       author.setText(p.getAuthor() + " <" + p.getEmail() + ">");
       category.setText(p.getCategory());

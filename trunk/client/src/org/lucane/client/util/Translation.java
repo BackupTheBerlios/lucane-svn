@@ -17,12 +17,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.lucane.client;
+package org.lucane.client.util;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import org.lucane.client.Client;
 import org.lucane.common.Logging;
 
 /**
@@ -36,7 +37,7 @@ public class Translation
      * Places the correct Locale.
      * Load the properties file
      */
-    protected static void setLocale(String lang)
+    static void setLocale(String lang)
     {
         try
         {

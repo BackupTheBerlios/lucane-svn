@@ -29,7 +29,7 @@ public class Comment
   implements Serializable, Signable
 {
   //-- attributes
-  private String id;
+  private String id; 
   private String noteId;
 
   private String author;
@@ -108,7 +108,7 @@ public class Comment
 
   public String toString()
   {
-	Locale locale = new Locale(Client.getInstance().getLanguage());
+	Locale locale = new Locale(Client.getInstance().getConfig().getLanguage());
 	DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, locale);
 	return this.author + " - " + this.title + " - " + df.format(this.creationDate);
   }

@@ -141,7 +141,7 @@ public class Note
 
   public String toString()
   {
-	Locale locale = new Locale(Client.getInstance().getLanguage());
+	Locale locale = new Locale(Client.getInstance().getConfig().getLanguage());
 	DateFormat df = DateFormat.getDateInstance(DateFormat.LONG, locale);
 	return this.title + " - " + df.format(this.creationDate);
   }

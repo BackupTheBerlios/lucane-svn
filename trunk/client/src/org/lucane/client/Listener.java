@@ -18,6 +18,7 @@
  */
 package org.lucane.client;
 
+import org.lucane.client.util.*;
 import org.lucane.common.*;
 import java.net.*;
 import java.io.*;

@@ -33,7 +33,7 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.html.HTMLEditorKit;
 
 import org.lucane.client.Client;
-import org.lucane.client.Translation;
+import org.lucane.client.util.Translation;
 
 /**
  * @author Jonathan Riboux
