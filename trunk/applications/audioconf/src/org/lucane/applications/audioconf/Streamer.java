@@ -25,10 +25,12 @@ import org.lucane.common.*;
 
 public class Streamer implements AudioRecorderListener
 {
-	ObjectConnection connection;
+	private ObjectConnection connection;
+	private AudioConf plugin;
 	
-	public Streamer(ObjectConnection oc)
+	public Streamer(AudioConf plugin, ObjectConnection oc)
 	{
+		this.plugin = plugin;
 		this.connection = oc;
 	}
 	
@@ -37,7 +39,7 @@ public class Streamer implements AudioRecorderListener
 	 */
 	public void audioRecordingStarted(AudioConfig config) 
 	{
-		System.out.println("Ready to record");	
+		Logging.getLogger().fine("Ready to record");	
 	}
 	
 	/**
@@ -51,7 +53,7 @@ public class Streamer implements AudioRecorderListener
 			
 			this.connection.write(buffer);
 		} catch (IOException e) {
-			e.printStackTrace();
+			this.plugin.reportRecorderError(e);
 		}
 	}
 
@@ -61,6 +63,5 @@ public class Streamer implements AudioRecorderListener
 	public void audioRecordingEnded() 
 	{
 		this.connection.close();
-		System.out.println("ended.");
 	}
 }

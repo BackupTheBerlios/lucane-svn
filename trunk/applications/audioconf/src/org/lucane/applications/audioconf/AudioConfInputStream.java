@@ -24,22 +24,29 @@ import org.lucane.common.ObjectConnection;
 
 public class AudioConfInputStream extends InputStream
 {
+	private AudioConf plugin;
 	private ObjectConnection connection;
 	private byte[] buffer;
 	private int index;
 	
-	public AudioConfInputStream(ObjectConnection connection)
+	public AudioConfInputStream(AudioConf plugin, ObjectConnection connection)
 	{
+		this.plugin = plugin;
 		this.connection = connection;
 		this.buffer = new byte[0];
 		this.index = 0;
 	}
 	
-	public int read() throws IOException 
+	public int read() 
+	throws IOException 
 	{
 		if(index >= buffer.length)
 			readNextBuffer();
-			
+
+		//end of stream ?
+		if(index >= buffer.length)
+			return -1;
+						
 		return buffer[index++];
 	}
 	
@@ -51,8 +58,11 @@ public class AudioConfInputStream extends InputStream
 		while(offset < array.length && bytes < length)
 		{
 			if(index >= buffer.length)
+			{
 				readNextBuffer();
-			
+				continue;
+			}
+							
 			array[offset++] = buffer[index++];
 			bytes++;
 		}		
@@ -74,13 +84,13 @@ public class AudioConfInputStream extends InputStream
 	
 	
 	private synchronized void readNextBuffer()
-	throws IOException
 	{
 		this.index = 0;
 		try	{
 			this.buffer = (byte[])connection.read();
-		} catch (ClassNotFoundException e)	{
-			e.printStackTrace();
+		} catch (Exception e)	{
+			this.buffer = new byte[0];
+			plugin.reportPlayerError(e);
 		}
 	}
 }

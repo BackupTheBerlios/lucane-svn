@@ -115,8 +115,6 @@ public class AudioRecorder implements Runnable
 		while(dataLine.isOpen())
 		{	
 			int length = dataLine.read(pcm, 0, pcm.length);
-			
-			System.out.println("recorded data : " +length);
 			encoder.processData(pcm, 0, pcm.length);
 			length = encoder.getProcessedDataByteSize();
 			encoder.getProcessedData(speex, 0);

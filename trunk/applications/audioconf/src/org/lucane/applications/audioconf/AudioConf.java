@@ -19,7 +19,7 @@
 package org.lucane.applications.audioconf;
 
 import org.lucane.applications.audioconf.audio.*;
-import org.lucane.applications.audioconf.gui.ConfigDialog;
+import org.lucane.applications.audioconf.gui.*;
 import org.lucane.client.*;
 import org.lucane.client.widgets.DialogBox;
 import org.lucane.common.*;
@@ -28,6 +28,11 @@ public class AudioConf extends Plugin
 {
 	private ConnectInfo friend;
 	private ObjectConnection connection;
+	
+	private AudioRecorder recorder;
+	private AudioPlayer player;
+	
+	private Controller controller;
 	
 	public AudioConf()
 	{
@@ -66,7 +71,7 @@ public class AudioConf extends Plugin
 
 	public void follow()
 	{
-		System.out.println("DEBUG: receiving audio stream from " +friend.getName());
+		Logging.getLogger().info("receiving audio stream from " +friend.getName());
 		
 		try {
 			AudioConfig config = (AudioConfig)this.connection.read();
@@ -74,9 +79,8 @@ public class AudioConf extends Plugin
 			boolean accept = DialogBox.question(getTitle(), "accept from " + friend.getName() + " ?");
 			this.connection.write(Boolean.valueOf(accept));
 			
-			
-			startPlayer(config);
-			startRecorder(config);
+			if(accept)
+				startAll(config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -84,21 +88,14 @@ public class AudioConf extends Plugin
 	
 	public void waitForAccept(AudioConfig config)
 	{
-		System.out.println("start");
 		this.connection = Communicator.getInstance().sendMessageTo(this.friend, this.getName(), "");
 		try	{
 			this.connection.write(config);
 			Boolean accepted = (Boolean)this.connection.read();
 			if(accepted.booleanValue())
-			{
-				startRecorder(config);
-				startPlayer(config);
-				DialogBox.info("accepted : speak now !");
-			}
+				startAll(config);
 			else
-			{
 				DialogBox.info("rejected : good bye !");
-			}
 		} catch (Exception e) {
 			DialogBox.info("error in accept : " + e);
 			e.printStackTrace();
@@ -107,16 +104,51 @@ public class AudioConf extends Plugin
 	
 	public void startRecorder(AudioConfig config)
 	{
-		AudioRecorder recorder = new AudioRecorder(config);
-		recorder.addAudioListener(new Streamer(this.connection));
+		recorder = new AudioRecorder(config);
+		recorder.addAudioListener(new Streamer(this, connection));
 		Thread thread = new Thread(recorder);
 		thread.start();		
 	}
 	
 	public void startPlayer(AudioConfig config)
 	{
-		AudioPlayer player = new AudioPlayer(config, new AudioConfInputStream(this.connection));
+		player = new AudioPlayer(config, new AudioConfInputStream(this, connection));
 		Thread thread = new Thread(player);
 		thread.start();
+	}
+	
+	//-- error handling
+	
+	public void reportRecorderError(Exception e)
+	{
+		stopAndExit();
+	}
+	
+	public void reportPlayerError(Exception e)
+	{
+		stopAndExit();
+	}
+	
+	//-- for controller
+	
+	public void startAll(AudioConfig config)
+	{
+		startPlayer(config);
+		startRecorder(config);
+		controller = new Controller(this);
+		controller.showController();
+	}
+	
+	public String getFriendName()
+	{
+		return friend.getName();
+	}
+	
+	public void stopAndExit()
+	{
+		recorder.stop();
+		player.stop();
+		controller.hideController();
+		exit();
 	}
 }
