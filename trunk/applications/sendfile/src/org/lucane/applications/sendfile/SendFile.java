@@ -1,6 +1,6 @@
 /*
  * Lucane - a collaborative platform
- * Copyright (C) 2002  Vincent Fiack <vfiack@mail15.com>
+ * Copyright (C) 2004  Vincent Fiack <vfiack@mail15.com>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -78,25 +78,25 @@ extends Plugin
 		dialog = new SendFileDialog(this, getTitle() + "> " + friend.getName(), true);
 		dialog.setExitPluginOnClose(true);
 		selectFile(dialog);
-		dialog.show();		
+		dialog.show();          
 	}
 	
 	public void follow()
 	{
 		dialog = new SendFileDialog(this, getTitle() + " < " + friend.getName(), false);
-		 dialog.setPreferredSize(new Dimension(400, 300));		 
-		 dialog.setFilePath(fileName);
-		 
-		 try {
+		dialog.setPreferredSize(new Dimension(400, 300));               
+		dialog.setFilePath(fileName);
+		
+		try {
 			String comment = connection.readString();
 			dialog.setComment(comment); 
 		} catch (Exception e) {
 			dialog.setComment(tr("err.comment"));
 		}
-		 
-		 dialog.show();		 
-	}
 		
+		dialog.show();          
+	}
+	
 	public void selectFile(SendFileDialog dialog)
 	{
 		JFileChooser fc = new JFileChooser();
@@ -122,7 +122,7 @@ extends Plugin
 			
 			Boolean acceptation = Boolean.FALSE;
 			
-			try	{
+			try     {
 				acceptation = (Boolean)connection.read();
 			} catch(Exception e) {
 				//file refused
@@ -143,14 +143,14 @@ extends Plugin
 		catch(Exception e)
 		{
 			DialogBox.error(tr("sendError"));
-			e.printStackTrace();			
+			e.printStackTrace();                    
 		}
 	}
 	
 	public void acceptFile()
-	{	
+	{       
 		JFileChooser fc = new JFileChooser();
-		
+		fc.setSelectedFile(new File(fileName));
 		int returnVal = fc.showSaveDialog(null);
 		if(returnVal == JFileChooser.APPROVE_OPTION)
 		{
@@ -160,13 +160,12 @@ extends Plugin
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-			File file = fc.getSelectedFile();			
+			
+			File file = fc.getSelectedFile();                       
 			downloadFile(file.getPath());
 		}
 		else
-			rejectFile();
-		
+			rejectFile();           
 	}
 	
 	
@@ -201,8 +200,8 @@ extends Plugin
 		
 		String sent = tr("msg.sent").replaceAll("%1", fileName);
 		DialogBox.info(sent);
-		exit();		
-	}	
+		exit();         
+	}       
 	
 	public void downloadFile(String destination)
 	{
@@ -215,7 +214,7 @@ extends Plugin
 			
 			dos = new DataOutputStream(new FileOutputStream(destination));
 			byte[] buf = (byte[])connection.read();
-			dos.write(buf);	
+			dos.write(buf); 
 			
 			connection.close();
 			

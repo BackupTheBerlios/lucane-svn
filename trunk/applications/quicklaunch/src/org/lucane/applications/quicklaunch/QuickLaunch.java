@@ -164,6 +164,9 @@ public class QuickLaunch
   	
   	this.trayIcon.addSeparator();
   	
+  	//windows
+  	this.trayIcon.add(new WindowMenu(this));
+  	
   	//open main interface
   	JMenuItem menu = new JMenuItem(tr("open"));
   	menu.setName("org.lucane.applications.maininterface");
