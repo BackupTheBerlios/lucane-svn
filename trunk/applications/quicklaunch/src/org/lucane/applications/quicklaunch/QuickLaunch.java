@@ -119,9 +119,10 @@ public class QuickLaunch
   	HashMap categories = new HashMap();
   	
   	//create menu list	
-  	for(int i=0; i<PluginLoader.getInstance().getNumberOfPlugins(); i++)
-  	{
-  		Plugin p = PluginLoader.getInstance().getPluginAt(i);
+	Iterator plugins = PluginLoader.getInstance().getPluginIterator();
+	while(plugins.hasNext())
+	{
+		Plugin p = (Plugin)plugins.next();
 
   		JMenu category = (JMenu)categories.get(p.getCategory());
   		if(category == null)
@@ -198,9 +199,6 @@ public class QuickLaunch
   {
 	Logging.getLogger().finer("QuickLaunch::cleanExit()");
 	this.trayIcon.setVisible(false);
-
-    while(true)
-      exit();      
+	exit();      
   }
-
 }
