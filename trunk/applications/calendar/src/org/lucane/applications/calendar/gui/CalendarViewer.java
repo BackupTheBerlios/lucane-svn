@@ -35,6 +35,7 @@ public class CalendarViewer extends JFrame
 implements ActionListener, CalendarListener
 {
 	private MonthPanel monthPanel;
+	private WeekPanel weekPanel;
 	private DayPanel dayPanel;
 	
 	private JButton goToCurrentMonth;
@@ -50,6 +51,7 @@ implements ActionListener, CalendarListener
 		this.plugin = plugin;
 		
 		monthPanel = new MonthPanel(plugin, this, userName);
+		weekPanel = new WeekPanel(plugin, this, userName);
 		dayPanel = new DayPanel(plugin, this, userName);
 	
 		goToCurrentMonth = new JButton(tr("btn.thisMonth"));
@@ -133,7 +135,7 @@ implements ActionListener, CalendarListener
 	{
 		Event event = (Event)label.getEvent();
 		if(event.isPublic())
-			new EventFrame(plugin, event, dayPanel, monthPanel).show();
+			new EventFrame(plugin, event, dayPanel, weekPanel, monthPanel).show();
 		else
 			DialogBox.info(tr("event.is.private"));
 	}
