@@ -186,6 +186,12 @@ public class Store
         allUsers.addService(maininterfaceService);
         getPluginStore().storePlugin(maininterfacePlugin);
         getServiceStore().storeService(maininterfaceService);
+
+
+		//maininterface application
+		PluginConcept quicklaunchPlugin = new PluginConcept("org.lucane.applications.quicklaunch", "0.6.3");
+		allUsers.addPlugin(quicklaunchPlugin);
+		getPluginStore().storePlugin(quicklaunchPlugin);
         
         //notes application
         PluginConcept notesPlugin = new PluginConcept("org.lucane.applications.notes", "0.6.3");

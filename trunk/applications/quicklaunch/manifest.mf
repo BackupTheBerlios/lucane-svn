@@ -1,0 +1,1 @@
+Plugin-Class: org.lucane.applications.quicklaunch.QuickLaunch
