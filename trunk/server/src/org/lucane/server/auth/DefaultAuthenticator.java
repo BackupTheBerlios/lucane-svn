@@ -19,8 +19,6 @@
 
 package org.lucane.server.auth;
 
-import java.util.StringTokenizer;
-
 import org.lucane.common.*;
 import org.lucane.common.concepts.UserConcept;
 import org.lucane.server.ConnectInfoManager;
