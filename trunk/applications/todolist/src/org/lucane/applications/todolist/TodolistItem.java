@@ -23,8 +23,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class TodolistItem implements Serializable {
-	private String userName;
-	private String parentTodolistName;
+	private int id;
+	private int parentTodolistId;
 	private String name;
 	private String description;
 	private int priority;
@@ -36,13 +36,17 @@ public class TodolistItem implements Serializable {
 	public static final int PRIORITY_MEDIUM = 1; 
 	public static final int PRIORITY_HIGH = 2;
 
-	public TodolistItem(String userName, String parentTodolistName, String name, String description, int priority) {
-		this(userName, parentTodolistName, name, description, priority, false);
+	public TodolistItem(int parentTodolistId, String name, String description, int priority) {
+		this(-1, parentTodolistId, name, description, priority, false);
 	}
 
-	public TodolistItem(String userName, String parentTodolistName, String name, String description, int priority, boolean complete) {
-		this.userName = userName;
-		this.parentTodolistName = parentTodolistName;
+	public TodolistItem(int parentTodolistId, String name, String description, int priority, boolean complete) {
+		this(-1, parentTodolistId, name, description, priority, complete);
+	}
+
+	public TodolistItem(int id, int parentTodolistId, String name, String description, int priority, boolean complete) {
+		this.id = id;
+		this.parentTodolistId = parentTodolistId;
 		this.name = name;
 		this.description = description;
 		this.priority = priority;
@@ -51,8 +55,8 @@ public class TodolistItem implements Serializable {
 		this.complete = complete;
 	}
 
-	public String getUserName() {
-		return userName;
+	public int getId() {
+		return id;
 	}
 	public boolean isComplete() {
 		return complete;
@@ -66,8 +70,8 @@ public class TodolistItem implements Serializable {
 	public int getPriority() {
 		return priority;
 	}
-	public String getParentTodolistName() {
-		return parentTodolistName;
+	public int getParentTodolistId() {
+		return parentTodolistId;
 	}
 	public Date getCompletionDate() {
 		return completionDate;
@@ -76,8 +80,8 @@ public class TodolistItem implements Serializable {
 		return creationDate;
 	}
 
-	public void setUserName(String string) {
-		userName = string;
+	public void setId(int i) {
+		id = i;
 	}
 	public void setComplete(boolean b) {
 		if (b)
@@ -95,7 +99,10 @@ public class TodolistItem implements Serializable {
 	public void setPriority(int i) {
 		priority = i;
 	}
-	public void setParentTodolistName(String string) {
-		parentTodolistName = string;
+	public void setParentTodolistId(int i) {
+		parentTodolistId = i;
+	}
+	public String toString() {
+		return getName();
 	}
 }

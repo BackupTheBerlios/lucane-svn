@@ -21,16 +21,24 @@ package org.lucane.applications.todolist;
 import java.io.Serializable;
 
 public class Todolist implements Serializable {
+	private int id;
 	private String userName;
 	private String name;
 	private String description;
 	
 	public Todolist(String userName, String name, String description) {
+		this(-1, userName, name, description);
+	}
+	public Todolist(int id, String userName, String name, String description) {
+		this.id = id;
 		this.userName = userName;
 		this.name = name;
 		this.description = description;
 	}
 
+	public int getId() {
+		return id;
+	}
 	public String getUserName() {
 		return userName;
 	}
@@ -41,6 +49,9 @@ public class Todolist implements Serializable {
 		return name;
 	}
 
+	public void setId(int i) {
+		id = i;
+	}
 	public void setUserName(String string) {
 		userName = string;
 	}
@@ -49,5 +60,8 @@ public class Todolist implements Serializable {
 	}
 	public void setName(String string) {
 		name = string;
+	}
+	public String toString() {
+		return getName();
 	}
 }

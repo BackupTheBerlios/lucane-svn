@@ -1,22 +1,21 @@
 <database>
 
   <table name="TodoLists">
+    <column name="id" type="int" />
     <column name="user_name" type="smalltext" />
     <column name="name" type="smalltext" />
     <column name="description" type="text" />
-    <!-- using miltiple pk so there is less unique constrainst (must find a solution for MySQL) -->
-    <primary-key columns="user_name, name" />
+    <primary-key columns="id" />
   </table>
 
   <table name="TodoListItems">
-    <column name="user_name" type="smalltext" />
-    <column name="list_name" type="smalltext" />
+    <column name="id" type="int" />
+    <column name="id_list" type="int" /> <!-- references TodoLists -->
     <column name="name" type="smalltext" />
     <column name="description" type="text" />
     <column name="priority" type="smallint" />
     <column name="complete" type="smallint" />
-    <!-- using multiple pk so there is less unique constrainst (must find a solution for MySQL) -->
-    <primary-key columns="user_name, list_name, name" />
+    <primary-key columns="id" />
   </table>
 
 </database>

@@ -79,8 +79,7 @@ public class TodolistService extends Service {
                     break;
             	case TodolistAction.GET_TODOLISTITEMS :
 	        		{
-	        			String[] tmpstr = (String[])tla.getParam();
-	        			getTodolistItems(oc, tmpstr[0], tmpstr[1]);
+	        			getTodolistItems(oc, ((Integer)tla.getParam()).intValue());
 	        		}
 	                break;
             	case TodolistAction.ADD_TODOLIST :
@@ -89,13 +88,12 @@ public class TodolistService extends Service {
             	case TodolistAction.MOD_TODOLIST :
 	        		{
 	        			Object[] tmpobj = (Object[])tla.getParam();
-	        			modifyTodolist(oc, (String)tmpobj[0], (String)tmpobj[1], (Todolist)tmpobj[2]);
+	        			modifyTodolist(oc, ((Integer)tmpobj[0]).intValue(), (Todolist)tmpobj[1]);
 	        		}
 	                break;
             	case TodolistAction.DEL_TODOLIST :
 	            	{
-	            		String[] tmpstr = (String[])tla.getParam();
-	            		deleteTodolist(oc, tmpstr[0], tmpstr[1]);
+	            		deleteTodolist(oc, ((Integer)tla.getParam()).intValue());
 	            	}
                     break;
             	case TodolistAction.ADD_TODOLISTITEM :
@@ -104,13 +102,12 @@ public class TodolistService extends Service {
             	case TodolistAction.MOD_TODOLISTITEM :
 	        		{
 	        			Object[] tmpobj = (Object[])tla.getParam();
-	        			modifyTodolistItem(oc, (String)tmpobj[0], (String)tmpobj[1], (String)tmpobj[2], (TodolistItem)tmpobj[3]);
+	        			modifyTodolistItem(oc, ((Integer)tmpobj[0]).intValue(), (TodolistItem)tmpobj[1]);
 	        		}
                     break;
             	case TodolistAction.DEL_TODOLISTITEM :
 	            	{
-	            		String[] tmpstr = (String[])tla.getParam();
-	            		deleteTodolistItem(oc, tmpstr[0], tmpstr[1], tmpstr[2]);
+	            		deleteTodolistItem(oc, ((Integer)tla.getParam()).intValue());
 	            	}
                     break;
 			}
@@ -127,13 +124,13 @@ public class TodolistService extends Service {
 	private void getTodolists(ObjectConnection oc, String userName) {
 		try {
 			st = conn.prepareStatement(
-					"SELECT user_name, name, description FROM todolists WHERE user_name=?");
+					"SELECT id, user_name, name, description FROM todolists WHERE user_name=?");
 			st.setString(1, userName);
 			res = st.executeQuery();
 			
 			ArrayList todolists = new ArrayList(); 
 			while (res.next()) {
-				todolists.add(new Todolist(res.getString(1), res.getString(2), res.getString(3)));
+				todolists.add(new Todolist(res.getInt(1), res.getString(2), res.getString(3), res.getString(4)));
 			}
 
 			oc.write("OK");
@@ -147,17 +144,16 @@ public class TodolistService extends Service {
 		}
 	}
 	
-	private void getTodolistItems(ObjectConnection oc, String userName, String todolistName) {
+	private void getTodolistItems(ObjectConnection oc, int idList) {
 		try {
 			st = conn.prepareStatement(
-					"SELECT user_name, list_name, name, description, priority, complete FROM todolistitems WHERE user_name=? AND list_name=?");
-			st.setString(1, userName);
-			st.setString(2, todolistName);
+					"SELECT id, id_list, name, description, priority, complete FROM todolistitems WHERE id_list=?");
+			st.setInt(1, idList);
 			res = st.executeQuery();
 			
 			ArrayList todolistitems = new ArrayList(); 
 			while (res.next()) {
-				todolistitems.add(new TodolistItem(res.getString(1), res.getString(2), res.getString(3), res.getString(4), res.getInt(5), res.getInt(6)==1));
+				todolistitems.add(new TodolistItem(res.getInt(1), res.getInt(2), res.getString(3), res.getString(4), res.getInt(5), res.getInt(6)==1));
 			}
 
 			oc.write("OK");
@@ -174,14 +170,26 @@ public class TodolistService extends Service {
 	private void addTodolist(ObjectConnection oc, Todolist newTodolist) {
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO todolists (user_name, name, description) VALUES (?, ?, ?)");
-			st.setString(1, newTodolist.getUserName());
-			st.setString(2, newTodolist.getName());
-			st.setString(3, newTodolist.getDescription());
+					"SELECT MAX(id) FROM todolists");
+			res = st.executeQuery();
+			int id=1;
+			if (res.next());
+				id = res.getInt(1) + 1;
+			res.close();
+			st.close();
+			
+			st = conn.prepareStatement(
+					"INSERT INTO todolists (id, user_name, name, description) VALUES (?, ?, ?, ?)");
+			newTodolist.setId(id);
+			st.setInt(1, id);
+			st.setString(2, newTodolist.getUserName());
+			st.setString(3, newTodolist.getName());
+			st.setString(4, newTodolist.getDescription());
 			st.executeUpdate();
 			st.close();
 
 			oc.write("OK");
+			oc.write(new Integer(id));
 
 		} catch (Exception e) {
 			Logging.getLogger().warning(
@@ -189,23 +197,14 @@ public class TodolistService extends Service {
 		}
 	}
 
-	private void modifyTodolist(ObjectConnection oc, String oldTodolistUser, String oldTodolistName, Todolist newTodolist) {
-		// TODO check if the list can be correctly renamed
+	private void modifyTodolist(ObjectConnection oc, int oldTodolistId, Todolist newTodolist) {
 		try {
 			st = conn.prepareStatement(
-					"UPDATE todolists SET user_name=?, name=?, description=? WHERE user_name=? AND name=?");
+					"UPDATE todolists SET user_name=?, name=?, description=? WHERE id=?");
 			st.setString(1, newTodolist.getUserName());
 			st.setString(2, newTodolist.getName());
 			st.setString(3, newTodolist.getDescription());
-			st.setString(4, oldTodolistUser);
-			st.setString(5, oldTodolistName);
-			st.executeUpdate();
-			st.close();
-
-			st = conn.prepareStatement(
-					"UPDATE todolistitems SET list_name=? WHERE list_name=?");
-			st.setString(1, newTodolist.getName());
-			st.setString(2, oldTodolistName);
+			st.setInt(4, oldTodolistId);
 			st.executeUpdate();
 			st.close();
 
@@ -217,19 +216,17 @@ public class TodolistService extends Service {
 		}
 	}
 
-	private void deleteTodolist(ObjectConnection oc, String userName, String name) {
+	private void deleteTodolist(ObjectConnection oc, int id) {
 		try {
 			st = conn.prepareStatement(
-					"DELETE FROM todolists WHERE user_name=? AND name=?");
-			st.setString(1, userName);
-			st.setString(2, name);
+					"DELETE FROM todolists WHERE id=?");
+			st.setInt(1, id);
 			st.executeUpdate();
 			st.close();
 
 			st = conn.prepareStatement(
-					"DELETE FROM todolistitems WHERE user_name=? AND list_name=?");
-			st.setString(1, userName);
-			st.setString(2, name);
+					"DELETE FROM todolistitems WHERE id_list=?");
+			st.setInt(1, id);
 			st.executeUpdate();
 			st.close();
 
@@ -245,37 +242,44 @@ public class TodolistService extends Service {
 		// TODO test if the list exists before adding an item
 		try {
 			st = conn.prepareStatement(
-					"INSERT INTO todolistitems (user_name, name, description, list_name, priority, complete) VALUES (?, ?, ?, ?, ?, ?)");
-			st.setString(1, newTodolistItem.getUserName());
+					"SELECT MAX(id) FROM todolistItems");
+			res = st.executeQuery();
+			int id=1;
+			if (res.next());
+				id = res.getInt(1) + 1;
+			res.close();
+			st.close();
+		
+			st = conn.prepareStatement(
+					"INSERT INTO todolistitems (id, name, description, id_list, priority, complete) VALUES (?, ?, ?, ?, ?, ?)");
+			st.setInt(1, id);
 			st.setString(2, newTodolistItem.getName());
 			st.setString(3, newTodolistItem.getDescription());
-			st.setString(4, newTodolistItem.getParentTodolistName());
+			st.setInt(4, newTodolistItem.getParentTodolistId());
 			st.setInt(5, newTodolistItem.getPriority());
 			st.setInt(6, newTodolistItem.isComplete()?1:0);
 			st.executeUpdate();
 			st.close();
 
 			oc.write("OK");
-
+			oc.write(new Integer(id));
+			
 		} catch (Exception e) {
 			Logging.getLogger().warning(
 				"Error in TodolistService::addTodolistItem : " + e);
 		}
 	}
 
-	private void modifyTodolistItem(ObjectConnection oc, String oldTodolistItemUser, String oldTodolistItemListName, String oldTodolistItemName, TodolistItem newTodolistItem) {
+	private void modifyTodolistItem(ObjectConnection oc, int oldTodolistItemId, TodolistItem newTodolistItem) {
 		try {
 			st = conn.prepareStatement(
-					"UPDATE todolistitems SET user_name=?, name=?, description=?, list_name=?, priority=?, complete=? WHERE user_name=? AND list_name=? AND name=?");
-			st.setString(1, newTodolistItem.getUserName());
-			st.setString(2, newTodolistItem.getName());
-			st.setString(3, newTodolistItem.getDescription());
-			st.setString(4, newTodolistItem.getParentTodolistName());
-			st.setInt(5, newTodolistItem.getPriority());
-			st.setInt(6, newTodolistItem.isComplete()?1:0);
-			st.setString(7, oldTodolistItemUser);
-			st.setString(8, oldTodolistItemListName);
-			st.setString(9, oldTodolistItemName);
+					"UPDATE todolistitems SET name=?, description=?, id_list=?, priority=?, complete=? WHERE id=?");
+			st.setString(1, newTodolistItem.getName());
+			st.setString(2, newTodolistItem.getDescription());
+			st.setInt(3, newTodolistItem.getParentTodolistId());
+			st.setInt(4, newTodolistItem.getPriority());
+			st.setInt(5, newTodolistItem.isComplete()?1:0);
+			st.setInt(6, oldTodolistItemId);
 			st.executeUpdate();
 			st.close();
 
@@ -287,13 +291,11 @@ public class TodolistService extends Service {
 		}
 	}
 
-	private void deleteTodolistItem(ObjectConnection oc, String userName, String listName, String name) {
+	private void deleteTodolistItem(ObjectConnection oc, int id) {
 		try {
 			st = conn.prepareStatement(
-					"DELETE FROM todolistitems WHERE user_name=? AND list_name=? AND name=?");
-			st.setString(1, userName);
-			st.setString(2, listName);
-			st.setString(3, name);
+					"DELETE FROM todolistitems WHERE id=?");
+			st.setInt(1, id);
 			st.executeUpdate();
 			st.close();
 

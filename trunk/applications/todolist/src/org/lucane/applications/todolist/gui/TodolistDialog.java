@@ -31,15 +31,15 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.Todolist;
 import org.lucane.applications.todolist.io.IO;
+import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 public class TodolistDialog extends JDialog {
 	private JTextField jtfName;
-	private JTextArea jtaDescription;
+	private HTMLEditor htmledDescription;
 	private JButton jbOk;
 	private JButton jbCancel;
 	
@@ -67,14 +67,11 @@ public class TodolistDialog extends JDialog {
 		} else {
 			setTitle("Todolist creation ...");
 		}
-//		JPanel contentPane = new JPanel(new BorderLayout(3, 3));
-//		contentPane.setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
-//		setContentPane(contentPane);
 		
-		setSize(320, 200);
+		setSize(512, 384);
 		
 		jtfName = new JTextField();
-		jtaDescription = new JTextArea();
+		htmledDescription = new HTMLEditor();
 		
 		jbOk = new JButton("Ok");
 		jbOk.addActionListener(new ActionListener() {
@@ -83,11 +80,12 @@ public class TodolistDialog extends JDialog {
 					mainFrame.modifyTodolist(
 							todolist,
 							new Todolist(
+									todolist.getId(),									
 									todolist.getUserName(),
 									jtfName.getText(),
-									jtaDescription.getText()));
+									htmledDescription.getText()));
 				else
-					mainFrame.addTodolist(new Todolist(IO.getInstance().getUserName(), jtfName.getText(), jtaDescription.getText()));
+					mainFrame.addTodolist(new Todolist(IO.getInstance().getUserName(), jtfName.getText(), htmledDescription.getText()));
 				hide();
 			}
 		});
@@ -125,7 +123,7 @@ public class TodolistDialog extends JDialog {
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(new JScrollPane(jtaDescription), c);
+		getContentPane().add(new JScrollPane(htmledDescription), c);
 
 		c.fill=GridBagConstraints.BOTH;
 		c.gridy=2;
@@ -137,7 +135,7 @@ public class TodolistDialog extends JDialog {
 		
 		if (modify) {
 			jtfName.setText(todolist.getName());
-			jtaDescription.setText(todolist.getDescription());
+			htmledDescription.setText(todolist.getDescription());
 		}
 	}
 }

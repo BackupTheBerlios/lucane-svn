@@ -32,30 +32,29 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import org.lucane.applications.todolist.TodolistItem;
-import org.lucane.applications.todolist.io.IO;
+import org.lucane.client.widgets.htmleditor.HTMLEditor;
 
 public class TodolistItemDialog extends JDialog {
 	private JTextField jtfName;
-	private JTextArea jtaDescription;
+	private HTMLEditor htmledDescription;
 	private JTextField jtfPriority;
 	private JCheckBox jcbComplete;
 	private JButton jbOk;
 	private JButton jbCancel;
 	
 	private MainFrame mainFrame;
-	private String parentTodolistName;
+	private int parentTodolistId;
 	
 	private TodolistItem todolistItem;
 	
 	private boolean modify = false;
 	
-	public TodolistItemDialog (MainFrame mainFrame, String parentTodolistName) {
+	public TodolistItemDialog (MainFrame mainFrame, int parentTodolistId) {
 		this.mainFrame = mainFrame;
-		this.parentTodolistName = parentTodolistName;
+		this.parentTodolistId = parentTodolistId;
 		init();
 	}
 	
@@ -72,10 +71,10 @@ public class TodolistItemDialog extends JDialog {
 		} else {
 			setTitle("Item creation ...");
 		}
-		setSize(320, 240);
+		setSize(512, 384);
 		
 		jtfName = new JTextField();
-		jtaDescription = new JTextArea();
+		htmledDescription = new HTMLEditor();
 		jtfPriority = new JTextField();
 		
 		jbOk = new JButton("Ok");
@@ -85,14 +84,14 @@ public class TodolistItemDialog extends JDialog {
 					mainFrame.modifyTodolistItem(
 							todolistItem,
 							new TodolistItem(
-									todolistItem.getUserName(),
-									todolistItem.getParentTodolistName(),
+									todolistItem.getId(),
+									todolistItem.getParentTodolistId(),
 									jtfName.getText(),
-									jtaDescription.getText(),
+									htmledDescription.getText(),
 									new Integer(jtfPriority.getText()).intValue(),
 									jcbComplete.isSelected()));
 				else
-					mainFrame.addTodolistItem(new TodolistItem(IO.getInstance().getUserName(), parentTodolistName, jtfName.getText(), jtaDescription.getText(), new Integer(jtfPriority.getText()).intValue()));
+					mainFrame.addTodolistItem(new TodolistItem(parentTodolistId, jtfName.getText(), htmledDescription.getText(), new Integer(jtfPriority.getText()).intValue()));
 				hide();
 			}
 		});
@@ -130,7 +129,7 @@ public class TodolistItemDialog extends JDialog {
 		c.fill=GridBagConstraints.BOTH;
 		c.gridx=1;
 		c.weightx=1;
-		getContentPane().add(new JScrollPane(jtaDescription), c);
+		getContentPane().add(new JScrollPane(htmledDescription), c);
 
 		c.gridy=2;
 		c.gridx=0;
@@ -162,7 +161,7 @@ public class TodolistItemDialog extends JDialog {
 			getContentPane().add(jcbComplete, c);
 
 			jtfName.setText(todolistItem.getName());
-			jtaDescription.setText(todolistItem.getDescription());
+			htmledDescription.setText(todolistItem.getDescription());
 			jtfPriority.setText("" + todolistItem.getPriority());
 			jcbComplete.setSelected(todolistItem.isComplete());
 		}

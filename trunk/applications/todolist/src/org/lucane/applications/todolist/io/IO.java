@@ -71,10 +71,10 @@ public class IO {
 		return todolists;
 	}
 
-	public ArrayList getTodolistItems(String todolistName) {
+	public ArrayList getTodolistItems(int todolistId) {
 		ArrayList todolistitems = null;
 		try {
-			TodolistAction action =	new TodolistAction(TodolistAction.GET_TODOLISTITEMS, new String[] {getUserName(), todolistName});
+			TodolistAction action =	new TodolistAction(TodolistAction.GET_TODOLISTITEMS, new Integer(todolistId));
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
@@ -91,27 +91,29 @@ public class IO {
 		return todolistitems;
 	}
 
-	public boolean addTodolistItem(TodolistItem newTodolistItem) {
+	public int addTodolistItem(TodolistItem newTodolistItem) {
+		int id=-1;
         try {
 			TodolistAction action =	new TodolistAction(TodolistAction.ADD_TODOLISTITEM, newTodolistItem);
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
 				DialogBox.error("Can't add the new item");
-				return false;
+				return -1;
 			}
+			id = ((Integer)oc.read()).intValue();
 			oc.close();
 		} catch (Exception e) {
 			DialogBox.error("Can't add the new item");
-			return false;
+			return -1;
 		}
 
-		return true;
+		return id;
 	}
 	
 	public boolean modifyTodolistItem(TodolistItem oldTodolistItem, TodolistItem newTodolistItem) {
         try {
-			TodolistAction action =	new TodolistAction(TodolistAction.MOD_TODOLISTITEM, new Object[] {oldTodolistItem.getUserName(), oldTodolistItem.getParentTodolistName(), oldTodolistItem.getName(), newTodolistItem});
+        	TodolistAction action =	new TodolistAction(TodolistAction.MOD_TODOLISTITEM, new Object[] {new Integer(oldTodolistItem.getId()), newTodolistItem});
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
@@ -129,7 +131,7 @@ public class IO {
 
 	public boolean deleteTodolistItem(TodolistItem defunctTodolistItem) {
         try {
-			TodolistAction action =	new TodolistAction(TodolistAction.DEL_TODOLISTITEM, new String[] {defunctTodolistItem.getUserName(), defunctTodolistItem.getParentTodolistName(), defunctTodolistItem.getName()});
+			TodolistAction action =	new TodolistAction(TodolistAction.DEL_TODOLISTITEM, new Integer(defunctTodolistItem.getId()));
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
@@ -145,27 +147,30 @@ public class IO {
 		return true;
 	}
 
-	public boolean addTodolist(Todolist newTodolist) {
-        try {
+	public int addTodolist(Todolist newTodolist) {
+		int id=-1;
+		try {
 			TodolistAction action =	new TodolistAction(TodolistAction.ADD_TODOLIST, newTodolist);
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
 				DialogBox.error("Can't create the todolist");
-				return false;
+				return -1;
 			}
+			id = ((Integer)oc.read()).intValue();
+
 			oc.close();
 		} catch (Exception e) {
 			DialogBox.error("Can't create the todolist");
-			return false;
+			return -1;
 		}
 
-		return true;
+		return id;
 	}
 
 	public boolean modifyTodolist(Todolist oldTodolist, Todolist newTodolist) {
         try {
-			TodolistAction action =	new TodolistAction(TodolistAction.MOD_TODOLIST, new Object[] {oldTodolist.getUserName(), oldTodolist.getName(), newTodolist});
+			TodolistAction action =	new TodolistAction(TodolistAction.MOD_TODOLIST, new Object[] {new Integer(oldTodolist.getId()), newTodolist});
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
@@ -183,7 +188,7 @@ public class IO {
 	
 	public boolean deleteTodolist(Todolist defunctTodolist) {
         try {
-			TodolistAction action =	new TodolistAction(TodolistAction.DEL_TODOLIST, new String[] {defunctTodolist.getUserName(), defunctTodolist.getName()});
+			TodolistAction action =	new TodolistAction(TodolistAction.DEL_TODOLIST, new Integer(defunctTodolist.getId()));
 			ObjectConnection oc = Communicator.getInstance().sendMessageTo(service, service.getName(), action);
 			String ack = oc.readString();
 			if (ack.startsWith("FAILED")) {
